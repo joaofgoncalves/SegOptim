@@ -1,0 +1,9 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+.git
+.git/
+/.git/
+./.git
+.gitignore
+tests/testthat/data
+R/new_stuff

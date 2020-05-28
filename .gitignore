@@ -1,0 +1,16 @@
+.Rproj.user
+.Rhistory
+*.RData
+.Ruserdata
+R/data/
+R/tmp/
+R/old/
+R/test/
+SegOptim.Rcheck
+SegOptim.Rcheck/
+/*.tif
+/*.dat
+/*.xml
+/*.ovr
+R/new_stuff
+tests/testthat/data/_REMOVED_

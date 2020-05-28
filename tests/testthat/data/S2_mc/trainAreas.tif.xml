@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xml:lang="pt"><Esri><CreaDate>20170314</CreaDate><CreaTime>04442200</CreaTime><ArcGISFormat>1.0</ArcGISFormat><SyncOnce>TRUE</SyncOnce><DataProperties><lineage><Process ToolSource="c:\program files (x86)\arcgis\desktop10.3\ArcToolbox\Toolboxes\Spatial Analyst Tools.tbx\Reclassify" Date="20170314" Time="044422">Reclassify trainData_FID0.tif Value "1 1;2 2;4 4;6 6;7 7;8 7;9 9" D:\MyDocs\temp\SegmOptim\SA\E2_Arga\TRAIN_AREAS\trainData_FID0a.tif DATA</Process></lineage></DataProperties></Esri></metadata>

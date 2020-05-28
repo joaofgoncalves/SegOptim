@@ -3,6 +3,12 @@
 
 ![SegOptim logo](./man/figures/logo.png)
 
+<!-- badges: start -->
+[![R build status](https://github.com/joaofgoncalves/SegOptim/workflows/R-CMD-check/badge.svg)](https://github.com/joaofgoncalves/SegOptim/actions)
+
+[![codecov](https://codecov.io/gh/joaofgoncalves/SegOptim/branch/master/graph/badge.svg)](https://codecov.io/gh/joaofgoncalves/SegOptim)
+<!-- badges: end -->
+
 --------------------------------------------------------------------------------------
 
 ## Package description 

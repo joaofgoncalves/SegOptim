@@ -66,26 +66,26 @@ test_that("Test if OTB segmentation (two sets of parameters) is performed correc
 
 ## SAGA GIS Simple Region Growing Segmentation test -----
 
-test_that("Test if SAGA segmentation is performed correctly",{
-  
-  source("_CONFIG_.R")
-  
-  skip_if(!dir.exists(SAGA_BIN_PATH), "Cannot find SAGA path")
-  skip_if(!file.exists(S1_SEGM_FEAT_SAGA_PATH), "Cannot find input data")
-  
-  segObj <- segmentation_SAGA_SRG(rstList=S1_SEGM_FEAT_SAGA_PATH, outputSegmRst="segm-test-saga.sgrd", Bandwidth=25.75, 
-                                       GaussianWeightingBW=6.32, VarFeatSpace=0.763, VarPosSpace=0.755, seedType=0, method1=0, 
-                                       DWeighting=3, normalize=0, neighbour=0, method2=0,thresh=0, leafSize=1024, 
-                                       SAGApath=SAGA_BIN_PATH, verbose=FALSE)
-  
-  expect_true(file.exists("segm-test-saga.sgrd"))
-  expect_is(segObj,"SOptim.SegmentationResult")
-  expect_equal(segObj$segm, "segm-test-saga.sdat")
-  expect_is(raster(segObj$segm), "RasterLayer")
-  
-  doCleanUpActions(unlist(segObj))
-  }
-)
+# test_that("Test if SAGA segmentation is performed correctly",{
+#   
+#   source("_CONFIG_.R")
+#   
+#   skip_if(!dir.exists(SAGA_BIN_PATH), "Cannot find SAGA path")
+#   skip_if(!file.exists(S1_SEGM_FEAT_SAGA_PATH), "Cannot find input data")
+#   
+#   segObj <- segmentation_SAGA_SRG(rstList=S1_SEGM_FEAT_SAGA_PATH, outputSegmRst="segm-test-saga.sgrd", Bandwidth=25.75, 
+#                                        GaussianWeightingBW=6.32, VarFeatSpace=0.763, VarPosSpace=0.755, seedType=0, method1=0, 
+#                                        DWeighting=3, normalize=0, neighbour=0, method2=0,thresh=0, leafSize=1024, 
+#                                        SAGApath=SAGA_BIN_PATH, verbose=FALSE)
+#   
+#   expect_true(file.exists("segm-test-saga.sgrd"))
+#   expect_is(segObj,"SOptim.SegmentationResult")
+#   expect_equal(segObj$segm, "segm-test-saga.sdat")
+#   expect_is(raster(segObj$segm), "RasterLayer")
+#   
+#   doCleanUpActions(unlist(segObj))
+#   }
+# )
 
 
 ## TerraLib Mean-region growing image segmentation test ----

@@ -7,3 +7,4 @@
 .gitignore
 tests/testthat/data
 R/new_stuff
+^\.github$

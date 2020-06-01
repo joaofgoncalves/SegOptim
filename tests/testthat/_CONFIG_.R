@@ -32,18 +32,18 @@ if(USER_NAME=="JG" && OS=="windows-10"){
 	##
 	## Single-class test data
 	##
-	S1_SEGM_FEAT_PATH <- "D://R-dev/SegOptim/tests/testthat/data/S1_sc/segmentationFeatures.tif"
-	S1_SEGM_FEAT_SAGA_PATH <- list.files("D:/R-dev/SegOptim/tests/testthat/data/S1_sc/SAGA",pattern=".sgrd$",full.names = TRUE)
+	S1_SEGM_FEAT_PATH <- "C:/MyFiles/R-dev/SegOptim/tests/testthat/data/S1_sc/segmentationFeatures.tif"
+	S1_SEGM_FEAT_SAGA_PATH <- list.files("C:/MyFiles/R-dev/SegOptim/tests/testthat/data/S1_sc/SAGA",pattern=".sgrd$",full.names = TRUE)
 	S1_SEGM_FEAT_GRASS_PATH <- "UAV_Mindelo_RGB_3cm_FID_1"
-	S1_CLASS_FEAT_PATH <- "D:/R-dev/SegOptim/tests/testthat/data/S1_sc/classificationFeatures.tif"
-	S1_TRAIN_AREAS_PATH <- "D:/R-dev/SegOptim/tests/testthat/data/S1_sc/trainAreas.tif"
+	S1_CLASS_FEAT_PATH <- "C:/MyFiles/R-dev/SegOptim/tests/testthat/data/S1_sc/classificationFeatures.tif"
+	S1_TRAIN_AREAS_PATH <- "C:/MyFiles/R-dev/SegOptim/tests/testthat/data/S1_sc/trainAreas.tif"
 	##
 	## Multi-class test data
-	S2_SEGM_FEAT_PATH <- "D:/R-dev/SegOptim/tests/testthat/data/S2_mc/segmentationFeatures.tif"
+	S2_SEGM_FEAT_PATH <- "C:/MyFiles/R-dev/SegOptim/tests/testthat/data/S2_mc/segmentationFeatures.tif"
 	S2_SEGM_FEAT_SAGA_PATH <- list.files("D:/R-dev/SegOptim/tests/testthat/data/S2_mc/SAGA",pattern=".sgrd$",full.names = TRUE)
 	S2_SEGM_FEAT_GRASS_PATH <- "Arga01_6cm_WGS84UTM29N_GRD60m_FID0"
-	S2_CLASS_FEAT_PATH <- "D:/R-dev/SegOptim/tests/testthat/data/S2_mc/classificationFeatures.tif"
-	S2_TRAIN_AREAS_PATH <- "D:/R-dev/SegOptim/tests/testthat/data/S2_mc/trainAreas.tif"
+	S2_CLASS_FEAT_PATH <- "C:/MyFiles/R-dev/SegOptim/tests/testthat/data/S2_mc/classificationFeatures.tif"
+	S2_TRAIN_AREAS_PATH <- "C:/MyFiles/R-dev/SegOptim/tests/testthat/data/S2_mc/trainAreas.tif"
 }
 
 if(USER_NAME=="JG" && OS=="ubuntu-16.04"){

@@ -517,7 +517,7 @@ segmentation_ArcGIS_MShift <- function(x, inputRstPath, outputSegmRst=NULL,
   }
 
   # Get the python script used to perform ArcGIS Mean-shift segmentation algorithm
-  PyScriptPath<-getPythonFile("ArcGIS_MShift.py",
+  PyScriptPath <- getPythonFile("ArcGIS_MShift.py",
                               "SegOptim",
                               c("D:/MyDocs/R-dev",getwd()))
 
@@ -526,7 +526,7 @@ segmentation_ArcGIS_MShift <- function(x, inputRstPath, outputSegmRst=NULL,
   }
     
   # Assemble command string to run
-  cmd<-paste(prefix,
+  cmd <- paste(prefix,
              "python \"",PyScriptPath,"\" ",
              tmpDirScratch," ",
              "\"",inputRstPath,"\" ",
@@ -1292,7 +1292,7 @@ segmentation_OTB_LSMS2 <- function(x, inputRstPath, outputSegmRst = NULL,
                " -ram ",RAM, sep="")
   
   
-  if(verbose) checkPrintSegmentationParams(x,segmentMethod="OTB_LSMS")
+  if(verbose) checkPrintSegmentationParams(x,segmentMethod="OTB_LSMS2")
   
   ## Run command lines #1 - Mean shift ... #2 LSMS Segmentation ... #3 Region merging
   if(.Platform$OS.type=="windows"){

@@ -3,7 +3,7 @@ Type: Package
 Title: Optimization of Image Segmentation Parameters for Object-Based Image Analysis (OBIA)
 Version: 0.2.4
 Date: 2020-05-28
-Authors@R: c(person("Joao", "Goncalves", email = "jfgoncalves@fc.up.pt", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6615-0218")),
+Authors@R: c(person("Joao", "Goncalves", email = "joao.goncalves@cibio.up.pt", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6615-0218")),
              person("Bruno", "Marcos", email = "bruno.marcos@fc.up.pt", role = c("ctb"), comment = c(ORCID = "0000-0001-5423-5890")),
              person("Isabel", "Pocas", email = "isabel.pocas@fc.up.pt", role = c("ctb", "ths"), comment = c(ORCID = "0000-0002-8280-0110")),
              person("C.A. (Sander)", "Mucher", email = "sander.mucher@wur.nl", role = c("ctb", "ths"), comment = c(ORCID = "0000-0002-7997-8356")),

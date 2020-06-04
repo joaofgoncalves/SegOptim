@@ -61,8 +61,8 @@ else:
 
         except arcpy.ExecuteError:
             # Remove temporary directory and files on error
-            import shutil
-            shutil.rmtree(tmpDir)
+            #import shutil
+            # shutil.rmtree(tmpDir)
             sys.exit(1)
 
         else:

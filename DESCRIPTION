@@ -19,7 +19,7 @@ Encoding: UTF-8
 URL: https://github.com/joaofgoncalves/SegOptim
 Depends: R (>= 3.5.0)
 Imports: caret,cclust,cluster,class,clusterCrit,doRNG,dplyr,data.table,e1071,foreach,GA,gbm,magrittr,mda,methods,
-    randomForest,raster,parallel,rgdal,ROCR,sf,stats,tools,unbalanced,utils,NLMR
+    randomForest,raster,parallel,rgdal,ROCR,sf,stats,tools,unbalanced,utils,NLMR,igraph
 RoxygenNote: 7.1.0
 Suggests: 
     testthat

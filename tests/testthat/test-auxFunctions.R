@@ -56,6 +56,7 @@ test_that("Check segmentation function parameters with input errors (checkPrintS
   expect_error(checkPrintSegmentationParams(1, segmentMethod = "Terralib_MRGrow"))
   expect_error(checkPrintSegmentationParams(1, segmentMethod = "RSGISLib_Shep"))
   expect_error(checkPrintSegmentationParams(1, segmentMethod = "OTB_LSMS"))
+  expect_error(checkPrintSegmentationParams(1, segmentMethod = "OTB_LSMS2"))
 })
 
 
@@ -68,6 +69,7 @@ test_that("Check segmentation function parameters with correct number of inputs 
   expect_message(checkPrintSegmentationParams(1:2, segmentMethod = "Terralib_MRGrow"))
   expect_message(checkPrintSegmentationParams(1:3, segmentMethod = "RSGISLib_Shep"))
   expect_message(checkPrintSegmentationParams(1:3, segmentMethod = "OTB_LSMS"))
+  expect_message(checkPrintSegmentationParams(1:3, segmentMethod = "OTB_LSMS2"))
 })
 
 

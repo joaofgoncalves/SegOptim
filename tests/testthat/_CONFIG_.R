@@ -10,7 +10,7 @@ if(USER_NAME=="JG" && OS=="windows-10"){
 	
 	# GRASS GIS
 	#GRASS_BIN_PATH <- "C:/GRASS_72/grass72"
-	GRASS_BIN_PATH <- "C:/GRASS_74/grass74"
+	GRASS_BIN_PATH <- "C:/Program Files/QGIS3121/bin/grass78"
 	GRASS_GISDBASE_PATH <- "C:/Users/JG/Documents/grassdata"
 	GRASS_LOCATION_NAME <- "TestSites_SOptim"
 

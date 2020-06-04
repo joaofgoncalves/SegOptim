@@ -502,17 +502,17 @@ segmentation_ArcGIS_MShift <- function(x, inputRstPath, outputSegmRst=NULL,
   
   
   if(is.null(pythonPath)){
-    prefix=""
+    prefix <- ""
   }else{
-    prefix=paste(pythonPath,"/",sep="")
+    prefix <- paste(pythonPath,"/",sep="")
   }
 
   # Check if an output file was defined otherwise use a temporary
   if(!is.null(outputSegmRst)){
-    tmpDirScratch <- dirname(outputSegmRst)
+    tmpDirScratch     <- dirname(outputSegmRst)
     tmpFileSegmOutRst <- basename(outputSegmRst)
   }else{
-    tmpDirScratch <- repBSlash(tempfile("",getwd()))
+    tmpDirScratch     <- repBSlash(tempfile("",getwd()))
     tmpFileSegmOutRst <- gsub("\\\\","",tempfile("ArcGIS_SegmIdx_","",".tif"))
   }
 
@@ -537,12 +537,12 @@ segmentation_ArcGIS_MShift <- function(x, inputRstPath, outputSegmRst=NULL,
              sep="")
   
   #if(verbose) cat(cmd,"\n\n")
-  if(verbose) checkPrintSegmentationParams(x,segmentMethod="ArcGIS_MShift")
+  if(verbose) checkPrintSegmentationParams(x, segmentMethod = "ArcGIS_MShift")
   
   ## Run python script for ArcGIS Mean-shift image segmentation from the command line
-  sysOut<-try(system(cmd,ignore.stdout = TRUE, ignore.stderr = TRUE, show.output.on.console = FALSE))
+  sysOut <- try(system(cmd,ignore.stdout = TRUE, ignore.stderr = TRUE, show.output.on.console = FALSE))
   
-  if(sysOut!=0){
+  if(sysOut != 0){
     on.exit(doCleanUpActions(tmpDirScratch))
     warning("Unable to perform segmentaton with function segmentation_ArcGIS_MShift!")
     return(NA)

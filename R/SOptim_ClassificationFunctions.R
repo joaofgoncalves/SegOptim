@@ -162,7 +162,7 @@ replaceDefaultClassificationParams <- function(oldParamSet, newParamSet){
   
   for(clMethodName in names(newParamSet)){
     for(parName in names(newParamSet[[clMethodName]])){
-      oldParamSet[[clMethodName]][[parName]]<-newParamSet[[clMethodName]][[parName]]
+      oldParamSet[[clMethodName]][[parName]] <- newParamSet[[clMethodName]][[parName]]
     }
   }
   return(oldParamSet)

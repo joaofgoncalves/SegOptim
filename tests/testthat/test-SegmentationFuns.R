@@ -117,6 +117,9 @@ test_that("Test if OTB segmentation (two sets of parameters) is performed correc
   
   source("_CONFIG_.R")
 
+  skip_if(!dir.exists(OTB_BIN_PATH), "Cannot find OTB path")
+  #skip_if(!file.exists(S1_SEGM_FEAT_PATH), "Cannot find input data")
+  
   rst <- simRasterFeatures(nr = 10, nc = 10, nlyrs=3)
   writeRaster(rst, filename = "testRasterFeatures.tif", overwrite=TRUE)
   

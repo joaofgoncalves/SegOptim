@@ -167,14 +167,14 @@ test_that("Test evalPerformanceGeneric 8",{
 
 test_that("Test evalPerformanceClassifier - single-class",{
   
-  DF <- data.frame(SID   = 1:100, 
-                   train = sample(0:1, 100, replace=TRUE),
-                   v1 = rnorm(100),
-                   v2 = rnorm(100),
-                   v3 = rnorm(100))
+  DF <- data.frame(SID   = 1:250, 
+                   train = sample(0:1, 250, replace=TRUE),
+                   v1 = rnorm(250),
+                   v2 = rnorm(250),
+                   v3 = rnorm(250))
   
   calDataObj <- list(calData = DF, classifFeatData = DF)
-  attr(calDataObj, "nClassType") <- nClassType
+  attr(calDataObj, "nClassType") <- "single-class"
   class(calDataObj) <- "SOptim.CalData"
   
   cl <- calibrateClassifier(calData = calDataObj,
@@ -190,7 +190,7 @@ test_that("Test evalPerformanceClassifier - single-class",{
                                         minCasesByClassTrain = 5,
                                         minCasesByClassTest = 5,
                                         runFullCalibration = TRUE,
-                                        verbose = TRUE)
+                                        verbose = FALSE)
   
   expect_is(cl,"SOptim.Classifier")
   
@@ -201,11 +201,11 @@ test_that("Test evalPerformanceClassifier - single-class",{
 
 test_that("Test evalPerformanceClassifier - multi-class",{
   
-  DF <- data.frame(SID   = 1:100, 
-                   train = sample(0:3, 1000, replace=TRUE),
-                   v1 = rnorm(100),
-                   v2 = rnorm(100),
-                   v3 = rnorm(100))
+  DF <- data.frame(SID   = 1:250, 
+                   train = sample(1:3, 250, replace=TRUE),
+                   v1 = rnorm(250),
+                   v2 = rnorm(250),
+                   v3 = rnorm(250))
   
   calDataObj <- list(calData = DF, classifFeatData = DF)
   attr(calDataObj, "nClassType") <- "multi-class"
@@ -224,7 +224,7 @@ test_that("Test evalPerformanceClassifier - multi-class",{
                             minCasesByClassTrain = 5,
                             minCasesByClassTest = 5,
                             runFullCalibration = TRUE,
-                            verbose = TRUE)
+                            verbose = FALSE)
   
   expect_is(cl,"SOptim.Classifier")
   

@@ -382,10 +382,12 @@ segmentation_GRASS_RG <- function(x, GRASS.path="grass", GRASS.inputRstName, GRA
   # Change the command according to the OS used to set the GRASS_BATCH_JOB variable
   setWord <- ifelse(.Platform$OS.type == "windows", "set", "export")
   
+  # Define the second script file for running the GRASS_BATCH_JOB 
   cat(prefix,
       setWord," GRASS_BATCH_JOB=",tmpFile.batchJob,"\n\n",
-      GRASS.path," ",GRASSinitPath," -text",
-        sep="",file=tmpFile.batchRun)
+      "\"",GRASS.path,"\" ",GRASSinitPath," -text",
+      sep = "", 
+      file = tmpFile.batchRun)
   
   if(verbose) checkPrintSegmentationParams(x,segmentMethod="GRASS_RG")
 

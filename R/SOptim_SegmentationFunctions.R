@@ -1027,24 +1027,27 @@ segmentation_OTB_LSMS <- function(x, inputRstPath, outputSegmRst=NULL,
     }
   }
   
+  # Generate a random file suffix
+  rndFileStr <- randString(6)
+  
   if(is.null(outputSegmRst)){
     # Output segmentation raster file
-    tmpDir<-getwd()
+    tempDir <- getwd()
     
     # Make temp files path
-    tmp_FilteredRange<-repBSlash(paste(tmpDir,"/otb_filt_range_",randString(6),".tif",sep=""))
-    tmp_FilteredSpatial<-repBSlash(paste(tmpDir,"/otb_filt_spatial_",randString(6),".tif",sep=""))
-    tmp_Segmentation<-repBSlash(paste(tmpDir,"/otb_segm_init_",randString(6),".tif",sep=""))
-    tmp_SegmentationMerged<-repBSlash(paste(tmpDir,"/otb_segm_merge_",randString(6),".tif",sep=""))
+    tmp_FilteredRange <- repBSlash(paste(tempDir,"/otb_filt_range_",rndFileStr,".tif",sep=""))
+    tmp_FilteredSpatial <- repBSlash(paste(tempDir,"/otb_filt_spatial_",rndFileStr,".tif",sep=""))
+    tmp_Segmentation <- repBSlash(paste(tempDir,"/otb_segm_init_",rndFileStr,".tif",sep=""))
+    tmp_SegmentationMerged <- repBSlash(paste(tempDir,"/otb_segm_merge_",rndFileStr,".tif",sep=""))
     
   }else{
     # Output segmentation raster file
-    tmpDir<-dirname(outputSegmRst)
+    tempDir<-dirname(outputSegmRst)
     
     # Make temp files path
-    tmp_FilteredRange <- repBSlash(paste(tmpDir,"/otb_filt_range_",randString(6),".tif",sep=""))
-    tmp_FilteredSpatial <- repBSlash(paste(tmpDir,"/otb_filt_spatial_",randString(6),".tif",sep=""))
-    tmp_Segmentation <- repBSlash(paste(tmpDir,"/otb_segm_init_",randString(6),".tif",sep=""))
+    tmp_FilteredRange <- repBSlash(paste(tempDir,"/otb_filt_range_",rndFileStr,".tif",sep=""))
+    tmp_FilteredSpatial <- repBSlash(paste(tempDir,"/otb_filt_spatial_",rndFileStr,".tif",sep=""))
+    tmp_Segmentation <- repBSlash(paste(tempDir,"/otb_segm_init_",rndFileStr,".tif",sep=""))
     tmp_SegmentationMerged <- outputSegmRst
     
   }
@@ -1107,22 +1110,29 @@ segmentation_OTB_LSMS <- function(x, inputRstPath, outputSegmRst=NULL,
   if(!inherits(sysOut_1,"try-error") && 
      !inherits(sysOut_2,"try-error") && 
      !inherits(sysOut_2,"try-error")){
+    
     out <- list(
-        FilteredRange = tmp_FilteredRange,
-        FilteredSpatial = tmp_FilteredSpatial,
-        Segmentation = tmp_Segmentation,
-        segm = tmp_SegmentationMerged)
+      FilteredRange     = tmp_FilteredRange,
+      FilteredSpatial   = tmp_FilteredSpatial,
+      Segmentation      = tmp_Segmentation,
+      SegmentationFinal = repBSlash(paste(tempDir,"/",list.files(pattern=paste("_init_",rndFileStr,"_",sep="")),sep="")),
+      segm              = tmp_SegmentationMerged
+    )
     
     class(out) <- "SOptim.SegmentationResult"
     return(out)
   }
   else{
-    on.exit(doCleanUpActions(c(
-      FilteredRange = tmp_FilteredRange,
-      FilteredSpatial = tmp_FilteredSpatial,
-      Segmentation = tmp_Segmentation,
-      segm = tmp_SegmentationMerged
-    )))
+    
+    filesToClean <- c(
+      FilteredRange     = tmp_FilteredRange,
+      FilteredSpatial   = tmp_FilteredSpatial,
+      Segmentation      = tmp_Segmentation,
+      SegmentationFinal = repBSlash(paste(tempDir,"/",list.files(pattern=paste("_init_",rndFileStr,"_",sep="")),sep="")),
+      segm              = tmp_SegmentationMerged
+    )
+    on.exit(doCleanUpActions(filesToClean))
+    
     warning("Unable to perform segmentaton with method OTB_LSMS!")
     return(NA)
   }
@@ -1235,24 +1245,27 @@ segmentation_OTB_LSMS2 <- function(x, inputRstPath, outputSegmRst = NULL,
     }
   }
   
+  # Generate a random file suffix
+  rndFileStr <- randString(6)
+  
   if(is.null(outputSegmRst)){
     # Output segmentation raster file
-    tmpDir <- getwd()
+    tempDir <- getwd()
     
     # Make temp files path
-    tmp_FilteredRange <- repBSlash(paste(tmpDir,"/otb_filt_range_",randString(6),".tif",sep=""))
-    tmp_FilteredSpatial <- repBSlash(paste(tmpDir,"/otb_filt_spatial_",randString(6),".tif",sep=""))
-    tmp_Segmentation <- repBSlash(paste(tmpDir,"/otb_segm_init_",randString(6),".tif",sep=""))
-    tmp_SegmentationMerged <- repBSlash(paste(tmpDir,"/otb_segm_merge_",randString(6),".tif",sep=""))
+    tmp_FilteredRange <- repBSlash(paste(tempDir,"/otb_filt_range_",rndFileStr,".tif",sep=""))
+    tmp_FilteredSpatial <- repBSlash(paste(tempDir,"/otb_filt_spatial_",rndFileStr,".tif",sep=""))
+    tmp_Segmentation <- repBSlash(paste(tempDir,"/otb_segm_init_",rndFileStr,".tif",sep=""))
+    tmp_SegmentationMerged <- repBSlash(paste(tempDir,"/otb_segm_merge_",rndFileStr,".tif",sep=""))
     
   }else{
     # Output segmentation raster file
-    tmpDir <- dirname(outputSegmRst)
+    tempDir <- dirname(outputSegmRst)
     
     # Make temp files path
-    tmp_FilteredRange <- repBSlash(paste(tmpDir,"/otb_filt_range_",randString(6),".tif",sep=""))
-    tmp_FilteredSpatial <- repBSlash(paste(tmpDir,"/otb_filt_spatial_",randString(6),".tif",sep=""))
-    tmp_Segmentation <- repBSlash(paste(tmpDir,"/otb_segm_init_",randString(6),".tif",sep=""))
+    tmp_FilteredRange <- repBSlash(paste(tempDir,"/otb_filt_range_",rndFileStr,".tif",sep=""))
+    tmp_FilteredSpatial <- repBSlash(paste(tempDir,"/otb_filt_spatial_",rndFileStr,".tif",sep=""))
+    tmp_Segmentation <- repBSlash(paste(tempDir,"/otb_segm_init_",rndFileStr,".tif",sep=""))
     tmp_SegmentationMerged <- outputSegmRst
     
   }
@@ -1315,22 +1328,29 @@ segmentation_OTB_LSMS2 <- function(x, inputRstPath, outputSegmRst = NULL,
   if(!inherits(sysOut_1,"try-error") && 
      !inherits(sysOut_2,"try-error") && 
      !inherits(sysOut_2,"try-error")){
+    
     out <- list(
-      FilteredRange = tmp_FilteredRange,
-      FilteredSpatial = tmp_FilteredSpatial,
-      Segmentation = tmp_Segmentation,
-      segm = tmp_SegmentationMerged)
+      FilteredRange     = tmp_FilteredRange,
+      FilteredSpatial   = tmp_FilteredSpatial,
+      Segmentation      = tmp_Segmentation,
+      SegmentationFinal = repBSlash(paste(tempDir,"/",list.files(pattern=paste("_init_",rndFileStr,"_",sep="")),sep="")),
+      segm              = tmp_SegmentationMerged
+      )
     
     class(out) <- "SOptim.SegmentationResult"
     return(out)
   }
   else{
-    on.exit(doCleanUpActions(c(
-      FilteredRange = tmp_FilteredRange,
-      FilteredSpatial = tmp_FilteredSpatial,
-      Segmentation = tmp_Segmentation,
-      segm = tmp_SegmentationMerged
-    )))
+    
+    filesToClean <- c(
+      FilteredRange     = tmp_FilteredRange,
+      FilteredSpatial   = tmp_FilteredSpatial,
+      Segmentation      = tmp_Segmentation,
+      SegmentationFinal = repBSlash(paste(tempDir,"/",list.files(pattern=paste("_init_",rndFileStr,"_",sep="")),sep="")),
+      segm              = tmp_SegmentationMerged
+    )
+    on.exit(doCleanUpActions(filesToClean))
+    
     warning("Unable to perform segmentaton with method OTB_LSMS (two-parameter set)!")
     return(NA)
   }

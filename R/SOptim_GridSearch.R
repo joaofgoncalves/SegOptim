@@ -201,7 +201,7 @@ searchOptimSegmentationParams <- function(rstFeatures,              # raster sta
   if(is.character(rstFeatures)){
     if(file.exists(rstFeatures)){
       
-      if(verbose) cat("-> Loading raster data containing classification features... \n")
+      if(verbose) cat("-> Loading raster metadata containing classification features... \n")
       rstFeatures<-try(raster::stack(rstFeatures))
       if(verbose) cat("done.\n\n")
       
@@ -214,7 +214,7 @@ searchOptimSegmentationParams <- function(rstFeatures,              # raster sta
   if(is.character(trainData)){
     if(file.exists(trainData)){
       
-      if(verbose) cat("-> Loading raster file metadata containing train data... \n")
+      if(verbose) cat("-> Loading raster metadata containing training examples... \n")
       trainData<-try(raster::raster(trainData))
       if(verbose) cat("done.\n\n")
       
@@ -236,21 +236,28 @@ searchOptimSegmentationParams <- function(rstFeatures,              # raster sta
   
   ## Load raster data from file ----------------------------------------------------
   
-  if(inherits(rstFeatures,"RasterStack")){
-    
-    if(verbose) cat("-> Loading raster values for classification features (in-memory load)... \n")
-    rstFeatures<-try(raster::values(rstFeatures))
-    if(verbose) cat("done.\n\n")
-    
-    if(inherits(rstFeatures,"try-error")){
-      stop("An error occurred while reading data values from rstFeatures!")
-    }
-  }
+  # [Jun/2020] Removed after changes in calculateSegmStats() function which now uses 
+  # only a raster dataset as input
+  
+  # if(inherits(rstFeatures,"RasterStack")){
+  #   
+  #   if(verbose) cat("-> Loading raster values for classification features (in-memory load)... \n")
+  #   
+  #   rstFeatures <- try(raster::values(rstFeatures))
+  #   
+  #   if(verbose) cat("done.\n\n")
+  #   
+  #   if(inherits(rstFeatures,"try-error")){
+  #     stop("An error occurred while reading data values from rstFeatures!")
+  #   }
+  # }
   
   if(inherits(trainData,"RasterLayer")){
     
     if(verbose) cat("-> Loading raster values for train data (in-memory load)... \n")
-    trainData<-try(raster::values(trainData))
+    
+    trainData <- try(raster::values(trainData))
+    
     if(verbose) cat("done.\n\n")
     
     if(inherits(trainData,"try-error")){
@@ -406,7 +413,7 @@ searchOptimSegmentationParams <- function(rstFeatures,              # raster sta
   }
   else if(optimMethod == "random"){
     
-    outEval <- randomSearchOptim( fitnessFunc   = fitFuncGeneric, 
+    outEval <- randomSearchOptim( fitFunc       = fitFuncGeneric, 
                                   paramList     = segmParamList, 
                                   numIter       = rand.numIter, 
                                   nneigh        = rand.nneigh, 

@@ -177,7 +177,7 @@ test_that("Test getTrainData function",{
   trainDF <- getTrainData(rstTrain, rstSegm, useThresh = TRUE, thresh = 0.5, na.rm = TRUE, 
                                    dup.rm = TRUE, minImgSegm = 5, ignore = FALSE)
   
-  expect_is(train_DF, "data.frame")
+  expect_is(trainDF, "data.frame")
   expect_equal(colnames(trainDF),c("SID","train"))
   expect_equal(is.integer(trainDF$SID),TRUE)
   expect_equal(length(unique(trainDF$train)),2)

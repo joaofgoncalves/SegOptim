@@ -10,7 +10,7 @@ balanceMulticlassData(x, class, n)
 \item{x}{A data frame to balance.}
 
 \item{class}{The name or the position of the column identifying the class 
-(must be a factor variable).}
+(the column must be a factor variable).}
 
 \item{n}{Number of rows/observations to extract from each class? (integer)}
 }
@@ -25,5 +25,5 @@ sampling without replacement) if the frequency is above n.
 }
 \note{
 This function is just a rough fix for handling unbalanced datasets, 
-use with care...
+use with care!...
 }

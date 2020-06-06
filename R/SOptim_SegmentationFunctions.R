@@ -1042,7 +1042,7 @@ segmentation_OTB_LSMS <- function(x, inputRstPath, outputSegmRst=NULL,
     
   }else{
     # Output segmentation raster file
-    tempDir<-dirname(outputSegmRst)
+    tempDir <- dirname(outputSegmRst)
     
     # Make temp files path
     tmp_FilteredRange <- repBSlash(paste(tempDir,"/otb_filt_range_",rndFileStr,".tif",sep=""))
@@ -1054,9 +1054,9 @@ segmentation_OTB_LSMS <- function(x, inputRstPath, outputSegmRst=NULL,
   
   # Use OTB binary path?
   if(is.null(otbBinPath)){
-    prefix=""
+    prefix <- ""
   }else{
-    prefix=paste(otbBinPath,"/",sep="")
+    prefix <- paste(otbBinPath,"/",sep="")
   }
   
   cmd_1<-paste(prefix,"otbcli_MeanShiftSmoothing",
@@ -1072,7 +1072,7 @@ segmentation_OTB_LSMS <- function(x, inputRstPath, outputSegmRst=NULL,
   cmd_2<-paste(prefix,"otbcli_LSMSSegmentation",
               " -in ",tmp_FilteredRange,
               " -inpos ",tmp_FilteredSpatial,
-              " -out  ",tmp_Segmentation," uint32",
+              " -out ",tmp_Segmentation," uint32",
               " -ranger ",x[1],
               " -spatialr ",x[2],
               " -minsize 0",

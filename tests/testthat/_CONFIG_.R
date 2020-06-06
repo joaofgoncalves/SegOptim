@@ -16,7 +16,7 @@ if(USER_NAME=="JG" && OS=="windows-10"){
 
 	# Orfeo ToolBox (OTB)
 	#OTB_BIN_PATH <- "C:/OTB/bin"
-	OTB_BIN_PATH <- "C:/OTB710/bin"
+	OTB_BIN_PATH <- "C:/OTB/OTB_661/bin"
 	
 	# RSGISLib via Anaconda / Python 3.5
 	RSGISLIB_PYTHON_PATH <- "C:/Anaconda3/envs/py35"

@@ -107,8 +107,7 @@ test_that("Test file and directory removal with doCleanUpActions",{
 test_that("Test calculate segments stats (calculateSegmentStats)",{
   
   #source("_CONFIG_.R")
-  
-  #rstSegm  <- simRasterSegments()
+
   rstSegm <- raster::raster(nrow=100, ncol=100, crs=NA, res=1, 
                             xmn=0, xmx=100, ymn=0, ymx=100)
   values(rstSegm) <- sample(1:500, 10000, replace=TRUE)
@@ -127,7 +126,6 @@ test_that("Test calculate segments stats (calculateSegmentStats) - user defined 
   
   #source("_CONFIG_.R")
   
-  #rstSegm  <- simRasterSegments()
   rstSegm <- raster::raster(nrow=100, ncol=100, crs=NA, res=1, 
                             xmn=0, xmx=100, ymn=0, ymx=100)
   values(rstSegm) <- sample(1:500, 10000, replace=TRUE)
@@ -147,7 +145,6 @@ test_that("Test calculateSegmentStats - generate error passing a data.frame!",{
   
   #source("_CONFIG_.R")
   
-  #rstSegm  <- simRasterSegments()
   rstSegm <- raster::raster(nrow=100, ncol=100, crs=NA, res=1, 
                             xmn=0, xmx=100, ymn=0, ymx=100)
   values(rstSegm) <- sample(1:500, 10000, replace=TRUE)
@@ -167,7 +164,7 @@ test_that("Test calculateSegmentStats - generate error passing a data.frame!",{
 test_that("Test getTrainData function",{
   
   
-  rstSegm <- simRasterSegments()
+  rstSegm <- simRasterSegments2()
   rstTrain <- simRasterTrain(probs = c(0.4,0.4,0.2))
   
   # par(mfrow=c(1,2))

@@ -2,7 +2,7 @@
 % Please edit documentation in R/SOptim_RasterOutputs.R
 \name{getTrainRasterSegments}
 \alias{getTrainRasterSegments}
-\title{Generate a raster dataset with train segments}
+\title{Generate a raster data set with train segments}
 \usage{
 getTrainRasterSegments(
   trainData,

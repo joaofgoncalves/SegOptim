@@ -96,7 +96,7 @@ simRasterSegments <- function(nr = 100, nc = 100, nClasses = 5, p = 0.3,
       rstClumps <- rstClumps + rstTmp
       rss <- raster::maxValue(rstTmp) # Offsets the value of each new segment
     }else{
-      rstTmp <- raster::clump(rstSegm == i, directions = clumpDirs)
+      rstTmp <- raster::clump(rstSegm == i, directions = directions)
       rss <- rss + raster::maxValue(rstTmp)
       rstTmp <- rstTmp + rss
       rstTmp[is.na(rstTmp)] <- 0

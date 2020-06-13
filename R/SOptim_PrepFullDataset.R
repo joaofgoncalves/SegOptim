@@ -50,8 +50,11 @@ prepareCalData <- function(rstSegm, trainData, rstFeatures, thresh = 0.5,
   if(inherits(rstSegm,"SOptim.SegmentationResult"))
     rstSegm <- raster(rstSegm$segm)
   
-  calibrationDF <- try(getTrainData(x = trainData, rstSegm = rstSegm, useThresh = TRUE, 
-                                    thresh = thresh, minImgSegm = minImgSegm))
+  calibrationDF <- try(getTrainData(x         = trainData, 
+                                    rstSegm   = rstSegm, 
+                                    useThresh = TRUE, 
+                                    thresh    = thresh, 
+                                    minImgSegm = minImgSegm))
   
   if(inherits(calibrationDF,"try-error") || is.na(calibrationDF)){ # A NA is passed to calibrationDF if the number of segments is low (< minNumImgSegm)!
     warning("An error occurred while generating train data! Check segmentation parameter ranges? Perhaps input train data?")
@@ -67,8 +70,11 @@ prepareCalData <- function(rstSegm, trainData, rstFeatures, thresh = 0.5,
   #
   if(verbose) cat("-> [2/3] Calculating feature statistics for all image segments...\n")
   
-  classificationFeaturesDF <- try(calculateSegmentStats(rstFeatures = rstFeatures, rstSegm = rstSegm, 
-                                                        funs = funs, na.rm = TRUE, bylayer = bylayer, 
+  classificationFeaturesDF <- try(calculateSegmentStats(rstFeatures = rstFeatures, 
+                                                        rstSegm     = rstSegm, 
+                                                        funs        = funs, 
+                                                        na.rm       = TRUE, 
+                                                        bylayer     = bylayer, 
                                                         progressBar = progressBar))
   
   if(inherits(classificationFeaturesDF,"try-error")){

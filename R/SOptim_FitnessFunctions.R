@@ -158,7 +158,10 @@ fitFuncGeneric <- function(x,
   #
   if(verbose) cat("-> Loading train data into new image segments...\n")
   
-  calibrationDF <- try(getTrainData(x = trainData, rstSegm = rstSegm, thresh = trainThresh, minImgSegm = minImgSegm))
+  calibrationDF <- try(getTrainData(x          = trainData, 
+                                    rstSegm    = rstSegm, 
+                                    thresh     = trainThresh, 
+                                    minImgSegm = minImgSegm))
  
   if(inherits(calibrationDF,"try-error") || is.na(calibrationDF)){ # A NA is passed to calibrationDF if the number of segments is low (< minNumImgSegm)!
     warning("An error occurred while generating train data! Check segmentation parameter ranges? Perhaps input train data?")
@@ -180,8 +183,12 @@ fitFuncGeneric <- function(x,
   # featDF<-try(calculateSegmentStats(rstFeatures=rstFeatures, rstSegm=rstSegm, 
   #                                   funs=segmStatsFuns, na.rm=TRUE, subset=unique(calibrationDF$SID)))
   
-  featDF <- try(calculateSegmentStats(rstFeatures=rstFeatures, rstSegm=rstSegm, 
-                                     funs=segmStatsFuns, na.rm=TRUE, bylayer=bylayer))
+  featDF <- try(calculateSegmentStats(rstFeatures = rstFeatures, 
+                                      rstSegm     = rstSegm, 
+                                      funs        = segmStatsFuns, 
+                                      na.rm       = TRUE, 
+                                      bylayer     = bylayer,
+                                      subset      = unique(calibrationDF$SID)))
   
   if(inherits(featDF,"try-error")){
     warning("An error occurred while calculating segmentation statistics for feature data!")

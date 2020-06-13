@@ -9,7 +9,8 @@ checkPrintSegmentationParams(x, segmentMethod, rnd = 5, print = TRUE)
 \arguments{
 \item{x}{A character vector containing parameter names.}
 
-\item{segmentMethod}{The name of the segmentation method. Check available options on \code{\link{segmentationGeneric}}.}
+\item{segmentMethod}{The name of the segmentation method. Check available options on 
+\code{\link{segmentationGeneric}}.}
 
 \item{rnd}{An integer defining the number of decimal plates.}
 
@@ -19,11 +20,12 @@ checkPrintSegmentationParams(x, segmentMethod, rnd = 5, print = TRUE)
 Prints a message with the segmentation parameters (returns NULL).
 }
 \description{
-An useful function to verify the name of segmentation parameters to be optimized and to print them during 
-GA optimization.
+An useful function to verify the name of segmentation parameters to be optimized and 
+to print them during GA optimization.
 }
 \examples{
-checkPrintSegmentationParams(x = c(0.1, 5), segmentMethod = "GRASS_RG", rnd = 5, print = TRUE)
+checkPrintSegmentationParams(x = c(0.1, 5), segmentMethod = "GRASS_RG", 
+                             rnd = 5, print = TRUE)
  
 
 }

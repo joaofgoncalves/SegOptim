@@ -26,29 +26,33 @@ an integer vector (containing raster data after using \code{\link[raster]{values
 or a character string with a path to the raster layer. If x is an integer vector then it should 
 have a length equal to the number of pixels in \code{rstSegm}.}
 
-\item{rstFeatures}{A string defining the path to the raster features or a \code{rasterStack} object.}
+\item{rstFeatures}{A string defining the path to the raster features or a 
+\code{rasterStack} object.}
 
-\item{thresh}{A threshold value defining the minimum proportion of the segment ]0, 1] that must be covered 
-by a certain class to be considered as a training case. This threshold will only apply if \code{x} is a \code{RasterLayer} 
-which means you are using train areas/pixels. 
-If you are running a \emph{"single-class"} problem then this threshold only applies to the class of interest (coded as 1's). 
-Considering this, if a given segment has a proportion cover of that class higher than \code{thresh} then it is 
-considered a train case. In contrast, for the background class (coded as 0's), only segments/objects 
-totaly covered by that class are considered as train cases.      
-If you are running a \emph{"multi-class"} problem then \code{thresh} is applied differently. First, the train class is 
-determined by a majority rule then if that class covers more than the value specified in \code{thresh} this case is 
-kept in train data otherwise it will be filtered out. See also \code{useThresh}.}
+\item{thresh}{A threshold value defining the minimum proportion of the segment ]0, 1] that 
+must be covered by a certain class to be considered as a training case. This threshold will 
+only apply if \code{x} is a \code{RasterLayer} which means you are using train areas/pixels. 
+If you are running a \emph{"single-class"} problem then this threshold only applies to the 
+class of interest (coded as 1's). Considering this, if a given segment has a proportion cover 
+of that class higher than \code{thresh} then it is considered a train case. In contrast, for 
+the background class (coded as 0's), only segments/objects totaly covered by that class are 
+considered as train cases.      
+If you are running a \emph{"multi-class"} problem then \code{thresh} is applied differently. 
+First, the train class is determined by a majority rule then if that class covers more than 
+the value specified in \code{thresh} this case is kept in train data otherwise it will be 
+filtered out. See also \code{useThresh}.}
 
-\item{funs}{A character vector with the name(s) of the functions used to aggregate data.}
+\item{funs}{A character vector with the name(s) of the functions used to aggregate 
+data (default: \code{c("mean", "sd")}).}
 
 \item{minImgSegm}{Minimum number of image segments/objects necessary to generate train data.}
 
-\item{bylayer}{Calculate statistics layer by layer instead of all at once? (slightly increases 
-computation time but spares memory load)}
+\item{bylayer}{Calculate statistics layer by layer instead of all at once? (slightly 
+increases computation time but spares memory load; default: FALSE).}
 
 \item{verbose}{Print progress messages? (default: TRUE)}
 
-\item{progressBar}{Boolean. Show progress bar? (default: FALSE)}
+\item{progressBar}{Boolean. Show progress bar? (default: FALSE).}
 }
 \value{
 An object of class \emph{\strong{\code{SOptim.CalData}}} containing two elements:    

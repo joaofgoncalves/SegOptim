@@ -83,8 +83,8 @@ kept in train data otherwise it will be filtered out. See also \code{useThresh}.
 \item{segmStatsFuns}{An aggregation function (e.g., \code{mean}) applied to the elements within each segment. 
 Either a function object or a function name.}
 
-\item{bylayer}{Calculate statistics layer by layer instead of all at once? (slightly increases 
-computation time but spares memory load)}
+\item{bylayer}{Calculate statistics layer by layer instead of all at once? (slightly 
+increases computation time but spares memory load; default: FALSE).}
 
 \item{classificationMethod}{An input string defining the classification algorithm to be used. Available options are: 
 \code{"RF"} (random forests), \code{"GBM"} (generalized boosted models), \code{"SVM"} (support vector machines), \code{"KNN"} 

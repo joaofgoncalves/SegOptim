@@ -10,13 +10,15 @@ NRV.omit(x)
 \item{x}{Either a vector, matrix or data frame.}
 }
 \value{
-Returns the original object without \code{NA} values. An attribute named \code{"na.action"} is returned 
-as a list containing the original indices that were removed.
+Returns the original object without \code{NA} values. An attribute named 
+\code{"na.action"} is returned as a list containing the original indices that were 
+removed.
 }
 \description{
-An useful function to remove NA values for vector, matrices or data frames. By default removes all NA values 
-in each column of a matrix or data frame.
+An useful function to remove NA values for vector, matrices or data frames. By default 
+removes all NA values in each column of a matrix or data frame.
 }
 \details{
-This function was adapted from IDPmisc package (URL: \url{https://github.com/cran/IDPmisc/blob/master/R/NaRV.omit.R}).
+This function was adapted from IDPmisc package 
+(URL: \url{https://github.com/cran/IDPmisc/blob/master/R/NaRV.omit.R}).
 }

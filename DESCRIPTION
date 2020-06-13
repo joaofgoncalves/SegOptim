@@ -18,8 +18,9 @@ License: GPL-3
 Encoding: UTF-8
 URL: https://bitbucket.org/joao_goncalves/segoptim
 Depends: R (>= 3.5.0)
-Imports: caret,cclust,cluster,class,clusterCrit,doRNG,dplyr,data.table,e1071,foreach,GA,gbm,magrittr,mda,methods,
-    randomForest,raster,parallel,rgdal,ROCR,sf,stats,tools,unbalanced,utils,NLMR
+Imports: caret,cclust,cluster,class,clusterCrit,dplyr,data.table,e1071,GA,gbm,magrittr,
+    mda,methods,randomForest,raster,rgdal,ROCR,stats,tools,unbalanced,dtplyr,doRNG,foreach,
+    parallel,NLMR,sf,utils,rlang
 RoxygenNote: 7.1.0
 Suggests: 
     testthat

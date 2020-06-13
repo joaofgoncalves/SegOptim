@@ -24,34 +24,39 @@ an integer vector (containing raster data after using \code{\link[raster]{values
 character string with a path to a raster layer. If trainData is an integer vector then it should 
 have a length equal to the number of pixels in rstSegm.}
 
-\item{rstSegm}{A path or a rasterLayer object containing the outputs of a segmentation algorithm with each object/segment 
-identified by an integer index.}
+\item{rstSegm}{A path or a rasterLayer object containing the outputs of a segmentation algorithm 
+with each object/segment identified by an integer index.}
 
 \item{filename}{A filename/path used to write the output raster (default: NULL)}
 
-\item{useThresh}{Use threshold to filter training data for multi-class? (default: TRUE; not used for points).}
+\item{useThresh}{Use threshold to filter training data for multi-class? (default: TRUE; not 
+used for points).}
 
-\item{thresh}{A threshold value defining the minimum proportion of the segment ]0, 1] that must be covered 
-by a certain class to be considered as a training case. This threshold will only apply if \code{x} is a \code{RasterLayer} 
-which means you are using train areas/pixels. 
-If you are running a \emph{"single-class"} problem then this threshold only applies to the class of interest (coded as 1's). 
-Considering this, if a given segment has a proportion cover of that class higher than \code{thresh} then it is 
-considered a train case. In contrast, for the background class (coded as 0's), only segments/objects 
-totaly covered by that class are considered as train cases.      
-If you are running a \emph{"multi-class"} problem then \code{thresh} is applied differently. First, the train class is 
-determined by a majority rule then if that class covers more than the value specified in \code{thresh} this case is 
-kept in train data otherwise it will be filtered out. See also \code{useThresh}.}
+\item{thresh}{A threshold value defining the minimum proportion of the segment ]0, 1] that 
+must be covered by a certain class to be considered as a training case. This threshold will 
+only apply if \code{x} is a \code{RasterLayer} which means you are using train areas/pixels. 
+If you are running a \emph{"single-class"} problem then this threshold only applies to the 
+class of interest (coded as 1's). Considering this, if a given segment has a proportion cover 
+of that class higher than \code{thresh} then it is considered a train case. In contrast, for 
+the background class (coded as 0's), only segments/objects totaly covered by that class are 
+considered as train cases.      
+If you are running a \emph{"multi-class"} problem then \code{thresh} is applied differently. 
+First, the train class is determined by a majority rule then if that class covers more than 
+the value specified in \code{thresh} this case is kept in train data otherwise it will be 
+filtered out. See also \code{useThresh}.}
 
-\item{na.rm}{Remove NA's? (default: TRUE). Within the function, NA's in x are recoded as -1 so that percentage cover of each 
-segment are calculated also considering background (null or NoData values).}
+\item{na.rm}{Remove NA's? (default: TRUE). Only used if \code{x} is a 
+\code{SpatialPointsDataFrame} object.}
 
-\item{dup.rm}{Remove duplicate values (default: TRUE; see details).}
+\item{dup.rm}{Remove duplicate values? (default: TRUE; see details). Only used if \code{x} is a 
+\code{SpatialPointsDataFrame} object.}
 
 \item{minImgSegm}{Minimum number of image segments/objects necessary to generate train data.}
 
-\item{ignore}{If set to TRUE then train data may contain one single class. This is useful in cases where sample units 
-contain only positive or negative train cases. Also applies if the threshold value is employed. 
-In this case if no positive cases are generated then negatives will be returned (default: FALSE).}
+\item{ignore}{If set to TRUE then train data may contain one single class. This is useful in cases 
+where sample units contain only positive or negative train cases. Also applies if the threshold value 
+is employed. In this case if no positive cases are generated then negatives will be returned 
+(default: FALSE).}
 
 \item{verbose}{Print comments with function progress? (default: TRUE)}
 

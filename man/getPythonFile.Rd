@@ -17,8 +17,8 @@ getPythonFile(pyScriptName, pkgName, altLocs)
 If the py script is found in any location it returns the complete path.
 }
 \description{
-Finds the path to python scripts used to perform image segmentation in ArcGIS or RSGISLib based on 
-the package location or other user-defined places.
+Finds the path to python scripts used to perform image segmentation in ArcGIS or 
+RSGISLib based on the package location or other user-defined places.
 }
 \note{
 The \code{altLocs} parameter is used to input development paths.

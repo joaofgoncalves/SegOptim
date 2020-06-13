@@ -14,8 +14,8 @@ doCleanUpActions(x, recursive = TRUE, silent = TRUE)
 \item{silent}{Boolean. Should errors should be printed?}
 }
 \description{
-Remove temporary files or directories. Useful for cleaning files that result from image segmentation procedures 
-during optimization.
+Remove temporary files or directories. Useful for cleaning files that result from image 
+segmentation procedures during optimization.
 }
 \details{
 By default the \code{force} parameter in \code{\link[base]{unlink}} function 

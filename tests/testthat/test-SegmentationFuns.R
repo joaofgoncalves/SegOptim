@@ -139,31 +139,31 @@ test_that("Test if TerraLib/Baatz segmentation is performed correctly",{
 
 ## GRASS mean-region growing image segmentation test ----
 
-test_that("Test if GRASS segmentation is performed correctly",{
-
-  source("_CONFIG_.R")
-
-  skip_if(!(file.exists(paste(GRASS_BIN_PATH,".bat",sep="")) ||
-              file.exists(GRASS_BIN_PATH)), "Cannot find GRASS executable file")
-  #skip_if(!file.exists(), "Cannot find input data")
-
-  segObj <- segmentation_GRASS_RG(GRASS.path = GRASS_BIN_PATH,
-                                  GRASS.inputRstName=S1_SEGM_FEAT_GRASS_PATH,
-                                  GRASS.GISDBASE=GRASS_GISDBASE_PATH,
-                                  GRASS.LOCATION_NAME=GRASS_LOCATION_NAME,
-                                  GRASS.MAPSET="PERMANENT",
-                                  outputSegmRst="test-segm-GRASS.tif",
-                                  Threshold=0.45, MinSize=50, memory=2046,
-                                  iterations=30,verbose=FALSE)
-
-  expect_true(file.exists("test-segm-GRASS.tif"))
-  expect_is(segObj,"SOptim.SegmentationResult")
-  expect_equal(segObj$segm, "test-segm-GRASS.tif")
-  expect_is(raster(segObj$segm), "RasterLayer")
-
-  doCleanUpActions(unlist(segObj))
-  }
-)
+# test_that("Test if GRASS segmentation is performed correctly",{
+# 
+#   source("_CONFIG_.R")
+# 
+#   skip_if(!(file.exists(paste(GRASS_BIN_PATH,".bat",sep="")) ||
+#               file.exists(GRASS_BIN_PATH)), "Cannot find GRASS executable file")
+#   #skip_if(!file.exists(), "Cannot find input data")
+# 
+#   segObj <- segmentation_GRASS_RG(GRASS.path = GRASS_BIN_PATH,
+#                                   GRASS.inputRstName=S1_SEGM_FEAT_GRASS_PATH,
+#                                   GRASS.GISDBASE=GRASS_GISDBASE_PATH,
+#                                   GRASS.LOCATION_NAME=GRASS_LOCATION_NAME,
+#                                   GRASS.MAPSET="PERMANENT",
+#                                   outputSegmRst="test-segm-GRASS.tif",
+#                                   Threshold=0.45, MinSize=50, memory=2046,
+#                                   iterations=30,verbose=FALSE)
+# 
+#   expect_true(file.exists("test-segm-GRASS.tif"))
+#   expect_is(segObj,"SOptim.SegmentationResult")
+#   expect_equal(segObj$segm, "test-segm-GRASS.tif")
+#   expect_is(raster(segObj$segm), "RasterLayer")
+# 
+#   doCleanUpActions(unlist(segObj))
+#   }
+# )
 
 
 ## RSGISLib Shepherd image segmentation test ----

@@ -3,6 +3,8 @@ context("Test zonal analysis and segment statistics functions")
 
 library(SegOptim)
 library(raster)
+library(dplyr)
+library(dtplyr)
 
 
 test_that("Zonal analysis for matrices (zonalDT)",{

@@ -3,12 +3,16 @@
 
 ![SegOptim logo](./man/figures/logo.png)
 
+<!-- badges: start -->
+[![R build status](https://github.com/joaofgoncalves/SegOptim/workflows/R-CMD-check/badge.svg)](https://github.com/joaofgoncalves/SegOptim/actions) [![codecov](https://codecov.io/gh/joaofgoncalves/SegOptim/branch/master/graph/badge.svg)](https://codecov.io/gh/joaofgoncalves/SegOptim)
+<!-- badges: end -->
+
 --------------------------------------------------------------------------------------
 
 ## Package description 
 
 _SegOptim_ is a R package for performing object-based image analysis (OBIA). It 
-allows to run, compare and optimize multiple image segmentation algorithms in the 
+allows to run, compare and optimize multiple image segmentation algorithms in a 
 context of supervised classification. 
 It also allows to perform unsupervised classification with several different methods and to 
 compare them through internal clustering metrics.
@@ -18,7 +22,7 @@ It's really simple to install! Just run the following line of R code:
 
 ```R
 
-remotes::install_bitbucket("joao_goncalves/segoptim")
+remotes::install_github("joaofgoncalves/SegOptim")
 
 ```
 

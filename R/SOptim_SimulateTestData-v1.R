@@ -156,3 +156,77 @@ simRasterFeatures <- function(nr = 100, nc = 100, nlyrs = 5,
 
 
 
+#' Simulate raster segments (faster version)
+#' 
+#' Uses simulated data for n classes, performs modal smoothing and then 
+#' checks for raster clumps similar to segments
+#' 
+#' @param nr Number of rows for the simulated \code{RasterLayer} (default: 100).
+#' 
+#' @param nc Number of columns for the simulated \code{RasterLayer} (default: 100).
+#' 
+#' @param nClasses Number of classes to simulate (default: 4). Larger numbers will 
+#' tend to generate more segments.
+#' 
+#' @param winSize Window size for performing the focal operation using the modal function 
+#' (higher values will generate less segments; default: 3)
+#' 
+#' @inheritParams raster::clump
+#' 
+#' @return 
+#' A simulated \code{RasterLayer} with segments.
+#' 
+#' @importFrom raster raster
+#' @importFrom raster values
+#' @importFrom raster clump
+#' @importFrom raster focal
+#' @importFrom raster modal
+#' 
+#' @export
+#' 
+
+simRasterSegments2 <- function(nr = 100, nc = 100, nClasses = 4, 
+                               winSize = 3, directions = 8){
+  
+  
+  rst <- raster::raster(nrow = nr, ncol = nc, crs = NA, res = 1, 
+                        xmn = 0, xmx = nc, ymn = 0, ymx = nr)
+  
+  raster::values(rst) <- sample(1:nClasses, ncell(rst), replace=TRUE)
+  
+  rstModal <- raster::focal(rst, w = matrix(1,winSize,winSize), 
+                            fun = raster::modal)   
+  
+  # Create raster clumps for each class to obtain "segments"
+  rstClumps <- raster::raster(nrow = nr, ncol = nc, crs = NA, 
+                              res = 1, xmn = 0, xmx = nc, ymn = 0, 
+                              ymx = nr)
+  
+  raster::values(rstClumps) <- 0
+  
+  # Check clumps for each class after binarizing each class raster
+  for(i in 1:nClasses){
+    
+    if(i==1){
+      rstTmp <- raster::clump(rstModal == i, directions = directions)
+      rstTmp[is.na(rstTmp)] <- 0
+      rstClumps <- rstClumps + rstTmp
+      rss <- raster::maxValue(rstTmp) # Offsets the value of each new segment
+    }else{
+      rstTmp <- raster::clump(rstModal == i, directions = directions)
+      rss <- rss + raster::maxValue(rstTmp)
+      rstTmp <- rstTmp + rss
+      rstTmp[is.na(rstTmp)] <- 0
+      rstClumps <- rstClumps + rstTmp 
+      
+    }
+  }
+  
+  #print(rstClumps)
+  #plot(rstClumps)
+  return(rstClumps)
+}
+
+
+
+

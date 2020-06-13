@@ -382,10 +382,12 @@ segmentation_GRASS_RG <- function(x, GRASS.path="grass", GRASS.inputRstName, GRA
   # Change the command according to the OS used to set the GRASS_BATCH_JOB variable
   setWord <- ifelse(.Platform$OS.type == "windows", "set", "export")
   
+  # Define the second script file for running the GRASS_BATCH_JOB 
   cat(prefix,
       setWord," GRASS_BATCH_JOB=",tmpFile.batchJob,"\n\n",
-      GRASS.path," ",GRASSinitPath," -text",
-        sep="",file=tmpFile.batchRun)
+      "\"",GRASS.path,"\" ",GRASSinitPath," -text",
+      sep = "", 
+      file = tmpFile.batchRun)
   
   if(verbose) checkPrintSegmentationParams(x,segmentMethod="GRASS_RG")
 
@@ -502,22 +504,22 @@ segmentation_ArcGIS_MShift <- function(x, inputRstPath, outputSegmRst=NULL,
   
   
   if(is.null(pythonPath)){
-    prefix=""
+    prefix <- ""
   }else{
-    prefix=paste(pythonPath,"/",sep="")
+    prefix <- paste(pythonPath,"/",sep="")
   }
 
   # Check if an output file was defined otherwise use a temporary
   if(!is.null(outputSegmRst)){
-    tmpDirScratch <- dirname(outputSegmRst)
+    tmpDirScratch     <- dirname(outputSegmRst)
     tmpFileSegmOutRst <- basename(outputSegmRst)
   }else{
-    tmpDirScratch <- repBSlash(tempfile("",getwd()))
+    tmpDirScratch     <- repBSlash(tempfile("",getwd()))
     tmpFileSegmOutRst <- gsub("\\\\","",tempfile("ArcGIS_SegmIdx_","",".tif"))
   }
 
   # Get the python script used to perform ArcGIS Mean-shift segmentation algorithm
-  PyScriptPath<-getPythonFile("ArcGIS_MShift.py",
+  PyScriptPath <- getPythonFile("ArcGIS_MShift.py",
                               "SegOptim",
                               c("D:/MyDocs/R-dev",getwd()))
 
@@ -526,7 +528,7 @@ segmentation_ArcGIS_MShift <- function(x, inputRstPath, outputSegmRst=NULL,
   }
     
   # Assemble command string to run
-  cmd<-paste(prefix,
+  cmd <- paste(prefix,
              "python \"",PyScriptPath,"\" ",
              tmpDirScratch," ",
              "\"",inputRstPath,"\" ",
@@ -537,12 +539,12 @@ segmentation_ArcGIS_MShift <- function(x, inputRstPath, outputSegmRst=NULL,
              sep="")
   
   #if(verbose) cat(cmd,"\n\n")
-  if(verbose) checkPrintSegmentationParams(x,segmentMethod="ArcGIS_MShift")
+  if(verbose) checkPrintSegmentationParams(x, segmentMethod = "ArcGIS_MShift")
   
   ## Run python script for ArcGIS Mean-shift image segmentation from the command line
-  sysOut<-try(system(cmd,ignore.stdout = TRUE, ignore.stderr = TRUE, show.output.on.console = FALSE))
+  sysOut <- try(system(cmd,ignore.stdout = TRUE, ignore.stderr = TRUE, show.output.on.console = FALSE))
   
-  if(sysOut!=0){
+  if(sysOut != 0){
     on.exit(doCleanUpActions(tmpDirScratch))
     warning("Unable to perform segmentaton with function segmentation_ArcGIS_MShift!")
     return(NA)
@@ -1025,33 +1027,36 @@ segmentation_OTB_LSMS <- function(x, inputRstPath, outputSegmRst=NULL,
     }
   }
   
+  # Generate a random file suffix
+  rndFileStr <- randString(6)
+  
   if(is.null(outputSegmRst)){
     # Output segmentation raster file
-    tmpDir<-getwd()
+    tempDir <- getwd()
     
     # Make temp files path
-    tmp_FilteredRange<-repBSlash(paste(tmpDir,"/otb_filt_range_",randString(6),".tif",sep=""))
-    tmp_FilteredSpatial<-repBSlash(paste(tmpDir,"/otb_filt_spatial_",randString(6),".tif",sep=""))
-    tmp_Segmentation<-repBSlash(paste(tmpDir,"/otb_segm_init_",randString(6),".tif",sep=""))
-    tmp_SegmentationMerged<-repBSlash(paste(tmpDir,"/otb_segm_merge_",randString(6),".tif",sep=""))
+    tmp_FilteredRange <- repBSlash(paste(tempDir,"/otb_filt_range_",rndFileStr,".tif",sep=""))
+    tmp_FilteredSpatial <- repBSlash(paste(tempDir,"/otb_filt_spatial_",rndFileStr,".tif",sep=""))
+    tmp_Segmentation <- repBSlash(paste(tempDir,"/otb_segm_init_",rndFileStr,".tif",sep=""))
+    tmp_SegmentationMerged <- repBSlash(paste(tempDir,"/otb_segm_merge_",rndFileStr,".tif",sep=""))
     
   }else{
     # Output segmentation raster file
-    tmpDir<-dirname(outputSegmRst)
+    tempDir <- dirname(outputSegmRst)
     
     # Make temp files path
-    tmp_FilteredRange <- repBSlash(paste(tmpDir,"/otb_filt_range_",randString(6),".tif",sep=""))
-    tmp_FilteredSpatial <- repBSlash(paste(tmpDir,"/otb_filt_spatial_",randString(6),".tif",sep=""))
-    tmp_Segmentation <- repBSlash(paste(tmpDir,"/otb_segm_init_",randString(6),".tif",sep=""))
+    tmp_FilteredRange <- repBSlash(paste(tempDir,"/otb_filt_range_",rndFileStr,".tif",sep=""))
+    tmp_FilteredSpatial <- repBSlash(paste(tempDir,"/otb_filt_spatial_",rndFileStr,".tif",sep=""))
+    tmp_Segmentation <- repBSlash(paste(tempDir,"/otb_segm_init_",rndFileStr,".tif",sep=""))
     tmp_SegmentationMerged <- outputSegmRst
     
   }
   
   # Use OTB binary path?
   if(is.null(otbBinPath)){
-    prefix=""
+    prefix <- ""
   }else{
-    prefix=paste(otbBinPath,"/",sep="")
+    prefix <- paste(otbBinPath,"/",sep="")
   }
   
   cmd_1<-paste(prefix,"otbcli_MeanShiftSmoothing",
@@ -1067,7 +1072,7 @@ segmentation_OTB_LSMS <- function(x, inputRstPath, outputSegmRst=NULL,
   cmd_2<-paste(prefix,"otbcli_LSMSSegmentation",
               " -in ",tmp_FilteredRange,
               " -inpos ",tmp_FilteredSpatial,
-              " -out  ",tmp_Segmentation," uint32",
+              " -out ",tmp_Segmentation," uint32",
               " -ranger ",x[1],
               " -spatialr ",x[2],
               " -minsize 0",
@@ -1105,22 +1110,29 @@ segmentation_OTB_LSMS <- function(x, inputRstPath, outputSegmRst=NULL,
   if(!inherits(sysOut_1,"try-error") && 
      !inherits(sysOut_2,"try-error") && 
      !inherits(sysOut_2,"try-error")){
+    
     out <- list(
-        FilteredRange = tmp_FilteredRange,
-        FilteredSpatial = tmp_FilteredSpatial,
-        Segmentation = tmp_Segmentation,
-        segm = tmp_SegmentationMerged)
+      FilteredRange     = tmp_FilteredRange,
+      FilteredSpatial   = tmp_FilteredSpatial,
+      Segmentation      = tmp_Segmentation,
+      SegmentationFinal = repBSlash(paste(tempDir,"/",list.files(pattern=paste("_init_",rndFileStr,"_",sep="")),sep="")),
+      segm              = tmp_SegmentationMerged
+    )
     
     class(out) <- "SOptim.SegmentationResult"
     return(out)
   }
   else{
-    on.exit(doCleanUpActions(c(
-      FilteredRange = tmp_FilteredRange,
-      FilteredSpatial = tmp_FilteredSpatial,
-      Segmentation = tmp_Segmentation,
-      segm = tmp_SegmentationMerged
-    )))
+    
+    filesToClean <- c(
+      FilteredRange     = tmp_FilteredRange,
+      FilteredSpatial   = tmp_FilteredSpatial,
+      Segmentation      = tmp_Segmentation,
+      SegmentationFinal = repBSlash(paste(tempDir,"/",list.files(pattern=paste("_init_",rndFileStr,"_",sep="")),sep="")),
+      segm              = tmp_SegmentationMerged
+    )
+    on.exit(doCleanUpActions(filesToClean))
+    
     warning("Unable to perform segmentaton with method OTB_LSMS!")
     return(NA)
   }
@@ -1233,24 +1245,27 @@ segmentation_OTB_LSMS2 <- function(x, inputRstPath, outputSegmRst = NULL,
     }
   }
   
+  # Generate a random file suffix
+  rndFileStr <- randString(6)
+  
   if(is.null(outputSegmRst)){
     # Output segmentation raster file
-    tmpDir <- getwd()
+    tempDir <- getwd()
     
     # Make temp files path
-    tmp_FilteredRange <- repBSlash(paste(tmpDir,"/otb_filt_range_",randString(6),".tif",sep=""))
-    tmp_FilteredSpatial <- repBSlash(paste(tmpDir,"/otb_filt_spatial_",randString(6),".tif",sep=""))
-    tmp_Segmentation <- repBSlash(paste(tmpDir,"/otb_segm_init_",randString(6),".tif",sep=""))
-    tmp_SegmentationMerged <- repBSlash(paste(tmpDir,"/otb_segm_merge_",randString(6),".tif",sep=""))
+    tmp_FilteredRange <- repBSlash(paste(tempDir,"/otb_filt_range_",rndFileStr,".tif",sep=""))
+    tmp_FilteredSpatial <- repBSlash(paste(tempDir,"/otb_filt_spatial_",rndFileStr,".tif",sep=""))
+    tmp_Segmentation <- repBSlash(paste(tempDir,"/otb_segm_init_",rndFileStr,".tif",sep=""))
+    tmp_SegmentationMerged <- repBSlash(paste(tempDir,"/otb_segm_merge_",rndFileStr,".tif",sep=""))
     
   }else{
     # Output segmentation raster file
-    tmpDir <- dirname(outputSegmRst)
+    tempDir <- dirname(outputSegmRst)
     
     # Make temp files path
-    tmp_FilteredRange <- repBSlash(paste(tmpDir,"/otb_filt_range_",randString(6),".tif",sep=""))
-    tmp_FilteredSpatial <- repBSlash(paste(tmpDir,"/otb_filt_spatial_",randString(6),".tif",sep=""))
-    tmp_Segmentation <- repBSlash(paste(tmpDir,"/otb_segm_init_",randString(6),".tif",sep=""))
+    tmp_FilteredRange <- repBSlash(paste(tempDir,"/otb_filt_range_",rndFileStr,".tif",sep=""))
+    tmp_FilteredSpatial <- repBSlash(paste(tempDir,"/otb_filt_spatial_",rndFileStr,".tif",sep=""))
+    tmp_Segmentation <- repBSlash(paste(tempDir,"/otb_segm_init_",rndFileStr,".tif",sep=""))
     tmp_SegmentationMerged <- outputSegmRst
     
   }
@@ -1292,7 +1307,7 @@ segmentation_OTB_LSMS2 <- function(x, inputRstPath, outputSegmRst = NULL,
                " -ram ",RAM, sep="")
   
   
-  if(verbose) checkPrintSegmentationParams(x,segmentMethod="OTB_LSMS")
+  if(verbose) checkPrintSegmentationParams(x,segmentMethod="OTB_LSMS2")
   
   ## Run command lines #1 - Mean shift ... #2 LSMS Segmentation ... #3 Region merging
   if(.Platform$OS.type=="windows"){
@@ -1313,22 +1328,29 @@ segmentation_OTB_LSMS2 <- function(x, inputRstPath, outputSegmRst = NULL,
   if(!inherits(sysOut_1,"try-error") && 
      !inherits(sysOut_2,"try-error") && 
      !inherits(sysOut_2,"try-error")){
+    
     out <- list(
-      FilteredRange = tmp_FilteredRange,
-      FilteredSpatial = tmp_FilteredSpatial,
-      Segmentation = tmp_Segmentation,
-      segm = tmp_SegmentationMerged)
+      FilteredRange     = tmp_FilteredRange,
+      FilteredSpatial   = tmp_FilteredSpatial,
+      Segmentation      = tmp_Segmentation,
+      SegmentationFinal = repBSlash(paste(tempDir,"/",list.files(pattern=paste("_init_",rndFileStr,"_",sep="")),sep="")),
+      segm              = tmp_SegmentationMerged
+      )
     
     class(out) <- "SOptim.SegmentationResult"
     return(out)
   }
   else{
-    on.exit(doCleanUpActions(c(
-      FilteredRange = tmp_FilteredRange,
-      FilteredSpatial = tmp_FilteredSpatial,
-      Segmentation = tmp_Segmentation,
-      segm = tmp_SegmentationMerged
-    )))
+    
+    filesToClean <- c(
+      FilteredRange     = tmp_FilteredRange,
+      FilteredSpatial   = tmp_FilteredSpatial,
+      Segmentation      = tmp_Segmentation,
+      SegmentationFinal = repBSlash(paste(tempDir,"/",list.files(pattern=paste("_init_",rndFileStr,"_",sep="")),sep="")),
+      segm              = tmp_SegmentationMerged
+    )
+    on.exit(doCleanUpActions(filesToClean))
+    
     warning("Unable to perform segmentaton with method OTB_LSMS (two-parameter set)!")
     return(NA)
   }

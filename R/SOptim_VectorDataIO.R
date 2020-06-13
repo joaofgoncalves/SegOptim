@@ -1,6 +1,5 @@
 
 
-
 #' Convert a raster dataset into polygon 
 #' 
 #' This utility function uses gdal_polygonize.py to create vector polygons for all 
@@ -110,10 +109,3 @@ gdal_polygonizeR <- function(x, outshape = NULL, pyGDALpolygonize = NULL, python
     return(NULL)
   }
 }
-
-
-
-
-
-
-

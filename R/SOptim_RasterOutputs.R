@@ -1,6 +1,6 @@
 
 
-#' Generate a raster dataset with train segments
+#' Generate a raster data set with train segments
 #' 
 #' An utility function used to create a raster dataset containing train segments for a given segmentation 
 #' solution and a train raster.
@@ -341,9 +341,7 @@ predictSegments <- function(classifierObj, calData, rstSegm, predictFor = "all",
   
   # Reorder by cell cell_ID otherwise it will give problems when writing data to raster
   data.table::setorder(rstSegmDF, cell_ID, na.last = FALSE)
-  #rstSegmDF <- merge(rstSegmDF, predDF, by="SID", all.x=TRUE)
-  #rstSegmDF <- rstSegmDF[order(rstSegmDF$cell_ID),]
-  
+
   # Make new raster to fill with predicted class labels
   newRstPred <- raster::raster(rstSegm)
   raster::values(newRstPred) <- rstSegmDF[["predClass"]]

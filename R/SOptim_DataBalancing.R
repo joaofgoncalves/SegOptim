@@ -26,7 +26,7 @@
 #' @export
 #' @import unbalanced
 
-dataBalancing<-function(x, method){
+dataBalancing <- function(x, method){
   
   if(method == "ubOver"){
     newDF <- unbalanced::ubOver(X=x[,-2], Y= x[,"train"])
@@ -56,14 +56,17 @@ dataBalancing<-function(x, method){
 #' @param x A data frame to balance.
 #'  
 #' @param class The name or the position of the column identifying the class 
-#' (must be a factor variable).
+#' (the column must be a factor variable).
 #'  
 #' @param n Number of rows/observations to extract from each class? (integer)
 #'  
 #' @return A data.frame with n rows by class.
 #'  
 #' @note This function is just a rough fix for handling unbalanced datasets, 
-#' use with care...
+#' use with care!...
+#' 
+#' @export
+#' 
 
 balanceMulticlassData <- function(x, class, n){
   

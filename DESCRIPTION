@@ -3,12 +3,12 @@ Type: Package
 Title: Optimization of Image Segmentation Parameters for Object-Based Image Analysis (OBIA)
 Version: 0.2.4
 Date: 2020-05-28
-Authors@R: c(person("Joao", "Goncalves", email = "jfgoncalves@fc.up.pt", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6615-0218")),
+Authors@R: c(person("Joao", "Goncalves", email = "joao.goncalves@cibio.up.pt", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6615-0218")),
              person("Bruno", "Marcos", email = "bruno.marcos@fc.up.pt", role = c("ctb"), comment = c(ORCID = "0000-0001-5423-5890")),
              person("Isabel", "Pocas", email = "isabel.pocas@fc.up.pt", role = c("ctb", "ths"), comment = c(ORCID = "0000-0002-8280-0110")),
              person("C.A. (Sander)", "Mucher", email = "sander.mucher@wur.nl", role = c("ctb", "ths"), comment = c(ORCID = "0000-0002-7997-8356")),
              person("Joao", "Honrado", email = "jhonrado@fc.up.pt", role = c("ctb", "ths"), comment = c(ORCID = "0000-0001-8443-4276")))
-Maintainer: Joao Goncalves <jfgoncalves@fc.up.pt>
+Maintainer: Joao Goncalves <joao.goncalves@cibio.up.pt>
 Description: Provides a set of tools for optimizing segmentation parameters for Object-based Image Analysis (OBIA) 
     of Remote Sensing/Earth Observation imagery, combining genetic or search algorithms, supervised classification, 
     automatic feature generation and classification performance evaluation. For more information see the paper 
@@ -16,7 +16,7 @@ Description: Provides a set of tools for optimizing segmentation parameters for 
     (or clustering) for multiple algorithms and compares different solutions based on internal clustering criteria.
 License: GPL-3
 Encoding: UTF-8
-URL: https://bitbucket.org/joao_goncalves/segoptim
+URL: https://github.com/joaofgoncalves/SegOptim
 Depends: R (>= 3.5.0)
 Imports: caret,cclust,cluster,class,clusterCrit,dplyr,data.table,e1071,GA,gbm,magrittr,
     mda,methods,randomForest,raster,rgdal,ROCR,stats,tools,unbalanced,dtplyr,doRNG,foreach,

@@ -1,8 +1,10 @@
 
 context("Functions for generating single and multi-class training data")
 
-library(raster)
 library(SegOptim)
+library(dplyr)
+library(dtplyr)
+library(raster)
 
 
 ## ----------------------------------------------------------------------------------- ##
@@ -59,11 +61,16 @@ test_that("Expect error in train data because one of the classes has no train ca
   rstSegm <- x
   values(rstSegm) <- sample(rep(1:50, each=200))
   
+  # Expect warning when ignore = TRUE
   expect_warning(getTrainData(x, rstSegm, useThresh=TRUE, thresh=0.3, na.rm=TRUE, 
-                                             dup.rm=TRUE, minImgSegm=30, ignore=FALSE))
+                                             dup.rm=TRUE, minImgSegm=30, ignore=TRUE))
   
+  expect_error(getTrainData(x, rstSegm, useThresh=TRUE, thresh=0.3, na.rm=TRUE, 
+                              dup.rm=TRUE, minImgSegm=30, ignore=FALSE))
+  
+  # Expect NA output when ignore = TRUE
   expect_equal(suppressWarnings(getTrainData(x, rstSegm, useThresh=TRUE, thresh=0.3, na.rm=TRUE, 
-                              dup.rm=TRUE, minImgSegm=30, ignore=FALSE)),NA)
+                              dup.rm=TRUE, minImgSegm=30, ignore=TRUE)),NA)
 })
 
 test_that("Expect NA output from getTrainData due to low minImgSegm", {
@@ -74,10 +81,10 @@ test_that("Expect NA output from getTrainData due to low minImgSegm", {
   values(rstSegm) <- sample(rep(1:50,each=200),10000)
   
   expect_warning(getTrainData(x, rstSegm, useThresh=TRUE, thresh=0.5, na.rm=TRUE, 
-                              dup.rm=TRUE, minImgSegm=100, ignore=FALSE))
+                              dup.rm=TRUE, minImgSegm=100, ignore=TRUE))
   
   expect_equal(suppressWarnings(getTrainData(x, rstSegm, useThresh=TRUE, thresh=0.5, na.rm=TRUE, 
-                              dup.rm=TRUE, minImgSegm=100, ignore=FALSE)), NA)
+                              dup.rm=TRUE, minImgSegm=100, ignore=TRUE)), NA)
   
 })
 

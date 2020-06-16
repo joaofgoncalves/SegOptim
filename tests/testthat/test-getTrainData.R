@@ -32,7 +32,7 @@ test_that("Expect correct outputs from getTrainData with single-class/binary inp
 })
 
 
-test_that("Train data generation handles NA 's properly", {
+test_that("Train data generation handles NA's properly", {
   
   # Make binary train data with NA values
   x <- raster(matrix(c(rep(0,2500), rep(NA,2500), 
@@ -88,6 +88,23 @@ test_that("Expect NA output from getTrainData due to low minImgSegm", {
   
 })
 
+test_that("Test getTrainData function",{
+  
+  
+  rstSegm <- simRasterSegments2()
+  rstTrain <- simRasterTrain(probs = c(0.4,0.4,0.2))
+  
+  trainDF <- getTrainData(rstTrain, rstSegm, useThresh = TRUE, thresh = 0.5, na.rm = TRUE, 
+                          dup.rm = TRUE, minImgSegm = 5, ignore = FALSE)
+  
+  expect_is(trainDF, "data.frame")
+  expect_equal(colnames(trainDF),c("SID","train"))
+  expect_equal(is.integer(trainDF$SID),TRUE)
+  expect_equal(length(unique(trainDF$train)),2)
+  
+})
+
+
 ## ----------------------------------------------------------------------------------- ##
 ## Multi-class tests ----
 ## ----------------------------------------------------------------------------------- ##
@@ -109,8 +126,4 @@ test_that("Expect correct outputs from getTrainData with multi-class inputs", {
   expect_equal(dim(res),c(10,2))
   
 })
-
-
-
-
 

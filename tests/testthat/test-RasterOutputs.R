@@ -199,19 +199,24 @@ test_that("Test predictSegments for KNN classifier (single-class)",{
 
 test_that("Test predictSegments for FDA classifier (single-class)",{
   
-  
   rstSegm <- simRasterSegments2()
-  rstTrain <- simRasterTrain(probs = c(0.4,0.4,0.2))
-  rstFeat <- simRasterFeatures()
   
-  calDataObj <- prepareCalData(rstSegm, rstTrain, rstFeat, funs = "mean", 
-                               minImgSegm = 10, verbose = FALSE)
+  DF <- rbind(data.frame(SID   = 1:250, 
+                   train = 0,
+                   v1 = rnorm(250,10),
+                   v2 = rnorm(250,100),
+                   v3 = rnorm(250,20)),
+              
+              data.frame(SID   = 251:500, 
+                         train = 1,
+                         v1 = rnorm(250,100),
+                         v2 = rnorm(250,200),
+                         v3 = rnorm(250,5))
+  )
   
-  expect_is(calDataObj, "SOptim.CalData")
-  expect_equal(names(calDataObj), c("calData", "classifFeatData"))
-  expect_is(calDataObj$calData, "data.frame")
-  expect_is(calDataObj$classifFeatData, "data.frame")
-  
+  calDataObj <- list(calData = DF, classifFeatData = DF)
+  attr(calDataObj, "nClassType") <- "single-class"
+  class(calDataObj) <- "SOptim.CalData"
   
   cl <- calibrateClassifier(calData = calDataObj,
                             classificationMethod = "FDA",
@@ -418,46 +423,57 @@ test_that("Test predictSegments for KNN classifier (multi-class)",{
   
 })
 
-# test_that("Test predictSegments for FDA classifier (multi-class)",{
-# 
-# 
-#   rstSegm <- simRasterSegments()
-#   rstTrain <- simRasterTrain(classes = c(1:3,NA), probs = c(0.3,0.3,0.3,0.1))
-#   rstFeat <- simRasterFeatures()
-# 
-#   calDataObj <- prepareCalData(rstSegm, rstTrain, rstFeat, funs = "mean",
-#                                minImgSegm = 10, verbose = FALSE)
-# 
-#   expect_is(calDataObj, "SOptim.CalData")
-#   expect_equal(names(calDataObj), c("calData", "classifFeatData"))
-#   expect_is(calDataObj$calData, "data.frame")
-#   expect_is(calDataObj$classifFeatData, "data.frame")
-# 
-# 
-#   cl <- calibrateClassifier(calData = calDataObj,
-#                             classificationMethod = "FDA",
-#                             balanceTrainData = FALSE,
-#                             evalMethod = "5FCV",
-#                             evalMetric = "Kappa",
-#                             minTrainCases = 5,
-#                             minCasesByClassTrain = 5,
-#                             minCasesByClassTest = 5,
-#                             runFullCalibration = TRUE,
-#                             verbose = FALSE)
-# 
-#   expect_is(cl,"SOptim.Classifier")
-# 
-#   predSegms <- predictSegments(classifierObj  = cl,
-#                                calData       = calDataObj,
-#                                rstSegm       = rstSegm,
-#                                predictFor    = "all",
-#                                filename      = NULL,
-#                                verbose       = FALSE,
-#                                na.rm         = TRUE)
-# 
-#   expect_is(predSegms,"RasterLayer")
-#   expect_equal(cellStats(predSegms,"min"), 1)
-#   expect_equal(cellStats(predSegms,"max"), 3)
-# 
-# })
+test_that("Test predictSegments for FDA classifier (multi-class)",{
+
+  rstSegm <- simRasterSegments2()
+  
+  # Craft perfectly separable data
+  #
+  DF <- rbind(data.frame(SID   = 1:250, 
+                         train = 1,
+                         v1 = rnorm(250,10),
+                         v2 = rnorm(250,100),
+                         v3 = rnorm(250,20)),
+              data.frame(SID   = 251:500, 
+                         train = 2,
+                         v1 = rnorm(250,100),
+                         v2 = rnorm(250,200),
+                         v3 = rnorm(250,5)),
+              data.frame(SID   = 501:750, 
+                         train = 3,
+                         v1 = rnorm(250,1000),
+                         v2 = rnorm(250,500),
+                         v3 = rnorm(250,1300))
+  )
+  
+  calDataObj <- list(calData = DF, classifFeatData = DF)
+  attr(calDataObj, "nClassType") <- "multi-class"
+  class(calDataObj) <- "SOptim.CalData"
+  
+  cl <- calibrateClassifier(calData = calDataObj,
+                            classificationMethod = "FDA",
+                            balanceTrainData = FALSE,
+                            evalMethod = "5FCV",
+                            evalMetric = "Kappa",
+                            minTrainCases = 5,
+                            minCasesByClassTrain = 5,
+                            minCasesByClassTest = 5,
+                            runFullCalibration = TRUE,
+                            verbose = FALSE)
+
+  expect_is(cl,"SOptim.Classifier")
+
+  predSegms <- predictSegments(classifierObj  = cl,
+                               calData       = calDataObj,
+                               rstSegm       = rstSegm,
+                               predictFor    = "all",
+                               filename      = NULL,
+                               verbose       = FALSE,
+                               na.rm         = TRUE)
+
+  expect_is(predSegms,"RasterLayer")
+  expect_equal(cellStats(predSegms,"min"), 1)
+  expect_equal(cellStats(predSegms,"max"), 3)
+
+})
 

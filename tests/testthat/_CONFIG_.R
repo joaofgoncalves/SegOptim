@@ -5,6 +5,9 @@ OS <- "windows-10"
 
 if(USER_NAME=="JG" && OS=="windows-10"){
   
+  pyGDALpolygonize <- "C:/Program Files/QGIS3121/apps/Python37/Scripts/gdal_polygonize.py"
+  pythonPath <- "C:/Program Files/QGIS3121/apps/Python37"
+  
   ## ESRI ArcGIS
   ARCGIS_PYTHON_PATH <- "C:/Python27/ArcGIS10.5"
   

@@ -110,27 +110,22 @@ test_that("Test RF classifier (single-class)",{
 })
 
 
-test_that("Test summary of RF classifier (single-class)",{
+test_that("Test summary of RF classifier (multi-class)",{
   
   DF <- data.frame(SID   = 1:250, 
-                   train = sample(0:1, 250, replace=TRUE),
+                   train = sample(1:3, 250, replace=TRUE),
                    v1 = rnorm(250),
                    v2 = rnorm(250),
                    v3 = rnorm(250))
   
   calDataObj <- list(calData = DF, classifFeatData = DF)
-  attr(calDataObj, "nClassType") <- "single-class"
+  attr(calDataObj, "nClassType") <- "multi-class"
   class(calDataObj) <- "SOptim.CalData"
   
   cl <- calibrateClassifier(calData = calDataObj,
                             classificationMethod = "RF",
-                            classificationMethodParams = NULL,
-                            balanceTrainData = FALSE,
-                            balanceMethod = "ubOver",
-                            evalMethod = "10FCV",
+                            evalMethod = "5FCV",
                             evalMetric = "Kappa",
-                            trainPerc = 0.8,
-                            nRounds = 10,
                             minTrainCases = 5,
                             minCasesByClassTrain = 5,
                             minCasesByClassTest = 5,
@@ -138,8 +133,10 @@ test_that("Test summary of RF classifier (single-class)",{
                             verbose = FALSE)
   
   summaryObj <- summary(cl)
-  expect_is(summaryObj, "list")
+  expect_is(summaryObj, "SOptim.ClassifierSummary")
   expect_equal(names(summaryObj), c("evalMatrix", "ConfMat", "ProdUserAcc"))
+  expect_output(print(summaryObj))
+
 })
 
 
@@ -174,38 +171,47 @@ test_that("Test GBM classifier (single-class)",{
   
 })
 
-## FDA NOT WORKING!!!
 
-# test_that("Test FDA classifier",{
-#   
-#   DF <- data.frame(SID   = 1:250, 
-#                    train = sample(0:1, 250, replace=TRUE),
-#                    v1 = rnorm(250),
-#                    v2 = rnorm(250),
-#                    v3 = rnorm(250))
-#   
-#   calDataObj <- list(calData = DF, classifFeatData = DF)
-#   attr(calDataObj, "nClassType") <- "single-class"
-#   class(calDataObj) <- "SOptim.CalData"
-#   
-#   cl <- calibrateClassifier(calData = calDataObj,
-#                             classificationMethod = "FDA",
-#                             classificationMethodParams = NULL,
-#                             balanceTrainData = FALSE,
-#                             balanceMethod = "ubOver",
-#                             evalMethod = "HOCV",
-#                             evalMetric = "Kappa",
-#                             trainPerc = 0.8,
-#                             nRounds = 10,
-#                             minTrainCases = 5,
-#                             minCasesByClassTrain = 5,
-#                             minCasesByClassTest = 5,
-#                             runFullCalibration = TRUE,
-#                             verbose = FALSE)
-#   
-#   expect_is(cl,"SOptim.Classifier")
-#   
-# })
+test_that("Test FDA classifier",{
+
+  # Make perfectly separable data (instead of random 
+  # which was throwing errors)
+  #
+  DF <- rbind(data.frame(SID   = 1:250, 
+                         train = 0,
+                         v1 = rnorm(250,10),
+                         v2 = rnorm(250,100),
+                         v3 = rnorm(250,20)),
+              
+              data.frame(SID   = 251:500, 
+                         train = 1,
+                         v1 = rnorm(250,100),
+                         v2 = rnorm(250,200),
+                         v3 = rnorm(250,5))
+  )
+  
+  calDataObj <- list(calData = DF, classifFeatData = DF)
+  attr(calDataObj, "nClassType") <- "single-class"
+  class(calDataObj) <- "SOptim.CalData"
+
+  cl <- calibrateClassifier(calData = calDataObj,
+                            classificationMethod = "FDA",
+                            classificationMethodParams = NULL,
+                            balanceTrainData = FALSE,
+                            balanceMethod = "ubOver",
+                            evalMethod = "HOCV",
+                            evalMetric = "Kappa",
+                            trainPerc = 0.8,
+                            nRounds = 10,
+                            minTrainCases = 5,
+                            minCasesByClassTrain = 5,
+                            minCasesByClassTest = 5,
+                            runFullCalibration = TRUE,
+                            verbose = FALSE)
+
+  expect_is(cl,"SOptim.Classifier")
+
+})
 
 test_that("Test KNN classifier (single-class)",{
   

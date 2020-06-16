@@ -7,10 +7,9 @@ library(sf)
 
 
 test_that("Test gdal_polygonizeR function for vectorization of raster data",{
-  
-  pyGDALpolygonize <- "C:/Program Files/QGIS3121/apps/Python37/Scripts/gdal_polygonize.py"
-  pythonPath <- "C:/Program Files/QGIS3121/apps/Python37"
-  
+
+  source("_CONFIG_.R")
+    
   outFile <- tempdir()
   skip_if(file.access(outFile, mode=2) != 0)
   

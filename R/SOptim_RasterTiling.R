@@ -58,17 +58,20 @@ createRasterTiles <- function(rst, nd = 2){
   for(i in 1:nd){
     for(j in 1:nd){
       k <- k+1
-      tiles[[k]] <- list()
-      tiles[[k]][['rowStart']] <- min(blkRows[[i]])
-      tiles[[k]][['rowLen']]   <- length(blkRows[[i]])
-      tiles[[k]][['colStart']] <- min(blkCols[[j]])
-      tiles[[k]][['colLen']]   <- length(blkRows[[j]])
+      newTile <- list()
+      newTile[['rowStart']] <- min(blkRows[[i]])
+      newTile[['rowLen']]   <- length(blkRows[[i]])
+      newTile[['colStart']] <- min(blkCols[[j]])
+      newTile[['colLen']]   <- length(blkRows[[j]])
+      class(newTile) <- "SOptim.Tile"
+      
+      tiles[[k]] <- newTile
     }
   }
   
   class(tiles) <- "SOptim.Tiles"
-  attr(tiles,"NumberSlices") <- nd
-  attr(tiles,"NumberTiles") <- nd^2
+  attr(tiles, "NumberSlices") <- nd
+  attr(tiles, "NumberTiles") <- nd^2
   attr(tiles, "NumPixelsPerTile") <- unlist(lapply(tiles, function(x) x$rowLen * x$colLen))
   attr(tiles, "NumPixelsTotal") <- sum(attr(tiles, "NumPixelsPerTile"))
   return(tiles)
@@ -116,6 +119,10 @@ readDataByTile <- function(rst, tiles, nd = 2, tileIndex = NULL, as.df = TRUE){
     }
   }
   
+  if(!inherits(tiles[[tileIndex]],"SOptim.Tile")){
+    stop("Object loaded is not of class SOptim.Tile (readDataByTile)")
+  }
+  
   out <- raster::getValuesBlock(rst, 
                         row   = tiles[[tileIndex]]$rowStart, 
                         nrows = tiles[[tileIndex]]$rowLen, 
@@ -128,27 +135,4 @@ readDataByTile <- function(rst, tiles, nd = 2, tileIndex = NULL, as.df = TRUE){
     return(out)
   }
 }
-
-  
-  
-# library(raster)
-# r1 <- raster(ncol=10,nrow=10)
-# values(r1) <- rnorm(100)
-# r2 <- raster(ncol=10,nrow=10)
-# values(r2) <- rnorm(100)
-# r3 <- raster(ncol=10,nrow=10)
-# values(r3) <- rnorm(100)
-# r <- stack(r1, r2, r3)
-# 
-# rtiles <- createRasterTiles(r, nd = 3)
-# 
-# print(rtiles)
-# print(rtiles[[1]])
-# 
-# readDataByTile(r, rtiles, nd = 3, tileIndex = 1, as.df = TRUE)
-  
-
-
-
-
 

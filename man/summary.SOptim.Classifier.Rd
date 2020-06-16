@@ -7,16 +7,18 @@
 \method{summary}{SOptim.Classifier}(object, ...)
 }
 \arguments{
-\item{object}{An object of class \code{SOptim.Classifier} created by \link{calibrateClassifier} with 
-option \code{runFullCalibration=TRUE}.}
+\item{object}{An object of class \code{SOptim.Classifier} created by 
+\code{\link{calibrateClassifier}} with option \code{runFullCalibration=TRUE}.}
 
 \item{...}{Additional arguments affecting the summary produced.}
 }
 \value{
-A summary of the object printed to the console.
+A summary of the object of class \code{SOptim.ClassifierSummary} 
+which can be used in print
 }
 \description{
-Produces a summary of classification performance results for a \code{SOptim.Classifier} object.
+Produces a summary of classification performance results for a 
+\code{SOptim.Classifier} object.
 }
 \seealso{
 \link{calibrateClassifier}

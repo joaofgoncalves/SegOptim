@@ -394,8 +394,10 @@ segmentation_GRASS_RG <- function(x, GRASS.path="grass", GRASS.inputRstName, GRA
   # Run the batch files
   if(.Platform$OS.type == "windows"){
     # In windows shell function apparently gives less problems...
+    # 2020-06-13: Changed both to FALSE after checking this 
+    # was generating errors
     out <- try(shell(tmpFile.batchRun, 
-                      ignore.stdout = TRUE, ignore.stderr = TRUE))
+                      ignore.stdout = FALSE, ignore.stderr = FALSE)) 
   }else{
     out <- try(system(paste("sh",tmpFile.batchRun), 
                       ignore.stdout = TRUE, ignore.stderr = TRUE))

@@ -51,8 +51,8 @@ numSampPerStrata<-function(propStrata, n, minSamp = TRUE, minSizeSet = 10){
     ##
     #  The number of samples is less than the target	
     for(i in 1:diffN){
-      selS<-sample(1:length(propStrata),1)
-      nSamp[selS]<-nSamp[selS]+1
+      selS <- sample(1:length(propStrata),1)
+      nSamp[selS] <- nSamp[selS]+1
     }
     
     if(minSamp){

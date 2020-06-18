@@ -3,10 +3,10 @@
 #' Prepare calibration data for running a classification algorithm
 #' 
 #' An auxiliary wrapper function used to generate train/evaluation data and calculating feature statistics by 
-#' image segment. The output object can then be used in \code{calibrateClassifier} function 
+#' image segment. The output object can then be used in \code{\link{calibrateClassifier}} function 
 #' for training a classification algorithm (with option \code{runFullCalibration=TRUE}).
 #' 
-#' @param rstSegm A path or a rasterLayer object containing the outputs of a segmentation algorithm 
+#' @param rstSegm A path or a \code{RasterLayer} object containing the outputs of a segmentation algorithm 
 #' with each object/segment identified by an integer index. Can also be the direct result of a segmentation 
 #' function (e.g., \code{segmentation_OTB_LSMS}) as an object of class \code{SOptim.SegmentationResult}.
 #' 
@@ -16,6 +16,12 @@
 #' have a length equal to the number of pixels in \code{rstSegm}.
 #' 
 #' @param verbose Print progress messages? (default: TRUE)
+#' 
+#' @param tiles Number of times that the image will be divided along the x and y axes. This means that 
+#' the original raster data will be split into a number of blocks equal to tiles^2 (tiles = 5 will 
+#' generate 25 blocks/tiles) for reading. This number should be larger for large \code{Raster*} objects. 
+#' This means that some fine tuning may be necessary to adjust this value according to available memory 
+#' and raster input size. 
 #' 
 #' @inheritParams getTrainData
 #' 
@@ -29,7 +35,7 @@
 #' features for training;
 #' \item \emph{\strong{classifFeatData}} - A data frame containing all segments and features from inputs. The first 
 #' column (named "SID") holds the unique identifier for each image segment. The following n columns are used 
-#' as classification features. Tipically this dataset is used for predicting the target class after calibrating a 
+#' as classification features. Typically this data set is used for predicting the target class after calibrating a 
 #' certain classifier algorithm.
 #' }
 #' 
@@ -38,7 +44,8 @@
 #' 
 
 prepareCalData <- function(rstSegm, trainData, rstFeatures, thresh = 0.5, 
-                           funs = c("mean","sd"), minImgSegm = 30, bylayer = FALSE, 
+                           funs = c("mean","sd"), minImgSegm = 30, 
+                           bylayer = FALSE, tiles = NULL, 
                            verbose = TRUE, progressBar = FALSE){
   
 
@@ -70,11 +77,19 @@ prepareCalData <- function(rstSegm, trainData, rstFeatures, thresh = 0.5,
   #
   if(verbose) cat("-> [2/3] Calculating feature statistics for all image segments...\n")
   
+  # Make raster tiles object?
+  if(!is.null(tiles)){
+    if(is.integer(tiles)){
+      tiles <- createRasterTiles(rstSegm, nd = tiles)
+    }
+  }
+  
   classificationFeaturesDF <- try(calculateSegmentStats(rstFeatures = rstFeatures, 
                                                         rstSegm     = rstSegm, 
                                                         funs        = funs, 
                                                         na.rm       = TRUE, 
                                                         bylayer     = bylayer, 
+                                                        tiles       = tiles,
                                                         progressBar = progressBar))
   
   if(inherits(classificationFeaturesDF,"try-error")){
@@ -89,11 +104,11 @@ prepareCalData <- function(rstSegm, trainData, rstFeatures, thresh = 0.5,
   #
   if(verbose) cat("-> [3/3] Merging train and feature data...\n")
   
-  calibrationDF <- merge(calibrationDF, classificationFeaturesDF, by="SID", all.x = TRUE, all.y = FALSE) # Merge features with cal data
+  calibrationDF <- merge(calibrationDF, classificationFeaturesDF, by="SID", 
+                         all.x = TRUE, all.y = FALSE) # Merge features with cal data
+  
   calibrationDF <- NRV.omit(calibrationDF) # Remove no data values
-  # classificationFeaturesDF <- cbind(ID = 1:nrow(classificationFeaturesDF), 
-  #                                   classificationFeaturesDF) 
-  # 
+ 
   if(verbose) cat("done.\n\n")
   
   out <- list(calData = calibrationDF, classifFeatData = classificationFeaturesDF)

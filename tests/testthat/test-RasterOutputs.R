@@ -477,3 +477,86 @@ test_that("Test predictSegments for FDA classifier (multi-class)",{
 
 })
 
+
+## ---------------------------------------------------------------------- ##
+## Test for memory-safe ops
+## ---------------------------------------------------------------------- ##
+
+
+test_that("Test predictSegments for RF classifier (single-class) with memory-safe ops",{
+  
+  rstSegm <- simRasterSegments2()
+  rstTrain <- simRasterTrain(probs = c(0.4,0.4,0.2))
+  rstFeat <- simRasterFeatures()
+  
+  calDataObj <- prepareCalData(rstSegm, rstTrain, rstFeat, funs = "mean", 
+                               minImgSegm = 10, verbose = FALSE)
+  
+  expect_is(calDataObj, "SOptim.CalData")
+  expect_equal(names(calDataObj), c("calData", "classifFeatData"))
+  expect_is(calDataObj$calData, "data.frame")
+  expect_is(calDataObj$classifFeatData, "data.frame")
+  
+  
+  cl <- calibrateClassifier(calData = calDataObj,
+                            classificationMethod = "RF",
+                            balanceTrainData = FALSE,
+                            evalMethod = "5FCV",
+                            evalMetric = "Kappa",
+                            minTrainCases = 5,
+                            minCasesByClassTrain = 5,
+                            minCasesByClassTest = 5,
+                            runFullCalibration = TRUE,
+                            verbose = FALSE)
+  
+  expect_is(cl,"SOptim.Classifier")
+  
+  outRstFile <- paste(tempfile(),".tif",sep="")
+
+  # Use by row IO ops
+  # Generate error if forceWriteByLine = TRUE) & filename = NULL
+  #
+  predSegms <- try(predictSegments(classifierObj  = cl, 
+                                calData       = calDataObj, 
+                                rstSegm       = rstSegm, 
+                                predictFor    = "all", 
+                                filename      = NULL, 
+                                verbose       = TRUE, 
+                                na.rm         = TRUE,
+                                forceWriteByLine = TRUE))
+  
+  expect_is(predSegms,"try-error")
+  
+  # Use by row IO ops
+  predSegms1 <- predictSegments(classifierObj  = cl, 
+                               calData       = calDataObj, 
+                               rstSegm       = rstSegm, 
+                               predictFor    = "all", 
+                               filename      = outRstFile, 
+                               verbose       = TRUE, 
+                               na.rm         = TRUE,
+                               forceWriteByLine = TRUE)
+  # Use all at once ops
+  predSegms2 <- predictSegments(classifierObj  = cl, 
+                               calData       = calDataObj, 
+                               rstSegm       = rstSegm, 
+                               predictFor    = "all", 
+                               filename      = NULL, 
+                               verbose       = TRUE, 
+                               na.rm         = TRUE,
+                               forceWriteByLine = FALSE)
+  
+  expect_is(predSegms1,"RasterLayer")
+  expect_equal(cellStats(predSegms1,"min"), 0)
+  expect_equal(cellStats(predSegms1,"max"), 1)
+  
+  expect_is(predSegms2,"RasterLayer")
+  expect_equal(cellStats(predSegms2,"min"), 0)
+  expect_equal(cellStats(predSegms2,"max"), 1)
+  
+  expect_true(compareRaster(predSegms1, predSegms2, values = TRUE))
+  
+})
+
+
+

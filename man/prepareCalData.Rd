@@ -12,12 +12,13 @@ prepareCalData(
   funs = c("mean", "sd"),
   minImgSegm = 30,
   bylayer = FALSE,
+  tiles = NULL,
   verbose = TRUE,
   progressBar = FALSE
 )
 }
 \arguments{
-\item{rstSegm}{A path or a rasterLayer object containing the outputs of a segmentation algorithm 
+\item{rstSegm}{A path or a \code{RasterLayer} object containing the outputs of a segmentation algorithm 
 with each object/segment identified by an integer index. Can also be the direct result of a segmentation 
 function (e.g., \code{segmentation_OTB_LSMS}) as an object of class \code{SOptim.SegmentationResult}.}
 
@@ -50,6 +51,12 @@ data (default: \code{c("mean", "sd")}).}
 \item{bylayer}{Calculate statistics layer by layer instead of all at once? (slightly 
 increases computation time but spares memory load; default: FALSE).}
 
+\item{tiles}{Number of times that the image will be divided along the x and y axes. This means that 
+the original raster data will be split into a number of blocks equal to tiles^2 (tiles = 5 will 
+generate 25 blocks/tiles) for reading. This number should be larger for large \code{Raster*} objects. 
+This means that some fine tuning may be necessary to adjust this value according to available memory 
+and raster input size.}
+
 \item{verbose}{Print progress messages? (default: TRUE)}
 
 \item{progressBar}{Boolean. Show progress bar? (default: FALSE).}
@@ -63,12 +70,12 @@ column (named "train") holds the segment class (or label). The following n colum
 features for training;
 \item \emph{\strong{classifFeatData}} - A data frame containing all segments and features from inputs. The first 
 column (named "SID") holds the unique identifier for each image segment. The following n columns are used 
-as classification features. Tipically this dataset is used for predicting the target class after calibrating a 
+as classification features. Typically this data set is used for predicting the target class after calibrating a 
 certain classifier algorithm.
 }
 }
 \description{
 An auxiliary wrapper function used to generate train/evaluation data and calculating feature statistics by 
-image segment. The output object can then be used in \code{calibrateClassifier} function 
+image segment. The output object can then be used in \code{\link{calibrateClassifier}} function 
 for training a classification algorithm (with option \code{runFullCalibration=TRUE}).
 }

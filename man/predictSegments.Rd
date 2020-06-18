@@ -12,6 +12,7 @@ predictSegments(
   filename = NULL,
   verbose = TRUE,
   na.rm = TRUE,
+  forceWriteByLine = FALSE,
   ...
 )
 }
@@ -34,8 +35,11 @@ or option \code{"all"} which predicts for all existing segments in \code{rstSegm
 
 \item{na.rm}{Remove NA's? (default: TRUE).}
 
-\item{...}{Additional arguments for \code{\link[raster]{writeRaster}} function except \code{datatype} which is already 
-internally set to 'INT4U'.}
+\item{forceWriteByLine}{Use memory-safe writing of raster output by line? (default: FALSE). 
+If \code{forceWriteByLine = TRUE}, then \code{filename} must define a valid file path.}
+
+\item{...}{Additional arguments for \code{\link[raster]{writeRaster}} function except \code{datatype} 
+which is already internally set to 'INT4U'.}
 }
 \value{
 An object of class \code{RasterLayer} containing the predicted class labels for 
@@ -49,7 +53,7 @@ input segmented image.
 }
 \details{
 By default the function uses the classifier ran with the 'full' dataset (i.e., no train/test splits) 
-for making class label predictions. In case of single-class problems the threshold that maximixes the selected 
+for making class label predictions. In case of single-class problems the threshold that maximizes the selected 
 evaluation metric (check \code{evalMetric} in \code{\link{calibrateClassifier}}) is used to dichotomize predictions.   
 For multi-class problems the output class label is set for the one with highest probability value.
 }

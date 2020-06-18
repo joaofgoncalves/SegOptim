@@ -321,6 +321,10 @@ calculateSegmentStats <- function(rstFeatures, rstSegm, funs = c("mean", "sd"),
     # Stack segment IDs and raster features
     rstStack <- raster::stack(rstSegm, rstFeatures)
     
+    # Open read connection
+    rstStack <- readStart(rstStack)
+    
+    # Iterate by tile
     for(tile_i in 1:length(tiles)){
       
       # Read raster data by tile
@@ -340,11 +344,10 @@ calculateSegmentStats <- function(rstFeatures, rstSegm, funs = c("mean", "sd"),
       # Calculate aggregate statistics for all functions for a given tile i
       tmpAggStats <- aggregateMultiStats(tileRstFeatDF, funs = funs, na.rm = na.rm)
       
-      
+      # Bind aggregated data by tile
       if(tile_i == 1){
         outputDF <- tmpAggStats
       }else{
-        # Bind aggregated data by tile
         outputDF <- dplyr::bind_rows(outputDF, tmpAggStats)
       }
       
@@ -352,6 +355,9 @@ calculateSegmentStats <- function(rstFeatures, rstSegm, funs = c("mean", "sd"),
         utils::setTxtProgressBar(pb, tile_i)
       }
     }
+    
+    # Close read connection
+    rstStack <- readStop(rstStack)
     
     # Do a final aggregation calculating the mean value for 
     # This will merge segments that get split across different tiles

@@ -52,10 +52,10 @@ data (default: \code{c("mean", "sd")}).}
 increases computation time but spares memory load; default: FALSE).}
 
 \item{tiles}{Number of times that the image will be divided along the x and y axes. This means that 
-the original raster data will be split into a number of blocks equal to tiles^2 (tiles = 5 will 
-generate 25 blocks/tiles) for reading. This number should be larger for large \code{Raster*} objects. 
-This means that some fine tuning may be necessary to adjust this value according to available memory 
-and raster input size.}
+the original raster data will be split into a number of blocks equal to tiles^2 (e.g., if 
+\code{tiles = 5} this will generate 25 blocks/tiles) for reading. This number should be larger 
+for large \code{Raster*} objects. This means that some fine tuning may be necessary to adjust 
+this value according to available memory and raster input size.}
 
 \item{verbose}{Print progress messages? (default: TRUE)}
 

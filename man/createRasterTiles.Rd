@@ -19,7 +19,7 @@ row and column numbers as well as the number of rows and columns to read.
 }
 \description{
 A function used to cut an input \code{Raster*} object into several tiles 
-usable by \code{\link{[raster]{getValuesBlock}}} to read data by chunks.
+usable by \code{\link[raster]{getValuesBlock}} to read data by chunks.
 }
 \examples{
 library(raster)

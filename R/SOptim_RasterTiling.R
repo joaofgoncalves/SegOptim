@@ -17,7 +17,7 @@ chunk2 <- function(x,n) split(x, cut(seq_along(x), n, labels = FALSE))
 #' Create a raster tiles object
 #'
 #' A function used to cut an input \code{Raster*} object into several tiles 
-#' usable by \code{\link{[raster]{getValuesBlock}}} to read data by chunks.
+#' usable by \code{\link[raster]{getValuesBlock}} to read data by chunks.
 #' 
 #' @param rst A \code{Raster*} object.
 #'

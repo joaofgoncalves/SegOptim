@@ -114,6 +114,13 @@ getTrainRasterSegments <- function(trainData, rstSegm, filename = NULL, useThres
 #' @importFrom data.table setDT
 #' @importFrom data.table setkey
 #' @importFrom data.table setorder
+#' @importFrom raster readStart 
+#' @importFrom raster readStop
+#' @importFrom raster writeStart
+#' @importFrom raster writeStop
+#' @importFrom raster writeValues
+#' @importFrom utils txtProgressBar
+#' @importFrom utils setTxtProgressBar
 #' 
 #' @export
 
@@ -281,11 +288,13 @@ predictSegments <- function(classifierObj, calData, rstSegm, predictFor = "all",
         balanceMethod <- classifierObj$ClassParams$balanceMethod
         
         pred <- stats::predict(clObj, 
-                               newdata = calData$classifFeatData[,-1], 
-                               traindata=calData$calData[,-c(1:2)], 
-                               cl=calData$calData$train, k=k, type = "response",
+                               newdata   = calData$classifFeatData[,-1], 
+                               traindata = calData$calData[,-c(1:2)], 
+                               cl        = calData$calData$train, 
+                               k         = k, 
+                               type      = "response",
                                balanceTrainData = balanceTrainData,
-                               balanceMethod = balanceMethod)
+                               balanceMethod    = balanceMethod)
       }
     }
   }
@@ -384,7 +393,7 @@ predictSegments <- function(classifierObj, calData, rstSegm, predictFor = "all",
     
     if(verbose){
       cat("-> Outputting data using memory-safe operations...\n\n")
-      pb <- txtProgressBar(min = 1, max = nrow(rstSegm), style = 3)
+      pb <- utils::txtProgressBar(min = 1, max = nrow(rstSegm), style = 3)
     }
     
     # Convert factors to integers if needed otherwise class integer codes may come out wrong...
@@ -402,9 +411,9 @@ predictSegments <- function(classifierObj, calData, rstSegm, predictFor = "all",
     data.table::setDT(predDF) # Convert to data.table by reference
     data.table::setkey(predDF)
     
-    rstSegm <- readStart(rstSegm)
+    rstSegm <- raster::readStart(rstSegm)
     r_out <- raster::raster(rstSegm)
-    r_out <- suppressWarnings(writeStart(r_out, filename = filename, datatype="INT4U", ...))
+    r_out <- suppressWarnings(raster::writeStart(r_out, filename = filename, datatype="INT4U", ...))
     
     for(nr in 1:nrow(rstSegm)){
       
@@ -422,16 +431,16 @@ predictSegments <- function(classifierObj, calData, rstSegm, predictFor = "all",
       data.table::setorder(rstSegmDF, cell_ID, na.last = FALSE)
       
       # write to output file
-      r_out <- writeValues(r_out, rstSegmDF$predClass, nr)
+      r_out <- raster::writeValues(r_out, rstSegmDF$predClass, nr)
       
       if(verbose){
-        setTxtProgressBar(pb,nr)
+        utils::setTxtProgressBar(pb,nr)
       }
     }
     
     # close files
-    r_out <- writeStop(r_out)
-    rstSegm <- readStop(rstSegm)
+    r_out <- raster::writeStop(r_out)
+    rstSegm <- raster::readStop(rstSegm)
 
     newRstPred <- raster::raster(filename)
     return(newRstPred)

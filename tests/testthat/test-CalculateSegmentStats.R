@@ -5,6 +5,7 @@ library(SegOptim)
 library(raster)
 library(dplyr)
 library(dtplyr)
+library(igraph)
 
 
 test_that("Zonal analysis for matrices (zonalDT)",{

@@ -49,7 +49,7 @@ test_that("Test clusteringRaster (kmeans)",{
                      method           = "kmeans", 
                      calcIntCriteria  = TRUE,
                      crit             = c("Silhouette"), 
-                     intCritSampSize  = 350, 
+                     intCritSampSize  = 100, 
                      verbose          = FALSE)
   
   expect_is(out, "RasterStack")
@@ -80,7 +80,7 @@ test_that("Test clusteringRaster (hardcl)",{
                      method           = "hardcl", 
                      calcIntCriteria  = TRUE,
                      crit             = c("Silhouette"), 
-                     intCritSampSize  = 350, 
+                     intCritSampSize  = 100, 
                      verbose          = FALSE)
   
   expect_is(out, "RasterStack")
@@ -111,7 +111,7 @@ test_that("Test clusteringRaster (neuralgas)",{
                      method           = "neuralgas", 
                      calcIntCriteria  = TRUE,
                      crit             = c("Silhouette"), 
-                     intCritSampSize  = 350, 
+                     intCritSampSize  = 100, 
                      verbose          = FALSE)
   
   expect_is(out, "RasterStack")
@@ -142,7 +142,7 @@ test_that("Test clusteringRaster (clara)",{
                      method           = "clara", 
                      calcIntCriteria  = TRUE,
                      crit             = c("Silhouette"), 
-                     intCritSampSize  = 350, 
+                     intCritSampSize  = 100, 
                      verbose          = FALSE)
   
   expect_is(out, "RasterStack")

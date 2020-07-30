@@ -4,6 +4,7 @@ context("Test data generation/simulation functions")
 
 library(SegOptim)
 library(raster)
+library(igraph)
 
 
 test_that("Simulate raster train data",{

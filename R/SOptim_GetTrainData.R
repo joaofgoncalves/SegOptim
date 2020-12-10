@@ -376,6 +376,10 @@ calcStatsFinish <- function(x, thresh = 0.5){
 getTrainData_ <- function(x, rstSegm, useThresh = TRUE, thresh = 0.5, na.rm = TRUE, 
                              dup.rm = TRUE, minImgSegm = 30,ignore = FALSE, tiles = NULL){
   
+  
+  # print(class(x))
+  # print(class(rstSegm))
+  
   # Read train raster metadata
   if(is.character(x)){
     x <- raster::raster(x)
@@ -386,14 +390,17 @@ getTrainData_ <- function(x, rstSegm, useThresh = TRUE, thresh = 0.5, na.rm = TR
     rstSegm <- raster::raster(rstSegm)
   }
   
+  # print(class(x))
+  # print(class(rstSegm))
+  
   # Read raster data for train layer
   if(!inherits(x,"RasterLayer")){
-    stop("Train data must be an object of class RasterLayer")
+    stop("Train data in x must be an object of class RasterLayer")
   }
   
   # Read raster data for segmentation layer
   if(!inherits(rstSegm,"RasterLayer")){
-    stop("Train data must be an object of class RasterLayer")
+    stop("Segmented data in rstSegm must be an object of class RasterLayer")
   }
   
   if(!(compareRaster(x, rstSegm, stopiffalse = FALSE))){

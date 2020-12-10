@@ -243,16 +243,20 @@ gaOptimizeSegmentationParams<-function(rstFeatures,
   #   }
   # }
   
-  if(inherits(trainData,"RasterLayer")){
-    
-    if(verbose) cat("-> Loading raster values for train data (in-memory load)... \n")
-    trainData <- try(raster::values(trainData))
-    if(verbose) cat("done.\n\n")
-    
-    if(inherits(trainData,"try-error")){
-      stop("An error occurred while reading data values from trainData!")
-    }
-  }
+  # [Dec 2020] Removed after finding an error in getTrainData function/workflow: 
+  # data cannot be passed as a pre-cached numeric vector!!! otherwise getTrainData
+  # will fail with error: "Object class in x can not be handled by getTrainData"
+  #
+  # if(inherits(trainData,"RasterLayer")){
+  #   
+  #   if(verbose) cat("-> Loading raster values for train data (in-memory load)... \n")
+  #   trainData <- try(raster::values(trainData))
+  #   if(verbose) cat("done.\n\n")
+  #   
+  #   if(inherits(trainData,"try-error")){
+  #     stop("An error occurred while reading data values from trainData!")
+  #   }
+  # }
   
 
   ## Run GA optimization ----------------------------------------------------------- 

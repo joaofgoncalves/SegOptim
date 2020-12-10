@@ -158,6 +158,12 @@ fitFuncGeneric <- function(x,
   #
   if(verbose) cat("-> Loading train data into new image segments...\n")
   
+  # print(segm)
+  # file.exists(segm[["segm"]])
+  # print(rstSegm)
+  # print(class(trainData))
+  # print(class(rstSegm))
+  
   calibrationDF <- try(getTrainData(x          = trainData, 
                                     rstSegm    = rstSegm, 
                                     thresh     = trainThresh, 

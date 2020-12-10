@@ -402,7 +402,8 @@ test_that("Test predictSegments for GBM classifier (multi-class)",{
   class(calDataObj) <- "SOptim.CalData"
 
 
-  cl <- calibrateClassifier(calData = calDataObj,
+  cl <- suppressWarnings(
+          calibrateClassifier(calData = calDataObj,
                             classificationMethod = "GBM",
                             balanceTrainData = FALSE,
                             evalMethod = "5FCV",
@@ -412,6 +413,7 @@ test_that("Test predictSegments for GBM classifier (multi-class)",{
                             minCasesByClassTest = 5,
                             runFullCalibration = TRUE,
                             verbose = FALSE)
+          )
 
   expect_is(cl,"SOptim.Classifier")
 

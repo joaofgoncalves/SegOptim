@@ -687,6 +687,8 @@ calibrateClassifier <- function(calData,
       # ..TEST dataset
       if(evalMethod != "OOB"){
         testDF <- calData[-dp[[i]],]
+      }else{
+        testDF <- calData[dp[[i]],]
       }
     }
     
@@ -709,6 +711,7 @@ calibrateClassifier <- function(calData,
       perfStats[i]<-0
       next
     }
+    
     
     # Verify the number of train cases by class ----------------------------------------------
     # If this is too low training or evaluation will fail...
@@ -1010,9 +1013,9 @@ calibrateClassifier <- function(calData,
       ##
       ##
       if(evalMethod=="OOB"){
-        obs<-trainDF$train
+        obs <- trainDF$train
       }else{
-        obs<-testDF$train
+        obs <- testDF$train
       }
 
       ## Predicted data for the test set --------- ##

@@ -140,6 +140,38 @@ test_that("Test summary of RF classifier (multi-class)",{
 })
 
 
+test_that("Test RF classifier (single-class) using OOB fraction",{
+  
+  DF <- data.frame(SID   = 1:250, 
+                   train = sample(0:1, 250, replace=TRUE),
+                   v1 = rnorm(250),
+                   v2 = rnorm(250),
+                   v3 = rnorm(250))
+  
+  calDataObj <- list(calData = DF, classifFeatData = DF)
+  attr(calDataObj, "nClassType") <- "single-class"
+  class(calDataObj) <- "SOptim.CalData"
+  
+  cl <- calibrateClassifier(calData = calDataObj,
+                            classificationMethod = "RF",
+                            classificationMethodParams = NULL,
+                            balanceTrainData = FALSE,
+                            balanceMethod = "ubOver",
+                            evalMethod = "OOB",
+                            evalMetric = "Kappa",
+                            trainPerc = 0.8,
+                            #nRounds = 10,
+                            minTrainCases = 5,
+                            minCasesByClassTrain = 5,
+                            minCasesByClassTest = 5,
+                            runFullCalibration = TRUE,
+                            verbose = FALSE)
+  
+  expect_is(cl,"SOptim.Classifier")
+  
+})
+
+
 test_that("Test GBM classifier (single-class)",{
   
   DF <- data.frame(SID   = 1:250, 

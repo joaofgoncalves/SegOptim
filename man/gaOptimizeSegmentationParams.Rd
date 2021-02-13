@@ -11,6 +11,7 @@ gaOptimizeSegmentationParams(
   trainThresh = 0.5,
   segmStatsFuns = c("mean", "sd"),
   bylayer = FALSE,
+  tiles = NULL,
   classificationMethod = "RF",
   classificationMethodParams = NULL,
   balanceTrainData = TRUE,
@@ -85,6 +86,10 @@ Either a function object or a function name.}
 
 \item{bylayer}{Calculate statistics layer by layer instead of all at once? (slightly 
 increases computation time but spares memory load; default: FALSE).}
+
+\item{tiles}{Number of times to slice the RasterLayer across row 
+and column direction. The total number of tiles will be given by: 
+\eqn{N_{tiles} = nd^{2}}.}
 
 \item{classificationMethod}{An input string defining the classification algorithm to be used. Available options are: 
 \code{"RF"} (random forests), \code{"GBM"} (generalized boosted models), \code{"SVM"} (support vector machines), \code{"KNN"} 

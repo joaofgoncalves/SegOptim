@@ -30,8 +30,9 @@ data (default: \code{c("mean", "sd")}).}
 \item{bylayer}{Calculate statistics layer by layer instead of all at once? (slightly 
 increases computation time but spares memory load; default: FALSE).}
 
-\item{tiles}{An object of class \code{SOptim.Tiles} creted by \code{\link{createRasterTiles}} 
-used to read data fractionally by tiles (default: NULL, i.e. not used for).}
+\item{tiles}{Number of times to slice the RasterLayer across row 
+and column direction. The total number of tiles will be given by: 
+\eqn{N_{tiles} = nd^{2}}.}
 
 \item{subset}{A vector defining which segments should be selected.}
 

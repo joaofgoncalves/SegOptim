@@ -104,6 +104,7 @@ fitFuncGeneric <- function(x,
                          trainThresh = 0.5,
                          segmStatsFuns = c("mean","sd"),
                          bylayer = FALSE,
+                         tiles = NULL,
                          classificationMethod = "RF",
                          classificationMethodParams = NULL,
                          balanceTrainData = FALSE,
@@ -194,6 +195,7 @@ fitFuncGeneric <- function(x,
                                       funs        = segmStatsFuns, 
                                       na.rm       = TRUE, 
                                       bylayer     = bylayer,
+                                      tiles       = tiles,
                                       subset      = unique(calibrationDF$SID)))
   
   if(inherits(featDF,"try-error")){

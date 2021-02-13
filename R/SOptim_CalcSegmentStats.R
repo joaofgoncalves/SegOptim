@@ -216,6 +216,9 @@ aggregateMultiStats <- function(x, funs = c("mean","sd"), na.rm = TRUE){
 }
 
 
+
+
+
 #' Calculate segment statistics for multiple raster features and aggregation functions
 #' 
 #' This function allows calculating aggregation statistics by segment ID to be used in the 
@@ -238,8 +241,9 @@ aggregateMultiStats <- function(x, funs = c("mean","sd"), na.rm = TRUE){
 #' @param bylayer Calculate statistics layer by layer instead of all at once? (slightly 
 #' increases computation time but spares memory load; default: FALSE).
 #' 
-#' @param tiles An object of class \code{SOptim.Tiles} creted by \code{\link{createRasterTiles}} 
-#' used to read data fractionally by tiles (default: NULL, i.e. not used for).
+#' @param tiles Number of times to slice the RasterLayer across row 
+#' and column direction. The total number of tiles will be given by: 
+#' \eqn{N_{tiles} = nd^{2}}.
 #' 
 #' @param progressBar Boolean. Show progress bar? (default: FALSE).
 #'    
@@ -286,6 +290,12 @@ aggregateMultiStats <- function(x, funs = c("mean","sd"), na.rm = TRUE){
 #' @importFrom rlang .data 
 #' 
 
+# MODIFIED:
+# @param tiles An object of class \code{SOptim.Tiles} created by \code{\link{createRasterTiles}} 
+# used to read data fractionally by tiles (default: NULL, i.e. not used for).
+
+
+
 calculateSegmentStats <- function(rstFeatures, rstSegm, funs = c("mean", "sd"), 
                                   na.rm = TRUE, bylayer = FALSE, tiles = NULL, 
                                   subset = NULL, progressBar = FALSE){
@@ -311,7 +321,18 @@ calculateSegmentStats <- function(rstFeatures, rstSegm, funs = c("mean", "sd"),
   if(!is.null(tiles)){
     
     if(!inherits(tiles,"SOptim.Tiles")){
-      stop("Object in tiles must be of class SOptim.Tiles!")
+      #stop("Object in tiles must be of class SOptim.Tiles!")
+      
+      if(!is.integer(tiles))
+        stop("The number of tiles across x and y must be an integer number")
+      
+      if(tiles <= 0)
+        stop("tiles input parameter must be greater than 0")
+      
+      # Create a SOptim.Tiles object 
+      nd <- tiles
+      tiles <- createRasterTiles(rstFeatures, nd)
+      
     }
     
     if(progressBar){

@@ -318,13 +318,17 @@ calculateSegmentStats <- function(rstFeatures, rstSegm, funs = c("mean", "sd"),
   if(!raster::compareRaster(rstFeatures, rstSegm, stopiffalse = FALSE, showwarning = TRUE))
     stop("Different rasters defined in rstFeatures and rstSegm!")
   
+  # Process data by tiles
   if(!is.null(tiles)){
+    
+    # Force the number of tiles as an integer number
+    tiles <- as.integer(tiles)
     
     if(!inherits(tiles,"SOptim.Tiles")){
       #stop("Object in tiles must be of class SOptim.Tiles!")
       
-      if(!is.integer(tiles))
-        stop("The number of tiles across x and y must be an integer number")
+      # if(!is.integer(tiles))
+      #   stop("The number of tiles across x and y must be an integer number")
       
       if(tiles <= 0)
         stop("tiles input parameter must be greater than 0")
@@ -384,71 +388,77 @@ calculateSegmentStats <- function(rstFeatures, rstSegm, funs = c("mean", "sd"),
     # This will merge segments that get split across different tiles
     outputDF <- aggregateMultiStats(outputDF, funs = "mean")
     
-  }
-  
-  if(!bylayer){
+  }else{ 
     
-    # Check memory requirements to handle the raster data   
-    if(!raster::canProcessInMemory(raster::stack(rstSegm, rstFeatures), n = 2))
-      stop("Not enough memory to process the input raster files! Modify option bylayer to TRUE")
+    # Run all the data!
     
-    # Read data from raster files
-    rDT <- raster::values(raster::stack(rstSegm, rstFeatures))
-    colnames(rDT) <- c("SID", names(rstFeatures))
-    
-    # Subset data only to segments defined in subset?
-    if(!is.null(subset)){
-      rDT <- dtplyr::lazy_dt(rDT, key_by = "SID")
-      rDT <- rDT %>% dplyr::filter(.data$SID %in% subset)
-    }
-    
-    outputDF <- aggregateMultiStats(rDT, funs = funs, na.rm = na.rm)
-    
-  }else{
-    
-    # Check memory requirements to handle the raster data    
-    if(!raster::canProcessInMemory(raster::stack(rstSegm, rstFeatures[[1]]), n = 2))
-      stop("Not enough memory to process the input raster files when using option bylayer!")
-    
-    nl <- raster::nlayers(rstFeatures)
-    
-    if(progressBar){
-      pb <- utils::txtProgressBar(1, nl, style=3)
-    }
-    
-    
-    ## Iterate through each layer and generate statistics by segment
-    ##
-    for(lyr in 1:nl){
+    if(!bylayer){
       
-      # Read data from raster files for a given layer
-      lyrname <- names(rstFeatures)[lyr]
-      rDT <- raster::values(raster::stack(rstSegm, rstFeatures[[lyr]]))
-      colnames(rDT) <- c("SID", lyrname)
+      # Check memory requirements to handle the raster data   
+      if(!raster::canProcessInMemory(raster::stack(rstSegm, rstFeatures), n = 2))
+        stop("Not enough memory to process the input raster files! Set bylayer = TRUE or use the tiles option.")
+      
+      # Read data from raster files
+      rDT <- raster::values(raster::stack(rstSegm, rstFeatures))
+      colnames(rDT) <- c("SID", names(rstFeatures))
       
       # Subset data only to segments defined in subset?
       if(!is.null(subset)){
-        rDT <- dtplyr::lazy_dt(rDT,key_by = "SID")
+        rDT <- dtplyr::lazy_dt(rDT, key_by = "SID")
         rDT <- rDT %>% dplyr::filter(.data$SID %in% subset)
       }
       
-      tempDF <- aggregateMultiStats(rDT, funs = funs, na.rm = na.rm)
-      colnames(tempDF) <- c("SID", paste(lyrname, funs, sep="_"))
+      outputDF <- aggregateMultiStats(rDT, funs = funs, na.rm = na.rm)
       
-      # Merge/Join data for each layer calculated based on segment IDs (col: SID)
-      if(lyr == 1){
-        outputDF <- tempDF
-      }else{
-        outputDF <- dtplyr::lazy_dt(outputDF, key_by = "SID")
-        outputDF <- outputDF %>% 
-          dplyr::left_join(y = tempDF, by = "SID") %>% 
-          as.data.frame()
+    }else{
+      
+      # Run by layer reading
+      
+      # Check memory requirements to handle the raster data    
+      if(!raster::canProcessInMemory(raster::stack(rstSegm, rstFeatures[[1]]), n = 2))
+        stop("Not enough memory to process the input raster files when using option bylayer!")
+      
+      nl <- raster::nlayers(rstFeatures)
+      
+      if(progressBar){
+        pb <- utils::txtProgressBar(1, nl, style=3)
       }
       
-      if(progressBar)
-        utils::setTxtProgressBar(pb, lyr)
       
-    } # End by layer loop
+      ## Iterate through each layer and generate statistics by segment
+      ##
+      for(lyr in 1:nl){
+        
+        # Read data from raster files for a given layer
+        lyrname <- names(rstFeatures)[lyr]
+        rDT <- raster::values(raster::stack(rstSegm, rstFeatures[[lyr]]))
+        colnames(rDT) <- c("SID", lyrname)
+        
+        # Subset data only to segments defined in subset?
+        if(!is.null(subset)){
+          rDT <- dtplyr::lazy_dt(rDT,key_by = "SID")
+          rDT <- rDT %>% dplyr::filter(.data$SID %in% subset)
+        }
+        
+        tempDF <- aggregateMultiStats(rDT, funs = funs, na.rm = na.rm)
+        colnames(tempDF) <- c("SID", paste(lyrname, funs, sep="_"))
+        
+        # Merge/Join data for each layer calculated based on segment IDs (col: SID)
+        if(lyr == 1){
+          outputDF <- tempDF
+        }else{
+          outputDF <- dtplyr::lazy_dt(outputDF, key_by = "SID")
+          outputDF <- outputDF %>% 
+            dplyr::left_join(y = tempDF, by = "SID") %>% 
+            as.data.frame()
+        }
+        
+        if(progressBar)
+          utils::setTxtProgressBar(pb, lyr)
+        
+      } # End by layer loop
+    }
+    
   }
   
   return(outputDF)

@@ -22,7 +22,13 @@ It's really simple to install! Just run the following line of R code:
 
 ```R
 
-remotes::install_github("joaofgoncalves/SegOptim")
+# !!Due to an issue with the NLMR package it is necessary to install it first!!
+remotes::install_github("ropensci/NLMR")
+
+
+# Now let's install SegOptim (with the last updates)
+remotes::install_github("joaofgoncalves/SegOptim", ref="experimental")
+
 
 ```
 
@@ -145,6 +151,11 @@ this is the _status quo_! ;-)
 
 
 ## News
+
+#### version-0.2.4
+
+- SegOptim now supports the calculation of segment statistics by tiles 
+greatly reducing memory usage
 
 #### version-0.2.3
 

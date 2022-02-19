@@ -138,9 +138,9 @@ test_that("Calculate segment statistics (calculateSegmentStats) with tiles", {
   
   # Calculate all
   
-  rstTiles <- createRasterTiles(rstSegm, 2)
+  #rstTiles <- createRasterTiles(rstSegm, 3)
   
-  res <- calculateSegmentStats(rstFeatures, rstSegm, funs = c("mean"), tiles = rstTiles,
+  res <- calculateSegmentStats(rstFeatures, rstSegm, funs = c("mean"), tiles = 2,
                                na.rm = TRUE, bylayer = FALSE, subset = NULL, 
                                progressBar = FALSE)
   

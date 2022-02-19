@@ -6,6 +6,6 @@
     utils::globalVariables(c(".", "RID", "SID", "int_area_sum", 
                            "int_segm_area", "n_segs", "ref_int_perc", 
                            "seg_area","seg_int_perc","FEAT_VALUE",
-                           "cell_ID", "predClass"))
+                           "cell_ID", "predClass","prop"))
   invisible()
 }

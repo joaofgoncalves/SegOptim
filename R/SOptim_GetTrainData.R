@@ -247,7 +247,7 @@ calcStats <- function(x, thresh = 0.5){
     dplyr::filter(!is.na(.data$train)) %>% 
     dplyr::filter(.data$prop >= thresh) %>% # Remove segments below the threshold value
     dplyr::group_by(.data$SID) %>% 
-    dplyr::arrange(.data$SID, dplyr::desc(prop)) %>% 
+    dplyr::arrange(.data$SID, dplyr::desc(.data$prop)) %>% 
     dplyr::slice(1) %>% # If more than one class select the most prevalent one
     dplyr::ungroup() %>% 
     dplyr::select(-.data$prop) %>% 
@@ -332,7 +332,7 @@ calcStatsFinish <- function(x, thresh = 0.5){
     dplyr::filter(!is.na(.data$train)) %>% 
     dplyr::filter(.data$prop >= thresh) %>% 
     dplyr::group_by(.data$SID) %>% 
-    dplyr::arrange(.data$SID, dplyr::desc(prop)) %>% 
+    dplyr::arrange(.data$SID, dplyr::desc(.data$prop)) %>% 
     dplyr::slice(1) %>% 
     dplyr::ungroup() %>% 
     dplyr::select(-.data$prop) %>% 

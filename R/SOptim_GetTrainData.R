@@ -38,11 +38,11 @@
 #' is employed. In this case if no positive cases are generated then negatives will be returned 
 #' (default: FALSE).
 #' 
-#' @param tiles An object of class \code{SOptim.Tiles} creted by \code{\link{createRasterTiles}} 
+#' @param tiles An object of class \code{SOptim.Tiles} created by \code{\link{createRasterTiles}} 
 #' used to read data fractionally by tiles (default: NULL, i.e. not used for).
 #' 
 #' @details 
-#' In some cases, dependending on the type of input training data or the output of the segmentation, 
+#' In some cases, depending on the type of input training data or the output of the segmentation, 
 #' duplicate segment IDs (SID) may occur for different class(es) meaning that a given segment may have 
 #' more than one training class. In those cases dup.rm should be set to TRUE (default).       
 #' 
@@ -247,7 +247,9 @@ calcStats <- function(x, thresh = 0.5){
     dplyr::filter(!is.na(.data$train)) %>% 
     dplyr::filter(.data$prop >= thresh) %>% # Remove segments below the threshold value
     dplyr::group_by(.data$SID) %>% 
-    dplyr::arrange(.data$SID, dplyr::desc(.data$prop)) %>% 
+    #dplyr::arrange(.data$SID, dplyr::desc(.data$prop)) %>% 
+    # Fix by arthurdegrandpre Issue #7
+    dplyr::arrange(.data$SID, desc(.data$prop)) %>%
     dplyr::slice(1) %>% # If more than one class select the most prevalent one
     dplyr::ungroup() %>% 
     dplyr::select(-.data$prop) %>% 
@@ -332,7 +334,9 @@ calcStatsFinish <- function(x, thresh = 0.5){
     dplyr::filter(!is.na(.data$train)) %>% 
     dplyr::filter(.data$prop >= thresh) %>% 
     dplyr::group_by(.data$SID) %>% 
-    dplyr::arrange(.data$SID, dplyr::desc(.data$prop)) %>% 
+    # Fix by arthurdegrandpre Issue #7
+    #dplyr::arrange(.data$SID, dplyr::desc(.data$prop)) %>% 
+    dplyr::arrange(.data$SID, desc(.data$prop)) %>% 
     dplyr::slice(1) %>% 
     dplyr::ungroup() %>% 
     dplyr::select(-.data$prop) %>% 

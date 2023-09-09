@@ -170,7 +170,7 @@ fitFuncGeneric <- function(x,
                                     thresh     = trainThresh, 
                                     minImgSegm = minImgSegm))
  
-  if(inherits(calibrationDF,"try-error") || is.na(calibrationDF)){ # A NA is passed to calibrationDF if the number of segments is low (< minNumImgSegm)!
+  if(inherits(calibrationDF,"try-error") || is.na(calibrationDF)[1]){ # A NA is passed to calibrationDF if the number of segments is low (< minNumImgSegm)!
     warning("An error occurred while generating train data! Check segmentation parameter ranges? Perhaps input train data?")
     return(NA)
   }

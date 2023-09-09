@@ -52,7 +52,7 @@ where sample units contain only positive or negative train cases. Also applies i
 is employed. In this case if no positive cases are generated then negatives will be returned 
 (default: FALSE).}
 
-\item{tiles}{An object of class \code{SOptim.Tiles} creted by \code{\link{createRasterTiles}} 
+\item{tiles}{An object of class \code{SOptim.Tiles} created by \code{\link{createRasterTiles}} 
 used to read data fractionally by tiles (default: NULL, i.e. not used for).}
 }
 \value{

@@ -21,6 +21,6 @@ Depends: R (>= 3.5.0)
 Imports: caret,cclust,cluster,class,clusterCrit,dplyr,data.table,e1071,GA,gbm,magrittr,
     mda,methods,randomForest,raster,rgdal,ROCR,stats,tools,unbalanced,dtplyr,doRNG,foreach,
     parallel,sf,utils,rlang,NLMR,igraph
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Suggests: 
     testthat

@@ -104,7 +104,7 @@ where sample units contain only positive or negative train cases. Also applies i
 is employed. In this case if no positive cases are generated then negatives will be returned 
 (default: FALSE).}
 
-\item{tiles}{An object of class \code{SOptim.Tiles} creted by \code{\link{createRasterTiles}} 
+\item{tiles}{An object of class \code{SOptim.Tiles} created by \code{\link{createRasterTiles}} 
 used to read data fractionally by tiles (default: NULL, i.e. not used for).}
 }
 \value{
@@ -115,7 +115,7 @@ A two-column data frame with segment IDs (column "SID") and the corresponding tr
 An ancillary function used to generate training data for classification
 }
 \details{
-In some cases, dependending on the type of input training data or the output of the segmentation, 
+In some cases, depending on the type of input training data or the output of the segmentation, 
 duplicate segment IDs (SID) may occur for different class(es) meaning that a given segment may have 
 more than one training class. In those cases dup.rm should be set to TRUE (default).       
 

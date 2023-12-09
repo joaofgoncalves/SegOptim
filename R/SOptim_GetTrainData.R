@@ -3,15 +3,15 @@
 #' 
 #' An ancillary function used to generate training data for classification
 #' 
-#' @param x Input train data used for classification. The input can be a \code{RasterLayer}, 
-#' \code{SpatialPointsDataFrame} or a character string with a path to the raster layer.
+#' @param x Input train data used for classification. The input can be a \code{SpatRaster} or a 
+#' string with a path to the raster file.
 #' 
-#' @param rstSegm A path or a rasterLayer object containing the outputs of a segmentation algorithm 
-#' with each object/segment identified by an integer index.
+#' @param rstSegm A path or a \code{SpatRaster} object containing the outputs of a segmentation 
+#' algorithm with each object/segment identified by an integer index.
 #' 
 #' @param thresh A threshold value defining the minimum proportion of the segment ]0, 1] that 
 #' must be covered by a certain class to be considered as a training case. This threshold will 
-#' only apply if \code{x} is a \code{RasterLayer} which means you are using train areas/pixels. 
+#' only apply if \code{x} is a \code{SpatRaster} which means you are using train areas/pixels. 
 #' If you are running a \emph{"single-class"} problem then this threshold only applies to the 
 #' class of interest (coded as 1's). Considering this, if a given segment has a proportion cover 
 #' of that class higher than \code{thresh} then it is considered a train case. In contrast, for 
@@ -46,8 +46,6 @@
 #' duplicate segment IDs (SID) may occur for different class(es) meaning that a given segment may have 
 #' more than one training class. In those cases dup.rm should be set to TRUE (default).       
 #' 
-#' If \code{x} is a \code{SpatialPointsDataFrame} object then it must contain a column named "train" 
-#' with class labels (integer).     
 #' 
 #' Raster data (in \code{x} and \code{rstSegm}) will be coerced to integer values before performing 
 #' cross-tabulations to evaluate the percent coverage.     
@@ -59,14 +57,14 @@
 #' 
 #' @examples 
 #' 
-#' library(raster)
+#' library(terra)
 #' 
-#' rstSegm <- raster(nrows=100, ncols=100, xmn=0, xmx=100,ymn=0,ymx=100,res=1)
-#' km <- kmeans(coordinates(rstSegm),100,iter.max = 100)
+#' rstSegm <- rast(nrows=100, ncols=100, xmin=0, xmax=100,ymin=0,ymax=100,res=1)
+#' km <- kmeans(xyFromCell(rstSegm, 1:ncell(rstSegm)),100,iter.max = 100)
 #' values(rstSegm) <- km$cluster
 #' 
-#' rstTrain <- raster(nrows=100, ncols=100, xmn=0, xmx=100,ymn=0,ymx=100,res=1)
-#' km <- kmeans(coordinates(rstTrain),5,iter.max = 100)
+#' rstTrain <- rast(nrows=100, ncols=100, xmin=0, xmax=100,ymin=0,ymax=100,res=1)
+#' km <- kmeans(xyFromCell(rstTrain, 1:ncell(rstTrain)),5,iter.max = 100)
 #' values(rstTrain) <- km$cluster
 #' 
 #' getTrainData(rstTrain, rstSegm)
@@ -98,78 +96,78 @@ getTrainData.default <- function(x, rstSegm, useThresh = TRUE, thresh = 0.5, na.
 }
 
 
+# #' @rdname getTrainData
+# #' @importFrom stats na.omit
+# #' @export
+# #' 
+# 
+# getTrainData.SpatialPointsDataFrame <- function(x, rstSegm, useThresh = TRUE, thresh = 0.5,
+#                                                 na.rm = TRUE, dup.rm = TRUE, minImgSegm = 30,
+#                                                 ignore = FALSE, tiles = NULL){
+# 
+# 
+#   if(is.character(rstSegm)){
+# 
+#     if(file.exists(rstSegm)){
+#       rstSegm <- terra::rast(rstSegm)
+#     }
+#     else{
+#       stop("The raster layer in input parameter rstSegm does not exists!")
+#     }
+#   }
+#   else if(!inherits(rstSegm,"SpatRaster")){
+#     stop("Input rstSegm must be either a character string containing a file path or a SpatRaster object!")
+#   }
+# 
+# 
+#   ## Extract segment IDs from segmRst using point data ------------------------- ##
+#   ##
+#   SIDs <- try(as.integer(terra::extract(rstSegm, x)))
+# 
+#   if(inherits(SIDs,"try-error")){
+#     stop("An error occurred while extracting segment IDs from input point data!")
+#   }
+# 
+#   # Number of classes in train data
+#   nUniqueSegments <- length(unique(SIDs))
+# 
+#   if(nUniqueSegments < minImgSegm){
+#     warning("Number of image segments is lower than minImgSegm! Not enough to generate train data")
+#     return(NA)
+#   }
+# 
+#   if(any(colnames(x@data) == "train")){
+#     trainData <- data.frame(SID=SIDs,train=as.integer(x@data[,"train"]))
+#   }
+#   else{
+#     trainData <- data.frame(SID=SIDs,train=as.integer(x@data[,1]))
+#   }
+# 
+#   ## Remove duplicates?
+#   ##
+#   if(dup.rm){
+#     trainData <- trainData[!duplicated(trainData),]
+#   }
+# 
+#   ## Remove NA's?
+#   ##
+#   if(na.rm){
+#     return(na.omit(trainData))
+#   }
+#   else{
+#     return(trainData)
+#   }
+# 
+#   # On failure return NULL
+#   return(NULL)
+# }
+
+
 #' @rdname getTrainData
-#' @importFrom stats na.omit
 #' @export
 #' 
 
-getTrainData.SpatialPointsDataFrame <- function(x, rstSegm, useThresh = TRUE, thresh = 0.5, 
-                                                na.rm = TRUE, dup.rm = TRUE, minImgSegm = 30, 
-                                                ignore = FALSE, tiles = NULL){
-  
-  
-  if(is.character(rstSegm)){ 
-    
-    if(file.exists(rstSegm)){
-      rstSegm <- raster::raster(rstSegm)
-    }
-    else{
-      stop("The raster layer in input parameter rstSegm does not exists!")
-    }
-  }
-  else if(!inherits(rstSegm,"RasterLayer")){
-    stop("Input rstSegm must be either a character string containing a file path or a RasterLayer object!")
-  }
-  
-  
-  ## Extract segment IDs from segmRst using point data ------------------------- ##
-  ##
-  SIDs <- try(as.integer(raster::extract(rstSegm, x)))
-  
-  if(inherits(SIDs,"try-error")){
-    stop("An error occurred while extracting segment IDs from input point data!")  
-  }
-  
-  # Number of classes in train data
-  nUniqueSegments <- length(unique(SIDs))
-  
-  if(nUniqueSegments < minImgSegm){
-    warning("Number of image segments is lower than minImgSegm! Not enough to generate train data")
-    return(NA)
-  }
-  
-  if(any(colnames(x@data) == "train")){
-    trainData <- data.frame(SID=SIDs,train=as.integer(x@data[,"train"]))
-  }
-  else{
-    trainData <- data.frame(SID=SIDs,train=as.integer(x@data[,1]))
-  }
-  
-  ## Remove duplicates?
-  ##
-  if(dup.rm){
-    trainData <- trainData[!duplicated(trainData),]
-  }
-  
-  ## Remove NA's?
-  ##
-  if(na.rm){
-    return(na.omit(trainData))
-  }
-  else{
-    return(trainData)
-  }
-  
-  # On failure return NULL
-  return(NULL)
-}
-
-
-#' @rdname getTrainData
-#' @export
-#' 
-
-getTrainData.RasterLayer <- function(x, rstSegm, useThresh = TRUE, thresh = 0.5, na.rm = TRUE, 
+getTrainData.SpatRaster <- function(x, rstSegm, useThresh = TRUE, thresh = 0.5, na.rm = TRUE, 
                                      dup.rm = TRUE, minImgSegm = 30, ignore = FALSE, tiles = NULL){
 
   getTrainData_(x         = x, 
@@ -350,7 +348,7 @@ calcStatsFinish <- function(x, thresh = 0.5){
 #' An ancillary function used to generate training data for classification. This function is the 
 #' workhorse behind \code{\link{getTrainData}}.
 #' 
-#' @param x Input train data used for classification. The input can be a \code{RasterLayer} 
+#' @param x Input train data used for classification. The input can be a \code{SpatRaster} 
 #' or a character string with a path to the raster layer.
 #' 
 #' @inheritParams getTrainData
@@ -371,9 +369,9 @@ calcStatsFinish <- function(x, thresh = 0.5){
 #' 
 #' 
 #' @export
-#' @importFrom raster values
-#' @importFrom raster raster
-#' @importFrom raster stack
+#' @importFrom terra values
+#' @importFrom terra rast
+#' @importFrom terra compareGeom
 #' @importFrom dplyr bind_rows
 #' 
 
@@ -386,28 +384,28 @@ getTrainData_ <- function(x, rstSegm, useThresh = TRUE, thresh = 0.5, na.rm = TR
   
   # Read train raster metadata
   if(is.character(x)){
-    x <- raster::raster(x)
+    x <- terra::rast(x)
   }
   
   # Read segmentation raster metadata
   if(is.character(rstSegm)){ 
-    rstSegm <- raster::raster(rstSegm)
+    rstSegm <- terra::rast(rstSegm)
   }
   
   # print(class(x))
   # print(class(rstSegm))
   
   # Read raster data for train layer
-  if(!inherits(x,"RasterLayer")){
-    stop("Train data in x must be an object of class RasterLayer")
+  if(!inherits(x,"SpatRaster")){
+    stop("Train data in x must be an object of class SpatRaster")
   }
   
   # Read raster data for segmentation layer
-  if(!inherits(rstSegm,"RasterLayer")){
-    stop("Segmented data in rstSegm must be an object of class RasterLayer")
+  if(!inherits(rstSegm,"SpatRaster")){
+    stop("Segmented data in rstSegm must be an object of class SpatRaster")
   }
   
-  if(!(compareRaster(x, rstSegm, stopiffalse = FALSE))){
+  if(!(terra::compareGeom(x, rstSegm, stopOnError=FALSE, messages=TRUE))){
     stop("Differences between train and segment rasters in getTrainData method!")
   }
   
@@ -417,8 +415,8 @@ getTrainData_ <- function(x, rstSegm, useThresh = TRUE, thresh = 0.5, na.rm = TR
   
   if(is.null(tiles)){
     
-    rstSegmTrainDF <- data.frame(SID  = as.integer(raster::values(rstSegm)), # Force integer output
-                                 train = as.integer(raster::values(x))) # Force integer output
+    rstSegmTrainDF <- data.frame(SID  = as.integer(terra::values(rstSegm)), # Force integer output
+                                 train = as.integer(terra::values(x))) # Force integer output
     
     outTrainDF <- try(calcStats(x      = rstSegmTrainDF, 
                                 thresh = thresh))
@@ -441,7 +439,7 @@ getTrainData_ <- function(x, rstSegm, useThresh = TRUE, thresh = 0.5, na.rm = TR
   else{
     
     # Stack input and rename
-    rstStack <- raster::stack(rstSegm, x)
+    rstStack <- terra::rast(rstSegm, x)
     names(rstStack) <- c("SID", "train")
     
     lenMax <- length(tiles) # Number of tiles to process

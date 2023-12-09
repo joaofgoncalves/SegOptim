@@ -2,7 +2,7 @@
 context("Tests for grid search optimization systematic and random")
 
 library(SegOptim)
-library(raster)
+library(terra)
 
 # test_that("Test random search optimization", {
 #   

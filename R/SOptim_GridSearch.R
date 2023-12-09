@@ -77,15 +77,17 @@
 #' @import parallel
 #' @import foreach
 #' @import doRNG
-#' @importFrom raster raster
+#' @importFrom terra rast
+#' @importFrom terra compareGeom
+#' @importFrom terra values
 #' @importFrom GA startParallel
 #' @importFrom stats runif
 #' 
 #' @export
 
 
-searchOptimSegmentationParams <- function(rstFeatures,              # raster stack with classification features
-                                           trainData,             # raster layer with calibration data   
+searchOptimSegmentationParams <- function(rstFeatures,              # SpatRaster with classification features
+                                           trainData,             # SpatRaster with calibration data   
                                            segmentMethod,         # Segmentation method to use
                                            ...,                   # Additional parameters passed to the segmentation method
                                            optimMethod = "random",
@@ -202,7 +204,7 @@ searchOptimSegmentationParams <- function(rstFeatures,              # raster sta
     if(file.exists(rstFeatures)){
       
       if(verbose) cat("-> Loading raster metadata containing classification features... \n")
-      rstFeatures<-try(raster::stack(rstFeatures))
+      rstFeatures<-try(terra::rast(rstFeatures))
       if(verbose) cat("done.\n\n")
       
       if(inherits(rstFeatures,"try-error")){
@@ -215,7 +217,7 @@ searchOptimSegmentationParams <- function(rstFeatures,              # raster sta
     if(file.exists(trainData)){
       
       if(verbose) cat("-> Loading raster metadata containing training examples... \n")
-      trainData<-try(raster::raster(trainData))
+      trainData<-try(terra::rast(trainData))
       if(verbose) cat("done.\n\n")
       
       if(inherits(trainData,"try-error")){
@@ -226,9 +228,9 @@ searchOptimSegmentationParams <- function(rstFeatures,              # raster sta
   
   ## Check raster similarity -------------------------------------------------------
   
-  if(inherits(trainData,"RasterLayer")){
+  if(inherits(trainData,"SpatRaster")){
     
-    if(!raster::compareRaster(rstFeatures,trainData)){
+    if(!terra::compareGeom(rstFeatures, trainData, stopOnError=FALSE, messages=TRUE)){
       stop("Differences found between rasters in rstFeatures and trainData! Check raster extent, pixel size, 
             nr. of rows/cols, or coordinate reference system")
     }
@@ -236,27 +238,12 @@ searchOptimSegmentationParams <- function(rstFeatures,              # raster sta
   
   ## Load raster data from file ----------------------------------------------------
   
-  # [Jun/2020] Removed after changes in calculateSegmStats() function which now uses 
-  # only a raster dataset as input
   
-  # if(inherits(rstFeatures,"RasterStack")){
-  #   
-  #   if(verbose) cat("-> Loading raster values for classification features (in-memory load)... \n")
-  #   
-  #   rstFeatures <- try(raster::values(rstFeatures))
-  #   
-  #   if(verbose) cat("done.\n\n")
-  #   
-  #   if(inherits(rstFeatures,"try-error")){
-  #     stop("An error occurred while reading data values from rstFeatures!")
-  #   }
-  # }
-  
-  if(inherits(trainData,"RasterLayer")){
+  if(inherits(trainData,"SpatRaster")){
     
     if(verbose) cat("-> Loading raster values for train data (in-memory load)... \n")
     
-    trainData <- try(raster::values(trainData))
+    trainData <- try(terra::values(trainData))
     
     if(verbose) cat("done.\n\n")
     

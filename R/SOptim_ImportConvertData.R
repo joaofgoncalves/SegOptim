@@ -54,7 +54,8 @@ importToGRASS <- function(fileList,
     tmpFileBatchRun<-paste(getwd(),"/GRASS_tmpRun_",randString(),".bat",sep="")
     
     # Create the batch file to run segmentation in GRASS GIS
-    cat("r.import --overwrite input=",fin," memory=1024 output=",fout,ifelse(addParams=="","",paste(" ",trimws(addParams,"both")," ",sep="")),
+    cat("r.import --overwrite input=",fin," memory=1024 output=",fout,
+        ifelse(addParams=="","",paste(" ",trimws(addParams,"both")," ",sep="")),
         sep="", file=tmpFileBatchJob)
     
     # Creates a batch file defining the batch job and starts GRASS
@@ -94,8 +95,8 @@ importToGRASS <- function(fileList,
 #' no support for multiband raster files). Each output file will be given a suffix _b1, _b2, ..., _bn according to the band 
 #' position.
 #' 
-#' @importFrom raster stack
-#' @importFrom raster writeRaster
+#' @importFrom terra rast
+#' @importFrom terra writeRaster
 #' @importFrom tools file_ext
 #' @importFrom tools file_path_sans_ext
 #' @export
@@ -104,42 +105,37 @@ convertToSAGA <- function(rst, outRasterPath, verbose=TRUE, ...){
   
   if(is.character(rst)){
     if(file.exists(rst)){
-      rst <- raster::stack(rst)
+      rst <- terra::rast(rst)
     }else{
       stop("File in rst cannot be found! Please review parameters.")
     }
   }
 
-  if(!inherits(rst,c("RasterLayer","RasterStack")))
-    stop("rst must be an object of class RasterLayer, RasterStack or character (holding a complete file path to the input raster)")
+  if(!inherits(rst,c("SpatRaster")))
+    stop("rst must be an object of class SpatRaster or character (holding a complete file path to the input raster)")
   
   ext <- tools::file_ext(outRasterPath)
   
   if(ext != "sdat")
     stop("The extension of the output file must be .sdat! Please review input parameters.")
   
-  if(inherits(rst,c("RasterLayer"))){ ## --------------------------------------------- ##
+  if(inherits(rst,c("SpatRaster"))){ ## --------------------------------------------- ##
     
-    if(verbose) cat("-> Converting RasterLayer object.... ")
-    raster::writeRaster(rst, outRasterPath, format="SAGA", ...)
+    if(verbose) cat("-> Converting SpatRaster object.... ")
+    terra::writeRaster(rst, outRasterPath, format="SAGA", ...)
     if(verbose) cat("done.\n\n")
   
-    }else if(inherits(rst,c("RasterStack"))){ ## -------------------------------------- ##
+    }else if(inherits(rst,c("SpatRaster"))){ ## -------------------------------------- ##
       
-      if(verbose) cat("||| Converting RasterStack object |||\n\n")
+      if(verbose) cat("||| Converting SpatRaster object |||\n\n")
       
-      for(i in 1:nlayers(rst)){
+      for(i in 1:terra::nlyr(rst)){
         
         if(verbose) cat("-> Converting band/layer b",i," .....",sep="") 
         fn <- paste(tools::file_path_sans_ext(outRasterPath),"_b",i,".",ext,sep="")
-        raster::writeRaster(rst[[i]], fn, format="SAGA", ...)
+        terra::writeRaster(rst[[i]], fn, format="SAGA", ...)
         cat("done.\n\n")
     }
   }
 }
-
-
-
-
-
 

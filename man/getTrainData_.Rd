@@ -17,18 +17,18 @@ getTrainData_(
 )
 }
 \arguments{
-\item{x}{Input train data used for classification. The input can be a \code{RasterLayer} 
+\item{x}{Input train data used for classification. The input can be a \code{SpatRaster} 
 or a character string with a path to the raster layer.}
 
-\item{rstSegm}{A path or a rasterLayer object containing the outputs of a segmentation algorithm 
-with each object/segment identified by an integer index.}
+\item{rstSegm}{A path or a \code{SpatRaster} object containing the outputs of a segmentation 
+algorithm with each object/segment identified by an integer index.}
 
 \item{useThresh}{Use threshold to filter training data for multi-class? (default: TRUE; not 
 used for points).}
 
 \item{thresh}{A threshold value defining the minimum proportion of the segment ]0, 1] that 
 must be covered by a certain class to be considered as a training case. This threshold will 
-only apply if \code{x} is a \code{RasterLayer} which means you are using train areas/pixels. 
+only apply if \code{x} is a \code{SpatRaster} which means you are using train areas/pixels. 
 If you are running a \emph{"single-class"} problem then this threshold only applies to the 
 class of interest (coded as 1's). Considering this, if a given segment has a proportion cover 
 of that class higher than \code{thresh} then it is considered a train case. In contrast, for 

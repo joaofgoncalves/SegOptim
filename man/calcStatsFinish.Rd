@@ -11,7 +11,7 @@ calcStatsFinish(x, thresh = 0.5)
 
 \item{thresh}{A threshold value defining the minimum proportion of the segment ]0, 1] that 
 must be covered by a certain class to be considered as a training case. This threshold will 
-only apply if \code{x} is a \code{RasterLayer} which means you are using train areas/pixels. 
+only apply if \code{x} is a \code{SpatRaster} which means you are using train areas/pixels. 
 If you are running a \emph{"single-class"} problem then this threshold only applies to the 
 class of interest (coded as 1's). Considering this, if a given segment has a proportion cover 
 of that class higher than \code{thresh} then it is considered a train case. In contrast, for 

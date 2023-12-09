@@ -2,19 +2,19 @@
 context("Test feature extraction functions")
 
 library(SegOptim)
-library(raster)
+library(terra)
 
 
 test_that("Test NDI combinations w/ simulated data",{
  
-  rst <- stack(raster(nrows=100, ncols=100, vals=runif(10000)),
-               raster(nrows=100, ncols=100, vals=runif(10000)),
-               raster(nrows=100, ncols=100, vals=runif(10000)))
+  rst <- c(rast(nrows=100, ncols=100, vals=runif(10000)),
+               rast(nrows=100, ncols=100, vals=runif(10000)),
+               rast(nrows=100, ncols=100, vals=runif(10000)))
   
-  out <- calculateNDIcombinations(rst, bandNames=NULL, subsetBands=NULL, getRstStack = TRUE, scale10k=TRUE,
+  out <- calculateNDIcombinations(rst, bandNames=NULL, subsetBands=NULL, getSpatRaster = TRUE, scale10k=TRUE,
                            filename=NULL, writeSingleBandRaster=FALSE, verbose=FALSE)
   
-  expect_true(class(out)=="RasterStack")
+  expect_true(class(out)=="SpatRaster")
   
 }
 )
@@ -25,12 +25,12 @@ test_that("Test NDI combos with S1 data",{
   
   skip_if(!file.exists(S1_SEGM_FEAT_PATH), "Cannot find input data")
   
-  r <- stack(S1_SEGM_FEAT_PATH)
+  r <- rast(S1_SEGM_FEAT_PATH)
   
-  out <- calculateNDIcombinations(r, bandNames=NULL, subsetBands=NULL, getRstStack = TRUE, scale10k=TRUE,
+  out <- calculateNDIcombinations(r, bandNames=NULL, subsetBands=NULL, getSpatRaster = TRUE, scale10k=TRUE,
                                   filename=NULL, writeSingleBandRaster=FALSE, verbose=FALSE)
   
-  expect_true(class(out)=="RasterStack")
+  expect_true(class(out)=="SpatRaster")
 })
   
 
@@ -40,10 +40,10 @@ test_that("Test NDI combos with S2 data",{
   
   skip_if(!file.exists(S2_SEGM_FEAT_PATH), "Cannot find input data")
   
-  r <- stack(S2_SEGM_FEAT_PATH)
+  r <- rast(S2_SEGM_FEAT_PATH)
   
-  out <- calculateNDIcombinations(r, bandNames=NULL, subsetBands=NULL, getRstStack = TRUE, scale10k=TRUE,
+  out <- calculateNDIcombinations(r, bandNames=NULL, subsetBands=NULL, getSpatRaster = TRUE, scale10k=TRUE,
                                   filename=NULL, writeSingleBandRaster=FALSE, verbose=FALSE)
   
-  expect_true(class(out)=="RasterStack")
+  expect_true(class(out)=="SpatRaster")
 })

@@ -12,18 +12,15 @@
 #' 
 #' @param x Vector with segmentation parameters that will be optimized by the genetic algorithms from GA package.
 #' 
-#' @param rstFeatures Features used for supervised classification (typically a multi-layer raster with one feature 
+#' @param rstFeatures Features used for supervised classification (typically a multi-layer SpatRaster with one feature 
 #' per band). May be defined as a string with the path to a raster dataset or a \code{RasterStack} object.
 #' 
-#' @param trainData Input train data used for supervised classification. It can be a \code{RasterLayer} containing 
-#' train areas (in raster format) or a \code{SpatialPointsDataFrame} object containing train points (in this case, 
-#' the data must contain a column named "train" holding the train classes). For points you can use \link[rgdal]{readOGR} 
-#' function to read input files (e.g., ESRI Shapefile) or use \link[sp]{SpatialPointsDataFrame} to create a valid 
-#' data object within \code{R}.
+#' @param trainData Input train data used for supervised classification. It must be a \code{SpatRaster} containing 
+#' train areas (in raster format)
 #' 
 #' @param ... Additional parameters passed to the segmentation functions that will not be optimized (see also: 
 #' \code{\link{segmentationGeneric}}). It must also contain the input segmentation data (typically a multi-layer 
-#' raster dataset with one input feature per band) depending one the algorithm selected. 
+#' SpatRaster dataset with one input feature per band) depending one the algorithm selected. 
 #' 
 #' @param trainThresh A threshold value defining the minimum proportion of the segment ]0, 1] that must be covered 
 #' by a certain class to be considered as a training case. This threshold will only apply if \code{x} is a \code{RasterLayer} 
@@ -92,13 +89,13 @@
 #' @import randomForest
 #' @import e1071
 #' @import mda
-#' @importFrom raster raster
+#' @importFrom terra rast
 #' 
 #' @export
 
 fitFuncGeneric <- function(x,
-                         rstFeatures,           # raster stack with classification features
-                         trainData,             # raster layer with calibration data   
+                         rstFeatures,           # SpatRaster (often nlyr>1) with classification features
+                         trainData,             # SpatRaster (nlyr=1) layer with calibration data   
                          segmentMethod,
                          ...,                  # parameters passed to the segmentation generic (exception to x)
                          trainThresh = 0.5,
@@ -137,7 +134,7 @@ fitFuncGeneric <- function(x,
   }
   
   # Load raster segmentation data generated for a given solution
-  rstSegm <- try(raster::raster(segm[["segm"]]))
+  rstSegm <- try(terra::rast(segm[["segm"]]))
   
   if(inherits(rstSegm,"try-error")){
     warning("An error occurred while trying to load the segmentation raster!")
@@ -223,7 +220,7 @@ fitFuncGeneric <- function(x,
   #
   #
   
-  if(verbose) cat("-> Training classifier with method",classificationMethod,"...\n\n")
+  if(verbose) cat("-> Training classifier with method", classificationMethod, "...\n\n")
     
   out <- calibrateClassifier(calData                  = calibrationDF,
                            classificationMethod       = classificationMethod,

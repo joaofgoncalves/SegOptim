@@ -2,10 +2,10 @@
 context("Test zonal analysis and segment statistics functions")
 
 library(SegOptim)
-library(raster)
+library(terra)
 library(dplyr)
 library(dtplyr)
-library(igraph)
+#library(igraph)
 
 
 test_that("Zonal analysis for matrices (zonalDT)",{
@@ -25,15 +25,15 @@ test_that("Zonal analysis for matrices (zonalDT)",{
 test_that("Calculate segment statistics (calculateSegmentStats)", {
   
   # Make test raster features data
-  r1 <- raster(matrix(rnorm(10000),100,100))
-  r2 <- raster(matrix(rnorm(10000),100,100))
-  r3 <- raster(matrix(rnorm(10000),100,100))
-  rstFeatures <- stack(r1,r2,r3)
+  r1 <- rast(matrix(rnorm(10000),100,100))
+  r2 <- rast(matrix(rnorm(10000),100,100))
+  r3 <- rast(matrix(rnorm(10000),100,100))
+  rstFeatures <- c(r1,r2,r3)
   names(rstFeatures) <- paste("R",1:3,sep="")
   
   # Make a test segmented raster
   rstSegm <- rstFeatures[[1]]
-  values(rstSegm) <- rep(1:10, each=1000)
+  terra::values(rstSegm) <- rep(1:10, each=1000)
   
   # Calculate all
   res <- calculateSegmentStats(rstFeatures, rstSegm, funs = c("mean", "sd"), 
@@ -51,10 +51,10 @@ test_that("Calculate segment statistics (calculateSegmentStats)", {
 test_that("Calculate segment statistics (calculateSegmentStats) by layer", {
   
   # Make test raster features data
-  r1 <- raster(matrix(rnorm(10000),100,100))
-  r2 <- raster(matrix(rnorm(10000),100,100))
-  r3 <- raster(matrix(rnorm(10000),100,100))
-  rstFeatures <- stack(r1,r2,r3)
+  r1 <- rast(matrix(rnorm(10000),100,100))
+  r2 <- rast(matrix(rnorm(10000),100,100))
+  r3 <- rast(matrix(rnorm(10000),100,100))
+  rstFeatures <- c(r1,r2,r3)
   names(rstFeatures) <- paste("R",1:3,sep="")
   
   # Make a test segmented raster
@@ -76,10 +76,10 @@ test_that("Calculate segment statistics (calculateSegmentStats) by layer", {
 test_that("Calculate segment statistics (calculateSegmentStats) with progress bar", {
   
   # Make test raster features data
-  r1 <- raster(matrix(rnorm(10000),100,100))
-  r2 <- raster(matrix(rnorm(10000),100,100))
-  r3 <- raster(matrix(rnorm(10000),100,100))
-  rstFeatures <- stack(r1,r2,r3)
+  r1 <- rast(matrix(rnorm(10000),100,100))
+  r2 <- rast(matrix(rnorm(10000),100,100))
+  r3 <- rast(matrix(rnorm(10000),100,100))
+  rstFeatures <- c(r1,r2,r3)
   names(rstFeatures) <- paste("R",1:3,sep="")
   
   # Make a test segmented raster
@@ -101,10 +101,10 @@ test_that("Calculate segment statistics (calculateSegmentStats) with progress ba
 test_that("Calculate segment statistics (calculateSegmentStats) with subset", {
   
   # Make test raster features data
-  r1 <- raster(matrix(rnorm(10000),100,100))
-  r2 <- raster(matrix(rnorm(10000),100,100))
-  r3 <- raster(matrix(rnorm(10000),100,100))
-  rstFeatures <- stack(r1,r2,r3)
+  r1 <- rast(matrix(rnorm(10000),100,100))
+  r2 <- rast(matrix(rnorm(10000),100,100))
+  r3 <- rast(matrix(rnorm(10000),100,100))
+  rstFeatures <- c(r1,r2,r3)
   names(rstFeatures) <- paste("R",1:3,sep="")
   
   # Make a test segmented raster
@@ -126,10 +126,10 @@ test_that("Calculate segment statistics (calculateSegmentStats) with subset", {
 test_that("Calculate segment statistics (calculateSegmentStats) with tiles", {
   
   # Make test raster features data
-  r1 <- raster(matrix(rnorm(10000),100,100))
-  r2 <- raster(matrix(rnorm(10000),100,100))
-  r3 <- raster(matrix(rnorm(10000),100,100))
-  rstFeatures <- stack(r1,r2,r3)
+  r1 <- rast(matrix(rnorm(10000),100,100))
+  r2 <- rast(matrix(rnorm(10000),100,100))
+  r3 <- rast(matrix(rnorm(10000),100,100))
+  rstFeatures <- c(r1,r2,r3)
   names(rstFeatures) <- paste("R",1:3,sep="")
   
   # Make a test segmented raster
@@ -156,8 +156,8 @@ test_that("Test calculate segments stats (calculateSegmentStats)",{
   
   #source("_CONFIG_.R")
   
-  rstSegm <- raster::raster(nrow=100, ncol=100, crs=NA, res=1, 
-                            xmn=0, xmx=100, ymn=0, ymx=100)
+  rstSegm <- terra::rast(nrow=100, ncol=100, crs=NA, resolution=1, 
+                            xmin=0, xmax=100, ymin=0, ymax=100)
   values(rstSegm) <- sample(1:500, 10000, replace=TRUE)
   rstFeat  <- simRasterFeatures()
   
@@ -166,7 +166,7 @@ test_that("Test calculate segments stats (calculateSegmentStats)",{
   
   expect_is(segmStatsDF, "data.frame")
   expect_equal(nrow(segmStatsDF), 500)
-  expect_equal(ncol(segmStatsDF), 2*nlayers(rstFeat)+1)
+  expect_equal(ncol(segmStatsDF), 2*nlyr(rstFeat)+1)
   
 })
 
@@ -174,9 +174,11 @@ test_that("Test calculate segments stats (calculateSegmentStats) - user defined 
   
   #source("_CONFIG_.R")
   
-  rstSegm <- raster::raster(nrow=100, ncol=100, crs=NA, res=1, 
-                            xmn=0, xmx=100, ymn=0, ymx=100)
+  rstSegm <- terra::rast(nrow=100, ncol=100, crs=NA, resolution=1, 
+                            xmin=0, xmax=100, ymin=0, ymax=100)
+  
   values(rstSegm) <- sample(1:500, 10000, replace=TRUE)
+  
   rstFeat  <- simRasterFeatures()
   
   qt25perc <<- function(x,na.rm=TRUE,...) as.numeric(quantile(x, probs=0.25, na.rm=na.rm))
@@ -187,15 +189,15 @@ test_that("Test calculate segments stats (calculateSegmentStats) - user defined 
   
   expect_is(segmStatsDF, "data.frame")
   expect_equal(nrow(segmStatsDF), 500)
-  expect_equal(ncol(segmStatsDF), nlayers(rstFeat)+1)
+  expect_equal(ncol(segmStatsDF), nlyr(rstFeat)+1)
 })
 
 test_that("Test calculateSegmentStats - generate error passing a data.frame!",{
   
   #source("_CONFIG_.R")
   
-  rstSegm <- raster::raster(nrow=100, ncol=100, crs=NA, res=1, 
-                            xmn=0, xmx=100, ymn=0, ymx=100)
+  rstSegm <- terra::rast(nrow=100, ncol=100, crs=NA, resolution=1, 
+                            xmin=0, xmax=100, ymin=0, ymax=100)
   values(rstSegm) <- sample(1:500, 10000, replace=TRUE)
   rstFeat  <- simRasterFeatures()
   

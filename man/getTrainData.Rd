@@ -3,8 +3,7 @@
 \name{getTrainData}
 \alias{getTrainData}
 \alias{getTrainData.default}
-\alias{getTrainData.SpatialPointsDataFrame}
-\alias{getTrainData.RasterLayer}
+\alias{getTrainData.SpatRaster}
 \alias{getTrainData.character}
 \title{Generate supervised training data for classification}
 \usage{
@@ -32,19 +31,7 @@ getTrainData(
   tiles = NULL
 )
 
-\method{getTrainData}{SpatialPointsDataFrame}(
-  x,
-  rstSegm,
-  useThresh = TRUE,
-  thresh = 0.5,
-  na.rm = TRUE,
-  dup.rm = TRUE,
-  minImgSegm = 30,
-  ignore = FALSE,
-  tiles = NULL
-)
-
-\method{getTrainData}{RasterLayer}(
+\method{getTrainData}{SpatRaster}(
   x,
   rstSegm,
   useThresh = TRUE,
@@ -69,18 +56,18 @@ getTrainData(
 )
 }
 \arguments{
-\item{x}{Input train data used for classification. The input can be a \code{RasterLayer}, 
-\code{SpatialPointsDataFrame} or a character string with a path to the raster layer.}
+\item{x}{Input train data used for classification. The input can be a \code{SpatRaster} or a 
+string with a path to the raster file.}
 
-\item{rstSegm}{A path or a rasterLayer object containing the outputs of a segmentation algorithm 
-with each object/segment identified by an integer index.}
+\item{rstSegm}{A path or a \code{SpatRaster} object containing the outputs of a segmentation 
+algorithm with each object/segment identified by an integer index.}
 
 \item{useThresh}{Use threshold to filter training data for multi-class? (default: TRUE; not 
 used for points).}
 
 \item{thresh}{A threshold value defining the minimum proportion of the segment ]0, 1] that 
 must be covered by a certain class to be considered as a training case. This threshold will 
-only apply if \code{x} is a \code{RasterLayer} which means you are using train areas/pixels. 
+only apply if \code{x} is a \code{SpatRaster} which means you are using train areas/pixels. 
 If you are running a \emph{"single-class"} problem then this threshold only applies to the 
 class of interest (coded as 1's). Considering this, if a given segment has a proportion cover 
 of that class higher than \code{thresh} then it is considered a train case. In contrast, for 
@@ -119,8 +106,6 @@ In some cases, depending on the type of input training data or the output of the
 duplicate segment IDs (SID) may occur for different class(es) meaning that a given segment may have 
 more than one training class. In those cases dup.rm should be set to TRUE (default).       
 
-If \code{x} is a \code{SpatialPointsDataFrame} object then it must contain a column named "train" 
-with class labels (integer).     
 
 Raster data (in \code{x} and \code{rstSegm}) will be coerced to integer values before performing 
 cross-tabulations to evaluate the percent coverage.
@@ -136,14 +121,14 @@ segments (or objects)
 }
 \examples{
 
-library(raster)
+library(terra)
 
-rstSegm <- raster(nrows=100, ncols=100, xmn=0, xmx=100,ymn=0,ymx=100,res=1)
-km <- kmeans(coordinates(rstSegm),100,iter.max = 100)
+rstSegm <- rast(nrows=100, ncols=100, xmin=0, xmax=100,ymin=0,ymax=100,res=1)
+km <- kmeans(xyFromCell(rstSegm, 1:ncell(rstSegm)),100,iter.max = 100)
 values(rstSegm) <- km$cluster
 
-rstTrain <- raster(nrows=100, ncols=100, xmn=0, xmx=100,ymn=0,ymx=100,res=1)
-km <- kmeans(coordinates(rstTrain),5,iter.max = 100)
+rstTrain <- rast(nrows=100, ncols=100, xmin=0, xmax=100,ymin=0,ymax=100,res=1)
+km <- kmeans(xyFromCell(rstTrain, 1:ncell(rstTrain)),5,iter.max = 100)
 values(rstTrain) <- km$cluster
 
 getTrainData(rstTrain, rstSegm)

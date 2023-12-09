@@ -20,8 +20,8 @@ A function used to generate a confusion matrix for classification evaluation.
 }
 \examples{
  
-obs<-sample(0:1, 20, replace = TRUE)
-pred<-sample(0:1, 20, replace = TRUE)
+obs <- sample(0:1, 20, replace = TRUE)
+pred <- sample(0:1, 20, replace = TRUE)
 generateConfusionMatrix(obs, pred)
 
 }

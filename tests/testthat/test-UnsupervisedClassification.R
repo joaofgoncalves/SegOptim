@@ -2,7 +2,7 @@
 context("Test unsupervised clustering functions")
 
 library(SegOptim)
-library(raster)
+library(terra)
 library(cclust)
 
 test_that("Test numSampPerStrata allocator",{
@@ -45,22 +45,22 @@ test_that("Test clusteringRaster (kmeans)",{
                      k                = 2:5, 
                      writeRasterData  = TRUE, 
                      outRst           = outRstPath, 
-                     getRstStack      = TRUE, 
+                     getSpatRaster      = TRUE, 
                      method           = "kmeans", 
                      calcIntCriteria  = TRUE,
                      crit             = c("Silhouette"), 
                      intCritSampSize  = 100, 
                      verbose          = FALSE)
   
-  expect_is(out, "RasterStack")
-  expect_equal(cellStats(out[[1]],"min"), 1)
-  expect_equal(cellStats(out[[1]],"max"), 2)
-  expect_equal(cellStats(out[[2]],"min"), 1)
-  expect_equal(cellStats(out[[2]],"max"), 3)
-  expect_equal(cellStats(out[[3]],"min"), 1)
-  expect_equal(cellStats(out[[3]],"max"), 4)
-  expect_equal(cellStats(out[[4]],"min"), 1)
-  expect_equal(cellStats(out[[4]],"max"), 5)
+  expect_is(out, "SpatRaster")
+  expect_equal(global(out[[1]],"min")[1,1], 1)
+  expect_equal(global(out[[1]],"max")[1,1], 2)
+  expect_equal(global(out[[2]],"min")[1,1], 1)
+  expect_equal(global(out[[2]],"max")[1,1], 3)
+  expect_equal(global(out[[3]],"min")[1,1], 1)
+  expect_equal(global(out[[3]],"max")[1,1], 4)
+  expect_equal(global(out[[4]],"min")[1,1], 1)
+  expect_equal(global(out[[4]],"max")[1,1], 5)
   
 })
 
@@ -76,22 +76,22 @@ test_that("Test clusteringRaster (hardcl)",{
                      k                = 2:5, 
                      writeRasterData  = TRUE, 
                      outRst           = outRstPath, 
-                     getRstStack      = TRUE, 
+                     getSpatRaster      = TRUE, 
                      method           = "hardcl", 
                      calcIntCriteria  = TRUE,
                      crit             = c("Silhouette"), 
                      intCritSampSize  = 100, 
                      verbose          = FALSE)
   
-  expect_is(out, "RasterStack")
-  expect_equal(cellStats(out[[1]],"min"), 1)
-  expect_equal(cellStats(out[[1]],"max"), 2)
-  expect_equal(cellStats(out[[2]],"min"), 1)
-  expect_equal(cellStats(out[[2]],"max"), 3)
-  expect_equal(cellStats(out[[3]],"min"), 1)
-  expect_equal(cellStats(out[[3]],"max"), 4)
-  expect_equal(cellStats(out[[4]],"min"), 1)
-  expect_equal(cellStats(out[[4]],"max"), 5)
+  expect_is(out, "SpatRaster")
+  expect_equal(global(out[[1]],"min")[1,1], 1)
+  expect_equal(global(out[[1]],"max")[1,1], 2)
+  expect_equal(global(out[[2]],"min")[1,1], 1)
+  expect_equal(global(out[[2]],"max")[1,1], 3)
+  expect_equal(global(out[[3]],"min")[1,1], 1)
+  expect_equal(global(out[[3]],"max")[1,1], 4)
+  expect_equal(global(out[[4]],"min")[1,1], 1)
+  expect_equal(global(out[[4]],"max")[1,1], 5)
   
 })
 
@@ -107,22 +107,22 @@ test_that("Test clusteringRaster (neuralgas)",{
                      k                = 2:5, 
                      writeRasterData  = TRUE, 
                      outRst           = outRstPath, 
-                     getRstStack      = TRUE, 
+                     getSpatRaster      = TRUE, 
                      method           = "neuralgas", 
                      calcIntCriteria  = TRUE,
                      crit             = c("Silhouette"), 
                      intCritSampSize  = 100, 
                      verbose          = FALSE)
   
-  expect_is(out, "RasterStack")
-  expect_equal(cellStats(out[[1]],"min"), 1)
-  expect_equal(cellStats(out[[1]],"max"), 2)
-  expect_equal(cellStats(out[[2]],"min"), 1)
-  expect_equal(cellStats(out[[2]],"max"), 3)
-  expect_equal(cellStats(out[[3]],"min"), 1)
-  expect_equal(cellStats(out[[3]],"max"), 4)
-  expect_equal(cellStats(out[[4]],"min"), 1)
-  expect_equal(cellStats(out[[4]],"max"), 5)
+  expect_is(out, "SpatRaster")
+  expect_equal(global(out[[1]],"min")[1,1], 1)
+  expect_equal(global(out[[1]],"max")[1,1], 2)
+  expect_equal(global(out[[2]],"min")[1,1], 1)
+  expect_equal(global(out[[2]],"max")[1,1], 3)
+  expect_equal(global(out[[3]],"min")[1,1], 1)
+  expect_equal(global(out[[3]],"max")[1,1], 4)
+  expect_equal(global(out[[4]],"min")[1,1], 1)
+  expect_equal(global(out[[4]],"max")[1,1], 5)
   
 })
 
@@ -138,21 +138,21 @@ test_that("Test clusteringRaster (clara)",{
                      k                = 2:5, 
                      writeRasterData  = TRUE, 
                      outRst           = outRstPath, 
-                     getRstStack      = TRUE, 
+                     getSpatRaster      = TRUE, 
                      method           = "clara", 
                      calcIntCriteria  = TRUE,
                      crit             = c("Silhouette"), 
                      intCritSampSize  = 100, 
                      verbose          = FALSE)
   
-  expect_is(out, "RasterStack")
-  expect_equal(cellStats(out[[1]],"min"), 1)
-  expect_equal(cellStats(out[[1]],"max"), 2)
-  expect_equal(cellStats(out[[2]],"min"), 1)
-  expect_equal(cellStats(out[[2]],"max"), 3)
-  expect_equal(cellStats(out[[3]],"min"), 1)
-  expect_equal(cellStats(out[[3]],"max"), 4)
-  expect_equal(cellStats(out[[4]],"min"), 1)
-  expect_equal(cellStats(out[[4]],"max"), 5)
+  expect_is(out, "SpatRaster")
+  expect_equal(global(out[[1]],"min")[1,1], 1)
+  expect_equal(global(out[[1]],"max")[1,1], 2)
+  expect_equal(global(out[[2]],"min")[1,1], 1)
+  expect_equal(global(out[[2]],"max")[1,1], 3)
+  expect_equal(global(out[[3]],"min")[1,1], 1)
+  expect_equal(global(out[[3]],"max")[1,1], 4)
+  expect_equal(global(out[[4]],"min")[1,1], 1)
+  expect_equal(global(out[[4]],"max")[1,1], 5)
   
 })

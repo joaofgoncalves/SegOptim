@@ -4,7 +4,7 @@ context("Functions for generating single and multi-class training data")
 library(SegOptim)
 library(dplyr)
 library(dtplyr)
-library(raster)
+library(terra)
 
 
 ## ----------------------------------------------------------------------------------- ##
@@ -15,7 +15,7 @@ library(raster)
 test_that("Expect correct outputs from getTrainData with single-class/binary inputs", {
   
   # Make binary train data
-  x <- raster(matrix(c(rep(0,5000), 
+  x <- rast(matrix(c(rep(0,5000), 
                        sample(c(0,1), size = 5000, replace = TRUE, prob = c(0.4, 0.6))), 
                      nrow = 100, ncol = 100, byrow = TRUE))
   
@@ -35,7 +35,7 @@ test_that("Expect correct outputs from getTrainData with single-class/binary inp
 test_that("Train data generation handles NA's properly", {
   
   # Make binary train data with NA values
-  x <- raster(matrix(c(rep(0,2500), rep(NA,2500), 
+  x <- rast(matrix(c(rep(0,2500), rep(NA,2500), 
                        sample(c(0,1), size = 5000, replace = TRUE, prob = c(0.4, 0.6))), 
                      nrow = 100, ncol = 100, byrow = TRUE))
   
@@ -53,7 +53,7 @@ test_that("Train data generation handles NA's properly", {
 test_that("Expect error in train data because one of the classes has no train cases", {
   
   # Make binary train data
-  x <- raster(matrix(c(rep(0,5000), 
+  x <- rast(matrix(c(rep(0,5000), 
                        sample(c(0,1), size = 5000, replace = TRUE, prob = c(0.4, 0.6))), 
                      nrow = 100, ncol = 100, byrow = TRUE))
   
@@ -75,7 +75,7 @@ test_that("Expect error in train data because one of the classes has no train ca
 
 test_that("Expect NA output from getTrainData due to low minImgSegm", {
   
-  x <- raster(matrix(sample(c(0,1),10000,replace=TRUE, prob = c(0.25,0.75)), 
+  x <- rast(matrix(sample(c(0,1),10000,replace=TRUE, prob = c(0.25,0.75)), 
                      nrow = 100, ncol = 100))
   rstSegm <- x
   values(rstSegm) <- sample(rep(1:50,each=200),10000)
@@ -112,7 +112,7 @@ test_that("Test getTrainData function",{
 test_that("Expect correct outputs from getTrainData with multi-class inputs", {
   
   # Make binary train data
-  x <- raster(matrix(sample(1:3,10000,replace=TRUE), nrow = 100, ncol = 100))
+  x <- rast(matrix(sample(1:3,10000,replace=TRUE), nrow = 100, ncol = 100))
   
   # Make a test segmented raster
   rstSegm <- x

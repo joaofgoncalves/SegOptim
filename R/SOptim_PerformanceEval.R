@@ -17,13 +17,13 @@
 #' 
 #' @examples
 #'  
-#' obs<-sample(0:1, 20, replace = TRUE)
-#' pred<-sample(0:1, 20, replace = TRUE)
+#' obs <- sample(0:1, 20, replace = TRUE)
+#' pred <- sample(0:1, 20, replace = TRUE)
 #' generateConfusionMatrix(obs, pred)
 #' 
 #' @export
 
-generateConfusionMatrix<-function(obs, pred){
+generateConfusionMatrix <- function(obs, pred){
   
   # Subset NA values
   ind <- !(is.na(obs) & is.na(pred))
@@ -73,7 +73,7 @@ generateConfusionMatrix<-function(obs, pred){
 #' @importFrom stats runif
 #' @export
 
-kappaSingleClass<- function(obs, pred){
+kappaSingleClass <- function(obs, pred){
   
   i<-0
   k<-vector(mode="numeric", length = 101)
@@ -208,7 +208,8 @@ gssSingleClass <- function(obs, pred){
 #' aucSingleClass(obs,pred)
 #' 
 #' @export
-#' @import ROCR
+#' @importFrom ROCR prediction
+#' @importFrom ROCR performance 
 #' @importFrom stats runif
 #' 
 
@@ -234,7 +235,7 @@ aucSingleClass <- function(obs, pred){
   
   # This part is used to extract the threshold/cutoff value that minimizes 
   # the distance between the ROC and the (0,1) point
-  perf<-ROCR::performance(p, "spec", "sens")
+  perf <- ROCR::performance(p, "spec", "sens")
   TMP_DF <- data.frame(cut = perf@alpha.values[[1]],
                    spec_FPR = 1 - perf@x.values[[1]],
                    sens_TPR = perf@y.values[[1]])
@@ -275,10 +276,10 @@ aucSingleClass <- function(obs, pred){
 #'
 #' @export
 
-GerritySkillScore<-function(obs, pred){
+GerritySkillScore <- function(obs, pred){
   
   # Generate confusion matrix
-  cm<-generateConfusionMatrix(obs, pred)
+  cm <- generateConfusionMatrix(obs, pred)
 
   P.cm   <- cm/sum(cm)
   p.obs  <- apply(P.cm, 2, sum)
@@ -374,7 +375,7 @@ GerritySkillScore<-function(obs, pred){
 #' @importFrom stats sd
 #' @export
 
-evaluatePerformance<-function(obs=NULL, pred=NULL, cm=NULL){
+evaluatePerformance <- function(obs=NULL, pred=NULL, cm=NULL){
   
   if(is.null(cm)) {
     # Tabulate to get the correct math notation used
@@ -456,7 +457,7 @@ evaluatePerformance<-function(obs=NULL, pred=NULL, cm=NULL){
 #' @export
 
 
-evalPerformanceGeneric<-function(obs, pred, stat, nClassType){
+evalPerformanceGeneric <- function(obs, pred, stat, nClassType){
   
   
   if(nClassType=="single-class"){ ## --- Single-class ------------------------------- ##

@@ -29,7 +29,7 @@
 #' @export
 #' 
 
-numSampPerStrata<-function(propStrata, n, minSamp = TRUE, minSizeSet = 10){
+numSampPerStrata <- function(propStrata, n, minSamp = TRUE, minSizeSet = 10){
   
   if(!inherits(propStrata,"table"))
     stop("propStrata must be an object of class table")
@@ -141,13 +141,13 @@ StRS <- function(x, strata, nsps){
 
 
 
-#' Perform clustering on a RasterStack object and calculate internal clustering criteria
+#' Perform clustering on a SpatRaster object and calculate internal clustering criteria
 #' 
-#' Runs a clustering/unsupervised learning/classification algorithm on a multi-layer \code{RasterStack} object.      
+#' Runs a clustering/unsupervised learning/classification algorithm on a multi-layer \code{SpatRaster} object.      
 #' It also allows calculating internal clustering performance criteria based on function 
 #' \code{\link[clusterCrit]{intCriteria}} using a stratified random sample of output pixels. 
 #' 
-#' @param inRst An input \code{RasterStack} object. By default all layers/bands will be used to perform the k-means 
+#' @param inRst An input \code{SpatRaster} object. By default all layers/bands will be used to perform the k-means 
 #' clustering.
 #' 
 #' @param k An integer vector defining the number of clusters. If more than one value is given then 
@@ -158,7 +158,7 @@ StRS <- function(x, strata, nsps){
 #' @param outRst Name of the output raster. For each value in \code{k} the file name will get a suffix 
 #' in this form: \code{"filename_method_nc_k.ext"}.
 #' 
-#' @param getRstStack Get an output \code{RasterStack} object with clustering solutions? (default: \code{FALSE}). 
+#' @param getSpatRaster Get an output \code{SpatRaster} object with clustering solutions? (default: \code{FALSE}). 
 #' If \code{FALSE} then some memory saving is expected.
 #' 
 #' @param method A string defining the method used for clustering. Available options are: 
@@ -185,9 +185,9 @@ StRS <- function(x, strata, nsps){
 #' save memory and speed-up calculations).
 #'  
 #' @return 
-#' If \code{getRstStack=TRUE} then a \code{RasterStack} object with all clustering solutions will be returned. 
-#' If \code{getRstStack=TRUE} and \code{calcIntCriteria=TRUE} then an additional matrix named \code{intClustCrit} with 
-#' one row by k value will be returned with the requested clustering indices. If \code{getRstStack=FALSE} then only the matrix 
+#' If \code{getSpatRaster=TRUE} then a \code{SpatRaster} object with all clustering solutions will be returned. 
+#' If \code{getSpatRaster=TRUE} and \code{calcIntCriteria=TRUE} then an additional matrix named \code{intClustCrit} with 
+#' one row by k value will be returned with the requested clustering indices. If \code{getSpatRaster=FALSE} then only the matrix 
 #' with clustering indices will be returned.
 #' 
 #' @seealso 
@@ -198,11 +198,9 @@ StRS <- function(x, strata, nsps){
 #' 
 #' 
 #' @importFrom clusterCrit intCriteria
-#' @importFrom raster stack
-#' @importFrom raster values
-#' @importFrom raster writeRaster
-#' @importFrom raster raster
-#' @importFrom raster dataType
+#' @importFrom terra values
+#' @importFrom terra writeRaster
+#' @importFrom terra rast
 #' @importFrom tools file_path_sans_ext
 #' @importFrom tools file_ext
 #' @importFrom stats kmeans
@@ -212,15 +210,15 @@ StRS <- function(x, strata, nsps){
 #' 
 #' @examples 
 #' 
-#' library(raster)
+#' library(terra)
 #' 
-#' r1 <- raster(nrows=10, ncols=10, vals=rnorm(100))
-#' r2 <- raster(nrows=10, ncols=10, vals=rnorm(100))
-#' r3 <- raster(nrows=10, ncols=10, vals=rnorm(100))
+#' r1 <- rast(nrows=10, ncols=10, vals=rnorm(100))
+#' r2 <- rast(nrows=10, ncols=10, vals=rnorm(100))
+#' r3 <- rast(nrows=10, ncols=10, vals=rnorm(100))
 #' 
-#' rstStack <- stack(r1, r2, r3)
+#' rstStack <- c(r1, r2, r3)
 #' 
-#' clusteringRaster(rstStack, k = 2:10, writeRasterData = FALSE, getRstStack = TRUE, 
+#' clusteringRaster(rstStack, k = 2:10, writeRasterData = FALSE, getSpatRaster = TRUE, 
 #'                  method="kmeans", calcIntCriteria = FALSE, crit = c("Silhouette"), 
 #'                  intCritSampSize = 20000, verbose = TRUE)
 #'
@@ -228,7 +226,7 @@ StRS <- function(x, strata, nsps){
 #' @export
 #' 
 
-clusteringRaster <- function(inRst, k, writeRasterData = TRUE, outRst, getRstStack = TRUE, 
+clusteringRaster <- function(inRst, k, writeRasterData = TRUE, outRst, getSpatRaster = TRUE, 
                              method="kmeans", calcIntCriteria = FALSE,
                              crit = c("Silhouette"), intCritSampSize = 20000, 
                              verbose = TRUE, ...){ 
@@ -245,7 +243,7 @@ clusteringRaster <- function(inRst, k, writeRasterData = TRUE, outRst, getRstSta
     
   if(is.character(inRst)){
     if(file.exists(inRst)){
-      inRst <- raster::stack(inRst)
+      inRst <- terra::rast(inRst)
     }else{
       stop("File path in inRst does not exists! Please review parameters.")
     }
@@ -255,12 +253,12 @@ clusteringRaster <- function(inRst, k, writeRasterData = TRUE, outRst, getRstSta
     stop("k values can not be lower than 2!")
   }
 
-  if(!inherits(inRst,c("RasterStack","RasterBrick"))){
-    stop("inRst must be an object of class RasterStack or RasterBrick!")
+  if(!inherits(inRst,c("SpatRaster"))){
+    stop("inRst must be an object of class SpatRaster!")
   }
   
   if(verbose) cat("-> Loading raster data .... ")
-  rstMatrix <- as.matrix(values(inRst))
+  rstMatrix <- as.matrix(terra::values(inRst))
   mode(rstMatrix) <- "numeric"
   
   if(verbose) cat("done.\n\n")
@@ -347,35 +345,36 @@ clusteringRaster <- function(inRst, k, writeRasterData = TRUE, outRst, getRstSta
     clustVec[idx] <- as.integer(clustSol[[clustSolVecName]])
     
     # Put values into new raster
-    newRst <- raster::raster(inRst)
-    raster::values(newRst) <- clustVec
-    raster::dataType(newRst) <- "INT1U"
+    #newRst <- terra::rast(inRst)
+    newRst <- terra::rast(inRst[[1]])
+    terra::values(newRst) <- clustVec
+    #terra::datatype(newRst) <- "INT1U"
     
-    if(getRstStack){
+    if(getSpatRaster){
       if(i==1){
         rstStack <- newRst
       }else{
-        rstStack <- stack(rstStack, newRst)
+        rstStack <- c(rstStack, newRst)
       }
     }
     
     if(writeRasterData){
       ext <- tools::file_ext(outRst)
       fn <- tools::file_path_sans_ext(outRst)
-      raster::writeRaster(newRst, filename = paste(fn,"_",method,"_nc_",nc,".",ext,sep=""), datatype = "INT1U")
+      terra::writeRaster(newRst, filename = paste(fn,"_",method,"_nc_",nc,".",ext,sep=""), datatype = "INT1U")
     } 
     
   } ## --------------------------------------------------------------------------------------------------------------------- ##
   
   if(verbose) cat("\ndone.\n\n")
   
-  if(getRstStack && calcIntCriteria){
+  if(getSpatRaster && calcIntCriteria){
     #names(intCritKM) <- paste("k",k,sep="_")
     attr(rstStack,"intClustCrit") <- intCritRes
     return(rstStack)
   }
   
-  if(!getRstStack && calcIntCriteria){
+  if(!getSpatRaster && calcIntCriteria){
     #names(intCritKM) <- paste("k",k,sep="_")
     return(intCritRes)
   }

@@ -13,13 +13,13 @@ if(USER_NAME=="JG" && OS=="windows-10"){
   
   # GRASS GIS
   #GRASS_BIN_PATH <- "C:/GRASS_72/grass72"
-  GRASS_BIN_PATH <- "C:/Program Files/QGIS3121/bin/grass78"
+  GRASS_BIN_PATH <- "C:/Program Files/QGIS 3.32.3/bin/grass83"
   GRASS_GISDBASE_PATH <- "C:/Users/JG/Documents/grassdata"
   GRASS_LOCATION_NAME <- "TestSites_SOptim"
   
   # Orfeo ToolBox (OTB)
   #OTB_BIN_PATH <- "C:/OTB/bin"
-  OTB_BIN_PATH <- "C:/OTB/OTB_661/bin"
+  OTB_BIN_PATH <- "C:/OTB/OTB_720/bin"
   
   # RSGISLib via Anaconda / Python 3.5
   RSGISLIB_PYTHON_PATH <- "C:/Anaconda3/envs/py35"
@@ -29,7 +29,7 @@ if(USER_NAME=="JG" && OS=="windows-10"){
   SAGA_BIN_PATH <- "C:/SAGA763"
   
   # TerraLib / TISA mini-build
-  TERRALIB_BIN_PATH = "C:/terralib-5.2.1-TISA/lib"
+  TERRALIB_BIN_PATH = "C:/terralib/lib"
   
   ## INPUT DATA
   ##

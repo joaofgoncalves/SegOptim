@@ -17,10 +17,10 @@ calculateSegmentStats(
 }
 \arguments{
 \item{rstFeatures}{A string defining the path to the raster features or a 
-\code{rasterStack} object.}
+\code{SpatRaster} object.}
 
 \item{rstSegm}{A string defining the path to the raster with segment IDs or a 
-\code{rasterLayer} object.}
+\code{SpatRaster} object.}
 
 \item{funs}{A character vector with the name(s) of the functions used to aggregate 
 data (default: \code{c("mean", "sd")}).}
@@ -30,7 +30,7 @@ data (default: \code{c("mean", "sd")}).}
 \item{bylayer}{Calculate statistics layer by layer instead of all at once? (slightly 
 increases computation time but spares memory load; default: FALSE).}
 
-\item{tiles}{Number of times to slice the RasterLayer across row 
+\item{tiles}{Number of times to slice the SpatRaster across row 
 and column direction. The total number of tiles will be given by: 
 \eqn{N_{tiles} = nd^{2}}.}
 
@@ -46,29 +46,4 @@ The name of the aggregation function will be appended to the name of each raster
 This function allows calculating aggregation statistics by segment ID to be used in the 
 classification stage. This function employs \code{dtplyr} (based on \code{data.table}) 
 and \code{dplyr} verbs for processing.
-}
-\examples{
-
-library(raster)
-library(dplyr)
-library(dtplyr)
-
-rstSegm <- raster(nrows=100, ncols=100, xmn=0, xmx=100, 
-                  ymn=0, ymx=100)
-
-km <- kmeans(coordinates(rstSegm),100,iter.max = 100)
-values(rstSegm) <- km$cluster
-   
-rstFeatures_1 <- raster(nrows=100, ncols=100, xmn=0, xmx=100, 
-ymn=0, ymx=100, res=1, vals=runif(10000))
-
-rstFeatures_2 <- raster(nrows=100, ncols=100, xmn=0, xmx=100, 
-ymn=0, ymx=100, res=1, vals=runif(10000))
-   
-rstStackFeatures <- stack(rstFeatures_1, rstFeatures_2)
-
-calculateSegmentStats(rstStackFeatures, rstSegm, 
-                      funs = c("mean", "sd"), na.rm = TRUE)
-
-
 }

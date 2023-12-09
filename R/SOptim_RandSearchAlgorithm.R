@@ -146,8 +146,8 @@ iterateFitnessFunc <- function(fitFunc, paramGrid, parallel=FALSE, ...){
 
 #' Perform random search optimization
 #' 
-#' A simple function to perform iterative random search optimization using neighbourhood 
-#' fixed size adjustement. See details section for a description of the algorithm. 
+#' A simple function to perform iterative random search optimization using neighborhood 
+#' fixed size adjustment. See details section for a description of the algorithm. 
 #' 
 #' @inheritParams iterateFitnessFunc
 #' @inheritParams adjustRangesFromCentralPoint
@@ -264,7 +264,10 @@ iterateFitnessFunc <- function(fitFunc, paramGrid, parallel=FALSE, ...){
 #'                  parallel = FALSE, seed=NULL, verbose = TRUE)
 #'
 #' @export
-#'                 
+#' 
+#' @importFrom GA startParallel                
+#' @importFrom parallel stopCluster
+#' 
 
 randomSearchOptim <- function(fitFunc, paramList, numIter = 250, nneigh = 5, 
                               initNeighs = (5 * nneigh), neighSizeProp = 0.025,  iter = 25, 

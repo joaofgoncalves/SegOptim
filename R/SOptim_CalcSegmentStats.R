@@ -1,13 +1,15 @@
 
+# TODO: Replace raster::canProcessInMemory!
+
 #' Calculate aggregated statistics by each image segment or region
 #' 
 #' Calculate statistics for each element (e.g., a segment, object or region) based on \code{data.table} objects 
 #' (much faster processing!).
 #' 
-#' @param x An object of class \code{data.frame}, \code{matrix}, \code{RasterStack} or \code{RasterLayer} 
+#' @param x An object of class \code{data.frame}, \code{matrix} or \code{SpatRaster} 
 #' containing data (e.g., classification features).
 #' 
-#' @param z An object of class \code{RasterLayer}, \code{vector}, or a one column \code{data.frame}/\code{matrix} 
+#' @param z An object of class \code{SpatRaster}, \code{vector}, or a one column \code{data.frame}/\code{matrix} 
 #' containing segment/object/zone indices (as integers). Usually the result of a image segmentation algorithm.
 #' 
 #' @param ... Further parameters to pass to \code{lapply}.
@@ -30,9 +32,9 @@
 #' @export
 #' 
 #' @import data.table 
-#' @importFrom raster values
-#' @importFrom raster raster
-#' @importFrom raster compareRaster
+#' @importFrom terra values
+#' @importFrom terra rast
+#' @importFrom terra compareGeom
 #' 
 
 zonalDT <- function(x, z, fun, na.rm = TRUE, subset = NULL, ...) UseMethod("zonalDT", x)
@@ -42,7 +44,7 @@ zonalDT <- function(x, z, fun, na.rm = TRUE, subset = NULL, ...) UseMethod("zona
 #' 
 
 zonalDT.default <- function(x, z, fun, na.rm = TRUE, subset = NULL, ...) 
-  stop("zonalDT allows only objects of type data.frame, RasterLayer or RasterStack")
+  stop("zonalDT allows only objects of type data.frame or SpatRaster")
 
 
 #' @rdname zonalDT
@@ -59,9 +61,9 @@ zonalDT.data.frame <- function(x, z, fun, na.rm = TRUE, subset = NULL, ...) {
     stop("Invalid input in fun! Must be either a function object or a function name.")
   }
   
-  if(inherits(z,"RasterLayer")){
+  if(inherits(z,"SpatRaster")){
     # Get data from raster object
-    zones <- as.integer(raster::values(z))
+    zones <- as.integer(terra::values(z))
     
   }else if(is.numeric(z)){
     zones <- as.integer(z)
@@ -74,7 +76,7 @@ zonalDT.data.frame <- function(x, z, fun, na.rm = TRUE, subset = NULL, ...) {
     rm(z)
   } else{
     stop("The object class in x is not allowed for zonalDT. 
-         It must be either a RasterLayer, integer vector, or a one column data.frame/matrix")
+         It must be either a SpatRaster, integer vector, or a one column data.frame/matrix")
   }
   
   # Compare rasters 
@@ -102,7 +104,7 @@ zonalDT.data.frame <- function(x, z, fun, na.rm = TRUE, subset = NULL, ...) {
 #' @export
 #' 
 
-zonalDT.RasterStack <- function(x, z, fun, na.rm = TRUE, subset = NULL, ...) {
+zonalDT.SpatRaster <- function(x, z, fun, na.rm = TRUE, subset = NULL, ...) {
   
   # Check and get function by name
   if(!is.function(fun) & is.character(fun)){
@@ -112,14 +114,14 @@ zonalDT.RasterStack <- function(x, z, fun, na.rm = TRUE, subset = NULL, ...) {
   }
   
   # Compare rasters 
-  if(inherits(z,"RasterLayer")){
-    if(!raster::compareRaster(x, z, stopiffalse = FALSE, showwarning = TRUE))
+  if(inherits(z,"SpatRaster")){
+    if(!terra::compareGeom(x, z, stopOnError = FALSE, messages = TRUE))
       stop("Different rasters in x and z!")
   }
   
-  if(inherits(z,"RasterLayer")){
+  if(inherits(z,"SpatRaster")){
     # Get data from raster object
-    zones <- as.integer(raster::values(z))
+    zones <- as.integer(terra::values(z))
   }else if(is.numeric(z)){
     zones <- as.integer(z)
     rm(z)
@@ -131,13 +133,13 @@ zonalDT.RasterStack <- function(x, z, fun, na.rm = TRUE, subset = NULL, ...) {
     rm(z)
   } else{
     stop("The object class in x is not allowed for zonalDT. 
-         It must be either a RasterLayer, integer vector, or a one column data.frame/matrix")
+         It must be either a SpatRaster, integer vector, or a one column data.frame/matrix")
   }
   
   
   # Create a data.table object by reference to avoid memory overloads
   #vals <- data.table::setDT(raster::values(x))
-  vals <- raster::values(x)
+  vals <- terra::values(x)
   
   # Create data.table object and set key
   rDT <- data.table::data.table(vals, z=zones)
@@ -154,21 +156,6 @@ zonalDT.RasterStack <- function(x, z, fun, na.rm = TRUE, subset = NULL, ...) {
   return(rDT[, lapply(.SD, fun, na.rm=na.rm, ...), by=z])
   
 } 
-
-
-#' @rdname zonalDT
-#' @export
-#' 
-
-zonalDT.RasterLayer <- function(x, z, fun, na.rm = TRUE, subset = NULL, ...) 
-  zonalDT.RasterStack(x, z, fun, na.rm = TRUE, subset, ...)
-
-#' @rdname zonalDT
-#' @export
-#' 
-
-zonalDT.RasterBrick <- function(x, z, fun, na.rm = TRUE, subset = NULL, ...) 
-  zonalDT.RasterStack(x, z, fun, na.rm = TRUE, subset, ...)
 
 
 #' @rdname zonalDT
@@ -226,10 +213,10 @@ aggregateMultiStats <- function(x, funs = c("mean","sd"), na.rm = TRUE){
 #' and \code{dplyr} verbs for processing.
 #' 
 #' @param rstFeatures A string defining the path to the raster features or a 
-#' \code{rasterStack} object.
+#' \code{SpatRaster} object.
 #' 
 #' @param rstSegm A string defining the path to the raster with segment IDs or a 
-#' \code{rasterLayer} object.  
+#' \code{SpatRaster} object.  
 #' 
 #' @param funs A character vector with the name(s) of the functions used to aggregate 
 #' data (default: \code{c("mean", "sd")}).
@@ -241,7 +228,7 @@ aggregateMultiStats <- function(x, funs = c("mean","sd"), na.rm = TRUE){
 #' @param bylayer Calculate statistics layer by layer instead of all at once? (slightly 
 #' increases computation time but spares memory load; default: FALSE).
 #' 
-#' @param tiles Number of times to slice the RasterLayer across row 
+#' @param tiles Number of times to slice the SpatRaster across row 
 #' and column direction. The total number of tiles will be given by: 
 #' \eqn{N_{tiles} = nd^{2}}.
 #' 
@@ -250,37 +237,14 @@ aggregateMultiStats <- function(x, funs = c("mean","sd"), na.rm = TRUE){
 #' @return A data frame containing segment ids (first column, SID) and aggregated features. 
 #' The name of the aggregation function will be appended to the name of each raster feature. 
 #' 
-#' @examples 
-#'
-#' library(raster)
-#' library(dplyr)
-#' library(dtplyr)
-#' 
-#' rstSegm <- raster(nrows=100, ncols=100, xmn=0, xmx=100, 
-#'                   ymn=0, ymx=100)
-#' 
-#' km <- kmeans(coordinates(rstSegm),100,iter.max = 100)
-#' values(rstSegm) <- km$cluster
-#'    
-#' rstFeatures_1 <- raster(nrows=100, ncols=100, xmn=0, xmx=100, 
-#' ymn=0, ymx=100, res=1, vals=runif(10000))
-#' 
-#' rstFeatures_2 <- raster(nrows=100, ncols=100, xmn=0, xmx=100, 
-#' ymn=0, ymx=100, res=1, vals=runif(10000))
-#'    
-#' rstStackFeatures <- stack(rstFeatures_1, rstFeatures_2)
-#' 
-#' calculateSegmentStats(rstStackFeatures, rstSegm, 
-#'                       funs = c("mean", "sd"), na.rm = TRUE)
-#' 
 #' 
 #' @export
-#' @importFrom raster stack
-#' @importFrom raster raster
-#' @importFrom raster values
-#' @importFrom raster nlayers
-#' @importFrom raster canProcessInMemory
-#' @importFrom raster compareRaster
+#' @importFrom terra rast
+#' @importFrom terra values
+#' @importFrom terra nlyr
+#' @importFrom terra compareGeom
+#' @importFrom terra readStart
+#' @importFrom terra readStop
 #' @importFrom utils txtProgressBar
 #' @importFrom utils setTxtProgressBar
 #' @importFrom dtplyr lazy_dt
@@ -311,11 +275,11 @@ calculateSegmentStats <- function(rstFeatures, rstSegm, funs = c("mean", "sd"),
     stop("The funs argument (used to calculate segment statistics) must be a character vector!")
   
   # If rstFeatures or rstSegm are strings then first load raster metadata
-  if(is.character(rstFeatures)) rstFeatures <- raster::stack(rstFeatures)
-  if(is.character(rstSegm)) rstSegm <- raster::raster(rstSegm)
+  if(is.character(rstFeatures)) rstFeatures <- terra::rast(rstFeatures)
+  if(is.character(rstSegm)) rstSegm <- terra::rast(rstSegm)
   
   # Compare rasters 
-  if(!raster::compareRaster(rstFeatures, rstSegm, stopiffalse = FALSE, showwarning = TRUE))
+  if(!terra::compareGeom(rstFeatures, rstSegm, stopOnError = FALSE, messages = TRUE))
     stop("Different rasters defined in rstFeatures and rstSegm!")
   
   # Process data by tiles
@@ -327,15 +291,15 @@ calculateSegmentStats <- function(rstFeatures, rstSegm, funs = c("mean", "sd"),
     if(!inherits(tiles,"SOptim.Tiles")){
       #stop("Object in tiles must be of class SOptim.Tiles!")
       
-      # if(!is.integer(tiles))
-      #   stop("The number of tiles across x and y must be an integer number")
+      if(!is.integer(tiles))
+         stop("The number of tiles across x and y must be an integer number")
       
       if(tiles <= 0)
         stop("tiles input parameter must be greater than 0")
       
       # Create a SOptim.Tiles object 
       nd <- tiles
-      tiles <- createRasterTiles(rstFeatures, nd)
+      tiles <- createRasterTiles(rstFeatures, nd = nd)
       
     }
     
@@ -344,10 +308,12 @@ calculateSegmentStats <- function(rstFeatures, rstSegm, funs = c("mean", "sd"),
     }
     
     # Stack segment IDs and raster features
-    rstStack <- raster::stack(rstSegm, rstFeatures)
+    rstStack <- c(rstSegm, rstFeatures)
     
     # Open read connection
-    rstStack <- readStart(rstStack)
+    #rstStack <- terra::readStart(rstStack)
+    suppressMessages(suppressWarnings(
+      terra::readStart(rstStack)))
     
     # Iterate by tile
     for(tile_i in 1:length(tiles)){
@@ -382,7 +348,8 @@ calculateSegmentStats <- function(rstFeatures, rstSegm, funs = c("mean", "sd"),
     }
     
     # Close read connection
-    rstStack <- readStop(rstStack)
+    #rstStack <- terra::readStop(rstStack)
+    terra::readStop(rstStack)
     
     # Do a final aggregation calculating the mean value for 
     # This will merge segments that get split across different tiles
@@ -395,11 +362,11 @@ calculateSegmentStats <- function(rstFeatures, rstSegm, funs = c("mean", "sd"),
     if(!bylayer){
       
       # Check memory requirements to handle the raster data   
-      if(!raster::canProcessInMemory(raster::stack(rstSegm, rstFeatures), n = 2))
-        stop("Not enough memory to process the input raster files! Set bylayer = TRUE or use the tiles option.")
+      # if(!raster::canProcessInMemory(raster::stack(rstSegm, rstFeatures), n = 2))
+      #   stop("Not enough memory to process the input raster files! Set bylayer = TRUE or use the tiles option.")
       
       # Read data from raster files
-      rDT <- raster::values(raster::stack(rstSegm, rstFeatures))
+      rDT <- terra::values(c(rstSegm, rstFeatures))
       colnames(rDT) <- c("SID", names(rstFeatures))
       
       # Subset data only to segments defined in subset?
@@ -415,10 +382,10 @@ calculateSegmentStats <- function(rstFeatures, rstSegm, funs = c("mean", "sd"),
       # Run by layer reading
       
       # Check memory requirements to handle the raster data    
-      if(!raster::canProcessInMemory(raster::stack(rstSegm, rstFeatures[[1]]), n = 2))
-        stop("Not enough memory to process the input raster files when using option bylayer!")
+      # if(!raster::canProcessInMemory(raster::rast(rstSegm, rstFeatures[[1]]), n = 2))
+      #   stop("Not enough memory to process the input raster files when using option bylayer!")
       
-      nl <- raster::nlayers(rstFeatures)
+      nl <- terra::nlyr(rstFeatures)
       
       if(progressBar){
         pb <- utils::txtProgressBar(1, nl, style=3)
@@ -431,7 +398,7 @@ calculateSegmentStats <- function(rstFeatures, rstSegm, funs = c("mean", "sd"),
         
         # Read data from raster files for a given layer
         lyrname <- names(rstFeatures)[lyr]
-        rDT <- raster::values(raster::stack(rstSegm, rstFeatures[[lyr]]))
+        rDT <- terra::values(c(rstSegm, rstFeatures[[lyr]]))
         colnames(rDT) <- c("SID", lyrname)
         
         # Subset data only to segments defined in subset?

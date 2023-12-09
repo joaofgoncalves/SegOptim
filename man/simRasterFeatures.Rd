@@ -13,9 +13,9 @@ simRasterFeatures(
 )
 }
 \arguments{
-\item{nr}{Number of rows for the simulated \code{RasterLayer} (default: 100).}
+\item{nr}{Number of rows for the simulated \code{SpatRaster} (default: 100).}
 
-\item{nc}{Number of columns for the simulated \code{RasterLayer} (default: 100).}
+\item{nc}{Number of columns for the simulated \code{SpatRaster} (default: 100).}
 
 \item{nlyrs}{Number of layers or bands to simulate (default: 5)}
 
@@ -26,9 +26,9 @@ function set in \code{distr} (default: \code{list(n = nr * nc, mean = 0, sd = 1)
 for rnorm)}
 }
 \value{
-A \code{RasterStack} with simulated data
+A \code{SpatRaster} with simulated data
 }
 \description{
-Simulate a \code{RasterStack} with multiple layers similar to features used in 
+Simulate a \code{SpatRaster} with multiple layers similar to features used in 
 segmentation or supervised classification.
 }

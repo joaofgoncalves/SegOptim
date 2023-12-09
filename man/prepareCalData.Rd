@@ -18,21 +18,21 @@ prepareCalData(
 )
 }
 \arguments{
-\item{rstSegm}{A path or a \code{RasterLayer} object containing the outputs of a segmentation algorithm 
+\item{rstSegm}{A path or a \code{SpatRaster} object containing the outputs of a segmentation algorithm 
 with each object/segment identified by an integer index. Can also be the direct result of a segmentation 
 function (e.g., \code{segmentation_OTB_LSMS}) as an object of class \code{SOptim.SegmentationResult}.}
 
-\item{trainData}{Input train data used for classification. The input can be a \code{RasterLayer}, 
-an integer vector (containing raster data after using \code{\link[raster]{values}} function) 
+\item{trainData}{Input train data used for classification. The input can be a \code{SpatRaster}, 
+an integer vector (containing raster data after using \code{\link[terra]{values}} function) 
 or a character string with a path to the raster layer. If x is an integer vector then it should 
 have a length equal to the number of pixels in \code{rstSegm}.}
 
 \item{rstFeatures}{A string defining the path to the raster features or a 
-\code{rasterStack} object.}
+\code{SpatRaster} object.}
 
 \item{thresh}{A threshold value defining the minimum proportion of the segment ]0, 1] that 
 must be covered by a certain class to be considered as a training case. This threshold will 
-only apply if \code{x} is a \code{RasterLayer} which means you are using train areas/pixels. 
+only apply if \code{x} is a \code{SpatRaster} which means you are using train areas/pixels. 
 If you are running a \emph{"single-class"} problem then this threshold only applies to the 
 class of interest (coded as 1's). Considering this, if a given segment has a proportion cover 
 of that class higher than \code{thresh} then it is considered a train case. In contrast, for 
@@ -54,7 +54,7 @@ increases computation time but spares memory load; default: FALSE).}
 \item{tiles}{Number of times that the image will be divided along the x and y axes. This means that 
 the original raster data will be split into a number of blocks equal to tiles^2 (e.g., if 
 \code{tiles = 5} this will generate 25 blocks/tiles) for reading. This number should be larger 
-for large \code{Raster*} objects. This means that some fine tuning may be necessary to adjust 
+for large \code{SpatRaster} objects. This means that some fine tuning may be necessary to adjust 
 this value according to available memory and raster input size.}
 
 \item{verbose}{Print progress messages? (default: TRUE)}

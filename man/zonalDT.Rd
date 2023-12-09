@@ -4,9 +4,7 @@
 \alias{zonalDT}
 \alias{zonalDT.default}
 \alias{zonalDT.data.frame}
-\alias{zonalDT.RasterStack}
-\alias{zonalDT.RasterLayer}
-\alias{zonalDT.RasterBrick}
+\alias{zonalDT.SpatRaster}
 \alias{zonalDT.matrix}
 \title{Calculate aggregated statistics by each image segment or region}
 \usage{
@@ -16,19 +14,15 @@ zonalDT(x, z, fun, na.rm = TRUE, subset = NULL, ...)
 
 \method{zonalDT}{data.frame}(x, z, fun, na.rm = TRUE, subset = NULL, ...)
 
-\method{zonalDT}{RasterStack}(x, z, fun, na.rm = TRUE, subset = NULL, ...)
-
-\method{zonalDT}{RasterLayer}(x, z, fun, na.rm = TRUE, subset = NULL, ...)
-
-\method{zonalDT}{RasterBrick}(x, z, fun, na.rm = TRUE, subset = NULL, ...)
+\method{zonalDT}{SpatRaster}(x, z, fun, na.rm = TRUE, subset = NULL, ...)
 
 \method{zonalDT}{matrix}(x, z, fun, na.rm = TRUE, subset = NULL, ...)
 }
 \arguments{
-\item{x}{An object of class \code{data.frame}, \code{matrix}, \code{RasterStack} or \code{RasterLayer} 
+\item{x}{An object of class \code{data.frame}, \code{matrix} or \code{SpatRaster} 
 containing data (e.g., classification features).}
 
-\item{z}{An object of class \code{RasterLayer}, \code{vector}, or a one column \code{data.frame}/\code{matrix} 
+\item{z}{An object of class \code{SpatRaster}, \code{vector}, or a one column \code{data.frame}/\code{matrix} 
 containing segment/object/zone indices (as integers). Usually the result of a image segmentation algorithm.}
 
 \item{fun}{An aggregation function (e.g., \code{mean}) applied to the elements within each segment. 

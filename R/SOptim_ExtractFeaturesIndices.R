@@ -1,17 +1,17 @@
 
 #' Calculate Normalized Difference Index (NDI) combinations
 #' 
-#' Calculates (all or some) NDI combinations based on an input raster stack with n>1 layers. Combinations are 
+#' Calculates (all or some) NDI combinations based on an input SpatRaster stack with n>1 layers. Combinations are 
 #' obtained using the \code{\link[utils]{combn}} function (for combinations of n layers, taken 2 
 #' at a time). 
 #' 
-#' @param rst An input \code{RasterStack} object with n > 1 layers.
+#' @param rst An input \code{SpatRaster} object with n > 1 layers.
 #' 
 #' @param bandNames A character vector defining band names (e.g., c("Bl","Gr","Rd","NIR")).
 #' 
 #' @param subsetBands An integer vector defining which bands to be used.
 #' 
-#' @param getRstStack Should the function return a final \code{RasterStack} object 
+#' @param getSpatRaster Should the function return a final \code{SpatRaster} object 
 #' with all NDI combinations? (default: TRUE) If many layers exist in rst then it is advisable 
 #' that this option is set to FALSE otherwise lack of memory problems may happen.
 #' 
@@ -32,30 +32,30 @@
 #' 
 #' @param ... Additional arguments passed to 
 #' 
-#' @return A \code{RasterStack} object is returned if \code{getRstStack=TRUE}. 
+#' @return A \code{SpatRaster} object is returned if \code{getSpatRaster=TRUE}. 
 #' 
 #' @importFrom utils combn 
 #' @importFrom utils txtProgressBar
 #' @importFrom utils write.table
 #' @importFrom tools file_path_sans_ext
 #' @importFrom tools file_ext
-#' @importFrom raster writeRaster
-#' @importFrom raster stack
-#' @importFrom raster dataType
-#' @importFrom raster nlayers
+#' @importFrom terra writeRaster
+#' @importFrom terra rast
+#' @importFrom terra datatype
+#' @importFrom terra nlyr
 #' 
 #' @export
 
-calculateNDIcombinations <- function(rst, bandNames = NULL, subsetBands = NULL, getRstStack = TRUE, scale10k = FALSE,
+calculateNDIcombinations <- function(rst, bandNames = NULL, subsetBands = NULL, getSpatRaster = TRUE, scale10k = FALSE,
                                    filename = NULL, writeSingleBandRaster = FALSE, verbose = TRUE, ...){
   
-  if(!inherits(rst, "RasterStack"))
-    stop("rst must be a RasterStack object!")
+  if(!inherits(rst, "SpatRaster"))
+    stop("rst must be a SpatRaster object!")
     
   if(writeSingleBandRaster && is.null(filename))
     stop("filename must be defined if writeSingleBandRaster is set to TRUE!")
   
-  n <- raster::nlayers(rst)
+  n <- terra::nlyr(rst)
   
   if(n==1)
     stop("rst must have at least 2 bands!")
@@ -90,14 +90,14 @@ calculateNDIcombinations <- function(rst, bandNames = NULL, subsetBands = NULL, 
     
     if(scale10k){
       NDI_TMP <- NDI_TMP * 10000
-      raster::dataType(NDI_TMP) <- "INT4S"
+      #terra::datatype(NDI_TMP) <- "INT4S"
     }
       
-    if(getRstStack){
+    if(getSpatRaster){
       if(i==1){
         NDI_STACK <- NDI_TMP
       }else{
-        NDI_STACK <- raster::stack(NDI_STACK, NDI_TMP)
+        NDI_STACK <- c(NDI_STACK, NDI_TMP)
       }
     }
 
@@ -105,8 +105,9 @@ calculateNDIcombinations <- function(rst, bandNames = NULL, subsetBands = NULL, 
     else rstNames[i] <- paste("NDI_",bandNames[b1],"__",bandNames[b2],sep="")
     
     if(writeSingleBandRaster){
-      raster::writeRaster(NDI_TMP, 
-                  filename = paste(tools::file_path_sans_ext(filename),rstNames[i],tools::file_ext(filename),sep="."), 
+      terra::writeRaster(NDI_TMP, 
+                  filename = paste(tools::file_path_sans_ext(filename),rstNames[i],
+                                   tools::file_ext(filename),sep="."), 
                   datatype = ifelse(scale10k,"INT4S","FLT4S"), ...)
     }
     
@@ -115,13 +116,13 @@ calculateNDIcombinations <- function(rst, bandNames = NULL, subsetBands = NULL, 
   
   if(!is.null(filename) && !writeSingleBandRaster){
     if(verbose) cat("\n\n|| Writing multi-band raster data... ||\n")
-    raster::writeRaster(NDI_STACK, filename, datatype = ifelse(scale10k,"INT4S","FLT4S"), ...)
+    terra::writeRaster(NDI_STACK, filename, datatype = ifelse(scale10k,"INT4S","FLT4S"), ...)
     utils::write.table(rstNames, file = paste(tools::file_path_sans_ext(filename),"bna",sep="."), 
                 row.names = FALSE, col.names = FALSE, quote = FALSE)
     if(verbose) cat("done.\n\n")
   }
   
-  if(getRstStack){
+  if(getSpatRaster){
     # Set raster names: NDI_bi_bj
     names(NDI_STACK) <- rstNames
     return(NDI_STACK)

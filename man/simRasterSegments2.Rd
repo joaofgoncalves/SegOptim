@@ -7,15 +7,15 @@
 simRasterSegments2(
   nr = 100,
   nc = 100,
-  nClasses = 4,
+  nClasses = 10,
   winSize = 3,
   directions = 8
 )
 }
 \arguments{
-\item{nr}{Number of rows for the simulated \code{RasterLayer} (default: 100).}
+\item{nr}{Number of rows for the simulated \code{SpatRaster} (default: 100).}
 
-\item{nc}{Number of columns for the simulated \code{RasterLayer} (default: 100).}
+\item{nc}{Number of columns for the simulated \code{SpatRaster} (default: 100).}
 
 \item{nClasses}{Number of classes to simulate (default: 4). Larger numbers will 
 tend to generate more segments.}
@@ -23,10 +23,10 @@ tend to generate more segments.}
 \item{winSize}{Window size for performing the focal operation using the modal function 
 (higher values will generate less segments; default: 3)}
 
-\item{directions}{Integer. Which cells are considered adjacent? Should be 8 (Queen's case) or 4 (Rook's case) }
+\item{directions}{integer indicating which cells are considered adjacent. Should be 8 (Queen's case) or 4 (Rook's case)}
 }
 \value{
-A simulated \code{RasterLayer} with segments.
+A simulated \code{SpatRaster} with segments.
 }
 \description{
 Uses simulated data for n classes, performs modal smoothing and then 

@@ -46,14 +46,11 @@ gaOptimizeSegmentationParams(
 )
 }
 \arguments{
-\item{rstFeatures}{Features used for supervised classification (typically a multi-layer raster with one feature 
+\item{rstFeatures}{Features used for supervised classification (typically a multi-layer SpatRaster with one feature 
 per band). May be defined as a string with the path to a raster dataset or a \code{RasterStack} object.}
 
-\item{trainData}{Input train data used for supervised classification. It can be a \code{RasterLayer} containing 
-train areas (in raster format) or a \code{SpatialPointsDataFrame} object containing train points (in this case, 
-the data must contain a column named "train" holding the train classes). For points you can use \link[rgdal]{readOGR} 
-function to read input files (e.g., ESRI Shapefile) or use \link[sp]{SpatialPointsDataFrame} to create a valid 
-data object within \code{R}.}
+\item{trainData}{Input train data used for supervised classification. It must be a \code{SpatRaster} containing 
+train areas (in raster format)}
 
 \item{segmentMethod}{Character string used to define the segmentation method. 
 Available options are:     
@@ -87,7 +84,7 @@ Either a function object or a function name.}
 \item{bylayer}{Calculate statistics layer by layer instead of all at once? (slightly 
 increases computation time but spares memory load; default: FALSE).}
 
-\item{tiles}{Number of times to slice the RasterLayer across row 
+\item{tiles}{Number of times to slice the SpatRaster across row 
 and column direction. The total number of tiles will be given by: 
 \eqn{N_{tiles} = nd^{2}}.}
 
@@ -137,7 +134,7 @@ if \code{ndigits=2} then only improvements of 0.01 will be considered by the GA 
 
 \item{...}{Additional parameters passed to the segmentation functions that will not be optimized (see also: 
 \code{\link{segmentationGeneric}}). It must also contain the input segmentation data (typically a multi-layer 
-raster dataset with one input feature per band) depending one the algorithm selected.}
+SpatRaster dataset with one input feature per band) depending one the algorithm selected.}
 
 \item{lower}{a vector of length equal to the decision variables providing the lower bounds of the search space in case of real-valued or permutation encoded optimizations. Formerly this argument was named \code{min}; its usage is allowed but deprecated.}
 
@@ -213,7 +210,7 @@ TODO: ...
        
 Depending on the size of the raster dataset and the amount of segmentation features/layers used, take into 
 consideration that running this function may take quite some time!! Therefore it is crucial to use only a 
-relevant subset (or subsets) of your data to run this procedure. Also, choosing an appropriate parametrization 
+relevant subset (or subsets) of your data to run this procedure. Also, choosing an appropriate parameterization 
 of the genetic algorithm is key to decrease computing time. For example, if \code{popSize} is set to 30 
 and \code{maxiter} to 100, then a maximum number of 3000 image segmentation runs would be required 
 to stop the optimization! (usually, running the segmentation is the most time-consuming task of the optimization 

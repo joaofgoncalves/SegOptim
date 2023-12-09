@@ -628,8 +628,8 @@ segmentation_ArcGIS_MShift <- function(x, inputRstPath, outputSegmRst=NULL,
 #' multi-scale image segmentation. In: XII Angewandte Geographische Informationsverarbeitung, 
 #' Wichmann Verlag, Heidelberg, 2000.
 #' 
-#' @importFrom raster raster
-#' @importFrom raster nbands
+#' @importFrom terra rast
+#' @importFrom terra nlyr
 #' @export
 #' 
 
@@ -653,8 +653,8 @@ segmentation_Terralib_Baatz <- function(x, inputRstPath, outputSegmRst=NULL, Com
   }
   
   # Read inputRstPath metadata to extract the number of bands (required as segmentation input)
-  inputRstMeta <- raster::raster(inputRstPath)
-  nb <- (raster::nbands(inputRstMeta)) - 1 # Changed this because terralib starts band counting at 0
+  inputRstMeta <- terra::rast(inputRstPath)
+  nb <- (terra::nlyr(inputRstMeta)) - 1 # Changed this because terralib starts band counting at 0
   
   if(is.null(TerraLib.path))
     TerraLib.path<-""
@@ -736,8 +736,8 @@ segmentation_Terralib_Baatz <- function(x, inputRstPath, outputSegmRst=NULL, Com
 #' effect, check source location \code{/examples/segmentationRegionGrowing} and TerraLib instructions 
 #' (\href{http://www.dpi.inpe.br/terralib5/wiki/doku.php?id=wiki:terralib50_build}{link}).
 #' 
-#' @importFrom raster raster
-#' @importFrom raster nbands
+#' @importFrom terra rast
+#' @importFrom terra nlyr
 #' @export
 
 segmentation_Terralib_MRGrow <- function(x, inputRstPath, outputSegmRst=NULL, Threshold=NULL, MinSize=NULL, verbose=TRUE, TerraLib.path=NULL){
@@ -760,8 +760,8 @@ segmentation_Terralib_MRGrow <- function(x, inputRstPath, outputSegmRst=NULL, Th
 
   
   # Read inputRstPath metadata to extract the number of bands (required as segmentation input)
-  inputRstMeta <- raster::raster(inputRstPath)
-  nb <- (raster::nbands(inputRstMeta)) - 1 # Changed this because terralib starts band counting at 0
+  inputRstMeta <- terra::rast(inputRstPath)
+  nb <- (terra::nlyr(inputRstMeta)) - 1 # Changed this because terralib starts band counting at 0
   
   if(is.null(TerraLib.path))
     TerraLib.path<-""

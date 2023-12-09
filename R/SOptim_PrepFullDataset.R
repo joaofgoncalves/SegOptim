@@ -6,12 +6,12 @@
 #' image segment. The output object can then be used in \code{\link{calibrateClassifier}} function 
 #' for training a classification algorithm (with option \code{runFullCalibration=TRUE}).
 #' 
-#' @param rstSegm A path or a \code{RasterLayer} object containing the outputs of a segmentation algorithm 
+#' @param rstSegm A path or a \code{SpatRaster} object containing the outputs of a segmentation algorithm 
 #' with each object/segment identified by an integer index. Can also be the direct result of a segmentation 
 #' function (e.g., \code{segmentation_OTB_LSMS}) as an object of class \code{SOptim.SegmentationResult}.
 #' 
-#' @param trainData Input train data used for classification. The input can be a \code{RasterLayer}, 
-#' an integer vector (containing raster data after using \code{\link[raster]{values}} function) 
+#' @param trainData Input train data used for classification. The input can be a \code{SpatRaster}, 
+#' an integer vector (containing raster data after using \code{\link[terra]{values}} function) 
 #' or a character string with a path to the raster layer. If x is an integer vector then it should 
 #' have a length equal to the number of pixels in \code{rstSegm}.
 #' 
@@ -20,7 +20,7 @@
 #' @param tiles Number of times that the image will be divided along the x and y axes. This means that 
 #' the original raster data will be split into a number of blocks equal to tiles^2 (e.g., if 
 #' \code{tiles = 5} this will generate 25 blocks/tiles) for reading. This number should be larger 
-#' for large \code{Raster*} objects. This means that some fine tuning may be necessary to adjust 
+#' for large \code{SpatRaster} objects. This means that some fine tuning may be necessary to adjust 
 #' this value according to available memory and raster input size. 
 #' 
 #' @inheritParams getTrainData
@@ -41,6 +41,7 @@
 #' 
 #' @export
 #' @importFrom stats sd
+#' @importFrom terra rast
 #' 
 
 prepareCalData <- function(rstSegm, trainData, rstFeatures, thresh = 0.5, 
@@ -55,7 +56,7 @@ prepareCalData <- function(rstSegm, trainData, rstFeatures, thresh = 0.5,
   if(verbose) cat("-> [1/3] Loading train data into image segments...\n")
   
   if(inherits(rstSegm,"SOptim.SegmentationResult"))
-    rstSegm <- raster(rstSegm$segm)
+    rstSegm <- terra::rast(rstSegm$segm)
   
   calibrationDF <- try(getTrainData(x         = trainData, 
                                     rstSegm   = rstSegm, 

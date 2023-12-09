@@ -19,13 +19,13 @@ getTrainRasterSegments(
 )
 }
 \arguments{
-\item{trainData}{Input train data. The input can be a \code{RasterLayer}, \code{SpatialPointsDataFrame}, 
-an integer vector (containing raster data after using \code{\link[raster]{values}} function) or a 
-character string with a path to a raster layer. If trainData is an integer vector then it should 
-have a length equal to the number of pixels in rstSegm.}
+\item{trainData}{Input train data. The input can be a \code{SpatRaster}, an integer vector (containing 
+raster data after using \code{\link[terra]{values}} function) or a character string with a path to a 
+raster layer. If trainData is an integer vector then it should have a length equal to the number of 
+pixels in rstSegm.}
 
-\item{rstSegm}{A path or a rasterLayer object containing the outputs of a segmentation algorithm 
-with each object/segment identified by an integer index.}
+\item{rstSegm}{A path or a \code{SpatRaster} object containing the outputs of a segmentation 
+algorithm with each object/segment identified by an integer index.}
 
 \item{filename}{A filename/path used to write the output raster (default: NULL)}
 
@@ -34,7 +34,7 @@ used for points).}
 
 \item{thresh}{A threshold value defining the minimum proportion of the segment ]0, 1] that 
 must be covered by a certain class to be considered as a training case. This threshold will 
-only apply if \code{x} is a \code{RasterLayer} which means you are using train areas/pixels. 
+only apply if \code{x} is a \code{SpatRaster} which means you are using train areas/pixels. 
 If you are running a \emph{"single-class"} problem then this threshold only applies to the 
 class of interest (coded as 1's). Considering this, if a given segment has a proportion cover 
 of that class higher than \code{thresh} then it is considered a train case. In contrast, for 
@@ -60,11 +60,11 @@ is employed. In this case if no positive cases are generated then negatives will
 
 \item{verbose}{Print comments with function progress? (default: TRUE)}
 
-\item{...}{Additional options passed to \code{writeRaster} function. The option \code{datatype} is already 
-internally set to \emph{INT2U}.}
+\item{...}{Additional options passed to \code{writeRaster} function. The option \code{datatype} 
+is already internally set to \emph{INT2U}.}
 }
 \value{
-A raster object with train segments.
+A SpatRaster object with train segments.
 }
 \description{
 An utility function used to create a raster dataset containing train segments for a given segmentation 

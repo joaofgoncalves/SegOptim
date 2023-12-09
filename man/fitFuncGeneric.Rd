@@ -33,14 +33,11 @@ fitFuncGeneric(
 \arguments{
 \item{x}{Vector with segmentation parameters that will be optimized by the genetic algorithms from GA package.}
 
-\item{rstFeatures}{Features used for supervised classification (typically a multi-layer raster with one feature 
+\item{rstFeatures}{Features used for supervised classification (typically a multi-layer SpatRaster with one feature 
 per band). May be defined as a string with the path to a raster dataset or a \code{RasterStack} object.}
 
-\item{trainData}{Input train data used for supervised classification. It can be a \code{RasterLayer} containing 
-train areas (in raster format) or a \code{SpatialPointsDataFrame} object containing train points (in this case, 
-the data must contain a column named "train" holding the train classes). For points you can use \link[rgdal]{readOGR} 
-function to read input files (e.g., ESRI Shapefile) or use \link[sp]{SpatialPointsDataFrame} to create a valid 
-data object within \code{R}.}
+\item{trainData}{Input train data used for supervised classification. It must be a \code{SpatRaster} containing 
+train areas (in raster format)}
 
 \item{segmentMethod}{Character string used to define the segmentation method. 
 Available options are:     
@@ -59,7 +56,7 @@ Available options are:
 
 \item{...}{Additional parameters passed to the segmentation functions that will not be optimized (see also: 
 \code{\link{segmentationGeneric}}). It must also contain the input segmentation data (typically a multi-layer 
-raster dataset with one input feature per band) depending one the algorithm selected.}
+SpatRaster dataset with one input feature per band) depending one the algorithm selected.}
 
 \item{trainThresh}{A threshold value defining the minimum proportion of the segment ]0, 1] that must be covered 
 by a certain class to be considered as a training case. This threshold will only apply if \code{x} is a \code{RasterLayer} 
@@ -78,7 +75,7 @@ Either a function object or a function name.}
 \item{bylayer}{Calculate statistics layer by layer instead of all at once? (slightly 
 increases computation time but spares memory load; default: FALSE).}
 
-\item{tiles}{Number of times to slice the RasterLayer across row 
+\item{tiles}{Number of times to slice the SpatRaster across row 
 and column direction. The total number of tiles will be given by: 
 \eqn{N_{tiles} = nd^{2}}.}
 

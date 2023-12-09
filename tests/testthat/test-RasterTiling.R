@@ -2,7 +2,7 @@
 context("Test raster tiling system")
 
 library(SegOptim)
-library(raster)
+library(terra)
 
 test_that("Test raster tile generation (createRasterTiles)",{
   
@@ -15,13 +15,13 @@ test_that("Test raster tile generation (createRasterTiles)",{
 
 test_that("Test data reading by tile",{
   
-  r1 <- raster(ncol=10,nrow=10)
+  r1 <- rast(ncol=10,nrow=10)
   values(r1) <- rnorm(100)
-  r2 <- raster(ncol=10,nrow=10)
+  r2 <- rast(ncol=10,nrow=10)
   values(r2) <- rnorm(100)
-  r3 <- raster(ncol=10,nrow=10)
+  r3 <- rast(ncol=10,nrow=10)
   values(r3) <- rnorm(100)
-  r <- stack(r1, r2, r3)
+  r <- c(r1, r2, r3)
 
   rtiles <- createRasterTiles(r, nd = 3)
   

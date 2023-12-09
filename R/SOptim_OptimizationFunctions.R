@@ -44,7 +44,7 @@
 #'        
 #' Depending on the size of the raster dataset and the amount of segmentation features/layers used, take into 
 #' consideration that running this function may take quite some time!! Therefore it is crucial to use only a 
-#' relevant subset (or subsets) of your data to run this procedure. Also, choosing an appropriate parametrization 
+#' relevant subset (or subsets) of your data to run this procedure. Also, choosing an appropriate parameterization 
 #' of the genetic algorithm is key to decrease computing time. For example, if \code{popSize} is set to 30 
 #' and \code{maxiter} to 100, then a maximum number of 3000 image segmentation runs would be required 
 #' to stop the optimization! (usually, running the segmentation is the most time-consuming task of the optimization 
@@ -90,10 +90,9 @@
 #' islands evolution. Submitted to R Journal. Pre-print available at: \url{http://arxiv.org/abs/1605.01931}.
 #' 
 #' @import GA
-#' @importFrom raster raster
-#' @importFrom raster stack
-#' @importFrom raster compareRaster
-#' @importFrom raster values
+#' @importFrom terra rast
+#' @importFrom terra compareGeom
+#' @importFrom terra values
 #' 
 #' @export
 
@@ -195,7 +194,7 @@ gaOptimizeSegmentationParams<-function(rstFeatures,
     if(file.exists(rstFeatures)){
       
       if(verbose) cat("-> Loading raster data containing classification features... \n")
-      rstFeatures <- try(raster::stack(rstFeatures))
+      rstFeatures <- try(terra::rast(rstFeatures))
       if(verbose) cat("done.\n\n")
       
       if(inherits(rstFeatures,"try-error")){
@@ -208,7 +207,7 @@ gaOptimizeSegmentationParams<-function(rstFeatures,
     if(file.exists(trainData)){
       
       if(verbose) cat("-> Loading raster file metadata containing train data... \n")
-      trainData <- try(raster::raster(trainData))
+      trainData <- try(terra::rast(trainData))
       if(verbose) cat("done.\n\n")
      
      if(inherits(trainData,"try-error")){
@@ -219,9 +218,9 @@ gaOptimizeSegmentationParams<-function(rstFeatures,
   
   ## Check raster similarity -------------------------------------------------------
   
-  if(inherits(trainData,"RasterLayer")){
+  if(inherits(trainData,"SpatRaster")){
     
-    if(!raster::compareRaster(rstFeatures,trainData)){
+    if(!terra::compareGeom(rstFeatures, trainData, stopOnError=FALSE, messages=TRUE)){
       stop("Differences found between rasters in rstFeatures and trainData! Check raster extent, pixel size, 
             nr. of rows/cols, or coordinate reference system")
     }
@@ -230,43 +229,14 @@ gaOptimizeSegmentationParams<-function(rstFeatures,
   
   ## Load raster data from file ----------------------------------------------------
   
-  # [Ago/2018] Removed after changes in calculateSegmStats() function which now uses 
-  # only a raster dataset as input
-  
-  # if(inherits(rstFeatures,"RasterStack")){
-  #   
-  #   if(verbose) cat("-> Loading raster values for classification features (in-memory load)... \n")
-  #   rstFeatures<-try(raster::values(rstFeatures))
-  #   if(verbose) cat("done.\n\n")
-  #   
-  #   if(inherits(rstFeatures,"try-error")){
-  #     stop("An error occurred while reading data values from rstFeatures!")
-  #   }
-  # }
-  
-  # [Dec 2020] Removed after finding an error in getTrainData function/workflow: 
-  # data cannot be passed as a pre-cached numeric vector!!! otherwise getTrainData
-  # will fail with error: "Object class in x can not be handled by getTrainData"
-  #
-  # if(inherits(trainData,"RasterLayer")){
-  #   
-  #   if(verbose) cat("-> Loading raster values for train data (in-memory load)... \n")
-  #   trainData <- try(raster::values(trainData))
-  #   if(verbose) cat("done.\n\n")
-  #   
-  #   if(inherits(trainData,"try-error")){
-  #     stop("An error occurred while reading data values from trainData!")
-  #   }
-  # }
-  
 
   ## Run GA optimization ----------------------------------------------------------- 
   ##
   ##
   out.ga<-try(GA::ga(type      = "real-valued",   # static definition - (almost) all optimized parameters are real valued (minimum segment sizes are actually integers)
                  fitness       = fitFuncGeneric,  # generic fitness function 
-                 rstFeatures   = rstFeatures,     # raster stack with classification features
-                 trainData     = trainData,       # raster layer with calibration - train/test data   
+                 rstFeatures   = rstFeatures,     # SpatRaster with classification features
+                 trainData     = trainData,       # SpatRaster with calibration - train/test data   
                  segmentMethod = segmentMethod,   # segmentation method used
                  
                  # start specific parameters passed to the fitness function:

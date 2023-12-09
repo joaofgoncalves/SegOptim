@@ -60,8 +60,8 @@ A list object of size two containing:
 }
 }
 \description{
-A simple function to perform iterative random search optimization using neighbourhood 
-fixed size adjustement. See details section for a description of the algorithm.
+A simple function to perform iterative random search optimization using neighborhood 
+fixed size adjustment. See details section for a description of the algorithm.
 }
 \details{
 The algorithm proceeds as follow (for maximization):         

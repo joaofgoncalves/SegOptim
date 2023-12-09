@@ -2,7 +2,7 @@
 context("Test user-defined performance/accuracy functions")
 
 library(SegOptim)
-library(raster)
+library(terra)
 
 
 test_that("User-defined accuracy function provides correct outputs",{

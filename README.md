@@ -26,11 +26,6 @@ It's fairly simple to install! Just run the following lines of R code:
 
 ``` r
 
-# [!] Due to an issue with the NLMR package it is necessary to install it first
-
-remotes::install_github("ropensci/NLMR")
-
-
 # [!] Due to the removal from CRAN of packages clusterCrit and unbalanced,
 # these also have to be compiled from source and installed
 
@@ -40,7 +35,7 @@ remotes::install_github("dalpozz/unbalanced")
 
 # Now let's install SegOptim (with the latest updates)
 
-remotes::install_github("joaofgoncalves/SegOptim", ref="experimental")
+remotes::install_github("joaofgoncalves/SegOptim")
 
 ```
 

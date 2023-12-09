@@ -2,14 +2,14 @@
 % Please edit documentation in R/SOptim_UnsupervisedClassification.R
 \name{clusteringRaster}
 \alias{clusteringRaster}
-\title{Perform clustering on a RasterStack object and calculate internal clustering criteria}
+\title{Perform clustering on a SpatRaster object and calculate internal clustering criteria}
 \usage{
 clusteringRaster(
   inRst,
   k,
   writeRasterData = TRUE,
   outRst,
-  getRstStack = TRUE,
+  getSpatRaster = TRUE,
   method = "kmeans",
   calcIntCriteria = FALSE,
   crit = c("Silhouette"),
@@ -19,7 +19,7 @@ clusteringRaster(
 )
 }
 \arguments{
-\item{inRst}{An input \code{RasterStack} object. By default all layers/bands will be used to perform the k-means 
+\item{inRst}{An input \code{SpatRaster} object. By default all layers/bands will be used to perform the k-means 
 clustering.}
 
 \item{k}{An integer vector defining the number of clusters. If more than one value is given then 
@@ -30,7 +30,7 @@ clustering.}
 \item{outRst}{Name of the output raster. For each value in \code{k} the file name will get a suffix 
 in this form: \code{"filename_method_nc_k.ext"}.}
 
-\item{getRstStack}{Get an output \code{RasterStack} object with clustering solutions? (default: \code{FALSE}). 
+\item{getSpatRaster}{Get an output \code{SpatRaster} object with clustering solutions? (default: \code{FALSE}). 
 If \code{FALSE} then some memory saving is expected.}
 
 \item{method}{A string defining the method used for clustering. Available options are: 
@@ -57,27 +57,27 @@ paramaters which are pre-defined to: \code{keep.data = FALSE}, and \code{medoids
 save memory and speed-up calculations).}
 }
 \value{
-If \code{getRstStack=TRUE} then a \code{RasterStack} object with all clustering solutions will be returned. 
-If \code{getRstStack=TRUE} and \code{calcIntCriteria=TRUE} then an additional matrix named \code{intClustCrit} with 
-one row by k value will be returned with the requested clustering indices. If \code{getRstStack=FALSE} then only the matrix 
+If \code{getSpatRaster=TRUE} then a \code{SpatRaster} object with all clustering solutions will be returned. 
+If \code{getSpatRaster=TRUE} and \code{calcIntCriteria=TRUE} then an additional matrix named \code{intClustCrit} with 
+one row by k value will be returned with the requested clustering indices. If \code{getSpatRaster=FALSE} then only the matrix 
 with clustering indices will be returned.
 }
 \description{
-Runs a clustering/unsupervised learning/classification algorithm on a multi-layer \code{RasterStack} object.      
+Runs a clustering/unsupervised learning/classification algorithm on a multi-layer \code{SpatRaster} object.      
 It also allows calculating internal clustering performance criteria based on function 
 \code{\link[clusterCrit]{intCriteria}} using a stratified random sample of output pixels.
 }
 \examples{
 
-library(raster)
+library(terra)
 
-r1 <- raster(nrows=10, ncols=10, vals=rnorm(100))
-r2 <- raster(nrows=10, ncols=10, vals=rnorm(100))
-r3 <- raster(nrows=10, ncols=10, vals=rnorm(100))
+r1 <- rast(nrows=10, ncols=10, vals=rnorm(100))
+r2 <- rast(nrows=10, ncols=10, vals=rnorm(100))
+r3 <- rast(nrows=10, ncols=10, vals=rnorm(100))
 
-rstStack <- stack(r1, r2, r3)
+rstStack <- c(r1, r2, r3)
 
-clusteringRaster(rstStack, k = 2:10, writeRasterData = FALSE, getRstStack = TRUE, 
+clusteringRaster(rstStack, k = 2:10, writeRasterData = FALSE, getSpatRaster = TRUE, 
                  method="kmeans", calcIntCriteria = FALSE, crit = c("Silhouette"), 
                  intCritSampSize = 20000, verbose = TRUE)
 

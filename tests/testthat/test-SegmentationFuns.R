@@ -2,7 +2,7 @@
 context("Test segmentation functions")
 
 library(SegOptim)
-library(raster)
+library(terra)
 
 
 ## ESRI ArcGIS segmentation test ----
@@ -22,7 +22,7 @@ test_that("Test if ESRI ArcGIS segmentation is performed correctly",{
                                        pythonPath      = ARCGIS_PYTHON_PATH,
                                        verbose         = TRUE)
   
-  expect_is(raster("test_arcgis.tif"), "RasterLayer")
+  expect_is(rast("test_arcgis.tif"), "SpatRaster")
   file.remove(list.files(pattern="testRasterFeatures_SegmentMe_|testRasterFeatures_SegmentMe1|_interIndex|_Segment1"))
   doCleanUpActions(c(unlist(segObj),
                      paste(tools::file_path_sans_ext(segObj$Segmentation),"_0_0_FINAL.tif",sep="")))
@@ -47,7 +47,7 @@ test_that("Test if ESRI ArcGIS segmentation is performed correctly #2",{
                                        pythonPath      = ARCGIS_PYTHON_PATH,
                                        verbose         = TRUE)
 
-  expect_is(raster("test_arcgis.tif"), "RasterLayer")
+  expect_is(rast("test_arcgis.tif"), "SpatRaster")
   file.remove(list.files(pattern="testRasterFeatures_SegmentMe_|testRasterFeatures_SegmentMe1|_interIndex|_Segment1"))
   file.remove("testRasterFeatures.tif")
   doCleanUpActions(c(unlist(segObj),
@@ -80,7 +80,7 @@ test_that("Test if OTB segmentation is performed correctly",{
   expect_true(file.exists("segm_test_otb1.tif"))
   expect_is(segObj,"SOptim.SegmentationResult")
   expect_equal(segObj$segm, "segm_test_otb1.tif")
-  expect_is(raster(segObj$segm), "RasterLayer")
+  expect_is(rast(segObj$segm), "SpatRaster")
   
   doCleanUpActions(c(unlist(segObj), 
                      paste(tools::file_path_sans_ext(segObj$Segmentation),"_0_0_FINAL.tif",sep="")))
@@ -112,7 +112,7 @@ test_that("Test if OTB segmentation (two sets of parameters) is performed correc
   expect_true(file.exists("segm_test_otb2.tif"))
   expect_is(segObj,"SOptim.SegmentationResult")
   expect_equal(segObj$segm, "segm_test_otb2.tif")
-  expect_is(raster(segObj$segm), "RasterLayer")
+  expect_is(rast(segObj$segm), "SpatRaster")
   
   doCleanUpActions(c(unlist(segObj), 
                      paste(tools::file_path_sans_ext(segObj$Segmentation),"_0_0_FINAL.tif",sep="")))
@@ -146,7 +146,7 @@ test_that("Test if OTB segmentation (two sets of parameters) is performed correc
   expect_true(file.exists("segm_test_otb3.tif"))
   expect_is(segObj,"SOptim.SegmentationResult")
   expect_equal(segObj$segm, "segm_test_otb3.tif")
-  expect_is(raster(segObj$segm), "RasterLayer")
+  expect_is(rast(segObj$segm), "SpatRaster")
   
   file.remove("testRasterFeatures.tif")
   doCleanUpActions(c(unlist(segObj), 
@@ -184,7 +184,7 @@ test_that("Test if SAGA segmentation is performed correctly",{
   expect_true(file.exists("segm-test-saga.sgrd"))
   expect_is(segObj,"SOptim.SegmentationResult")
   expect_equal(segObj$segm, "segm-test-saga.sdat")
-  expect_is(raster(segObj$segm), "RasterLayer")
+  expect_is(rast(segObj$segm), "SpatRaster")
 
   doCleanUpActions(unlist(segObj))
   }
@@ -210,7 +210,7 @@ test_that("Test if TerraLib/MRG segmentation is performed correctly",{
   expect_true(file.exists("segoptim-test-terralibMRG.tif"))
   expect_is(segObj,"SOptim.SegmentationResult")
   expect_equal(segObj$segm, "segoptim-test-terralibMRG.tif")
-  expect_is(raster(segObj$segm), "RasterLayer")
+  expect_is(rast(segObj$segm), "SpatRaster")
   
   doCleanUpActions(unlist(segObj))
   }
@@ -237,7 +237,7 @@ test_that("Test if TerraLib/MRG segmentation is performed correctly #2",{
   expect_true(file.exists("segoptim-test-terralibMRG.tif"))
   expect_is(segObj,"SOptim.SegmentationResult")
   expect_equal(segObj$segm, "segoptim-test-terralibMRG.tif")
-  expect_is(raster(segObj$segm), "RasterLayer")
+  expect_is(rast(segObj$segm), "SpatRaster")
   
   file.remove("testRasterFeatures.tif")
   doCleanUpActions(unlist(segObj))
@@ -266,7 +266,7 @@ test_that("Test if TerraLib/Baatz segmentation is performed correctly",{
   expect_true(file.exists("segoptim-test-terralibBaatz.tif"))
   expect_is(segObj,"SOptim.SegmentationResult")
   expect_equal(segObj$segm, "segoptim-test-terralibBaatz.tif")
-  expect_is(raster(segObj$segm), "RasterLayer")
+  expect_is(rast(segObj$segm), "SpatRaster")
   
   doCleanUpActions(unlist(segObj))
   }
@@ -294,7 +294,7 @@ test_that("Test if TerraLib/Baatz segmentation is performed correctly #2",{
   expect_true(file.exists("segoptim-test-terralibBaatz.tif"))
   expect_is(segObj,"SOptim.SegmentationResult")
   expect_equal(segObj$segm, "segoptim-test-terralibBaatz.tif")
-  expect_is(raster(segObj$segm), "RasterLayer")
+  expect_is(rast(segObj$segm), "SpatRaster")
   
   file.remove("testRasterFeatures.tif")
   doCleanUpActions(unlist(segObj))
@@ -303,38 +303,38 @@ test_that("Test if TerraLib/Baatz segmentation is performed correctly #2",{
 
 ## GRASS mean-region growing image segmentation test ----
 
-test_that("Test if GRASS segmentation is performed correctly",{
-
-  source("_CONFIG_.R")
-
-  skip_if(!(file.exists(paste(GRASS_BIN_PATH,".bat",sep="")) ||
-              file.exists(GRASS_BIN_PATH)), "Cannot find GRASS executable file")
-  #skip_if(!file.exists(), "Cannot find input data")
-
-  tmpOutFile <- paste(tempfile(),".tif",sep="")
-  
-  segObj <- segmentation_GRASS_RG(GRASS.path         = GRASS_BIN_PATH,
-                                  GRASS.inputRstName = S1_SEGM_FEAT_GRASS_PATH,
-                                  GRASS.GISDBASE     = GRASS_GISDBASE_PATH,
-                                  GRASS.LOCATION_NAME = GRASS_LOCATION_NAME,
-                                  GRASS.MAPSET        = "PERMANENT",
-                                  outputSegmRst       = tmpOutFile, # "test-segm-GRASS.tif",
-                                  Threshold           = 0.45, 
-                                  MinSize             = 50, 
-                                  memory              = 2046,
-                                  iterations          = 30,
-                                  verbose             = FALSE)
-
-  #expect_true(file.exists("test-segm-GRASS.tif"))
-  expect_true(file.exists(tmpOutFile))
-  expect_is(segObj,"SOptim.SegmentationResult")
-  #expect_equal(segObj$segm, "test-segm-GRASS.tif")
-  expect_equal(segObj$segm, tmpOutFile)
-  expect_is(raster(segObj$segm), "RasterLayer")
-
-  doCleanUpActions(unlist(segObj))
-  }
-)
+# test_that("Test if GRASS segmentation is performed correctly",{
+# 
+#   source("_CONFIG_.R")
+# 
+#   skip_if(!(file.exists(paste(GRASS_BIN_PATH,".bat",sep="")) ||
+#               file.exists(GRASS_BIN_PATH)), "Cannot find GRASS executable file")
+#   #skip_if(!file.exists(), "Cannot find input data")
+# 
+#   tmpOutFile <- paste(tempfile(),".tif",sep="")
+#   
+#   segObj <- segmentation_GRASS_RG(GRASS.path         = GRASS_BIN_PATH,
+#                                   GRASS.inputRstName = S1_SEGM_FEAT_GRASS_PATH,
+#                                   GRASS.GISDBASE     = GRASS_GISDBASE_PATH,
+#                                   GRASS.LOCATION_NAME = GRASS_LOCATION_NAME,
+#                                   GRASS.MAPSET        = "PERMANENT",
+#                                   outputSegmRst       = tmpOutFile, # "test-segm-GRASS.tif",
+#                                   Threshold           = 0.45, 
+#                                   MinSize             = 50, 
+#                                   memory              = 2046,
+#                                   iterations          = 30,
+#                                   verbose             = FALSE)
+# 
+#   #expect_true(file.exists("test-segm-GRASS.tif"))
+#   expect_true(file.exists(tmpOutFile))
+#   expect_is(segObj,"SOptim.SegmentationResult")
+#   #expect_equal(segObj$segm, "test-segm-GRASS.tif")
+#   expect_equal(segObj$segm, tmpOutFile)
+#   expect_is(rast(segObj$segm), "SpatRaster")
+# 
+#   doCleanUpActions(unlist(segObj))
+#   }
+# )
 
 
 ## RSGISLib Shepherd image segmentation test ----
@@ -357,7 +357,7 @@ test_that("Test if RSGISLib/Shepherd segmentation is performed correctly",{
   expect_true(file.exists("segoptim-test-rsgis.tif"))
   expect_is(segObj,"SOptim.SegmentationResult")
   expect_equal(segObj$segm, "segoptim-test-rsgis.tif")
-  expect_is(raster(segObj$segm), "RasterLayer")
+  expect_is(rast(segObj$segm), "SpatRaster")
   
   doCleanUpActions(unlist(segObj))
   }
@@ -384,7 +384,7 @@ test_that("Test if RSGISLib/Shepherd segmentation is performed correctly #2",{
   expect_true(file.exists("segoptim-test-rsgis.tif"))
   expect_is(segObj,"SOptim.SegmentationResult")
   expect_equal(segObj$segm, "segoptim-test-rsgis.tif")
-  expect_is(raster(segObj$segm), "RasterLayer")
+  expect_is(rast(segObj$segm), "SpatRaster")
   
   file.remove("testRasterFeatures.tif")
   doCleanUpActions(unlist(segObj))

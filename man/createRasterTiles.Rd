@@ -7,9 +7,9 @@
 createRasterTiles(rst, nd = 2)
 }
 \arguments{
-\item{rst}{A \code{Raster*} object.}
+\item{rst}{A \code{SpatRaster} object.}
 
-\item{nd}{Number of times to slice the RasterLayer across row 
+\item{nd}{Number of times to slice the SpatRaster across row 
 and column direction. The total number of tiles will be given by: 
 \eqn{N_{tiles} = nd^{2}}.}
 }
@@ -18,12 +18,13 @@ A \code{SOptim.Tiles} object with nd^2 tiles each with the starting
 row and column numbers as well as the number of rows and columns to read.
 }
 \description{
-A function used to cut an input \code{Raster*} object into several tiles 
-usable by \code{\link[raster]{getValuesBlock}} to read data by chunks.
+A function used to cut an input \code{SpatRaster} object into several tiles 
+usable by \code{\link[terra]{values}} to read data by chunks.
 }
 \examples{
-library(raster)
-r <- raster(ncol = 100, nrow = 100)
+
+library(terra)
+r <- rast(ncol = 100, nrow = 100)
 rtiles <- createRasterTiles(r, nd = 3)
 
 }

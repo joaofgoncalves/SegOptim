@@ -2,23 +2,29 @@
 context("Test raster output functions")
 
 library(SegOptim)
-library(raster)
-library(NLMR)
-library(igraph)
+library(terra)
+# library(NLMR)
+# library(igraph)
 
 test_that("Test getTrainRasterSegments outputs",{
   
   rstSegm <- simRasterSegments2()
   rstTrain <- simRasterTrain(probs = c(0.4,0.4,0.2))
   
-  trainSegs <- getTrainRasterSegments(rstTrain, rstSegm, filename = NULL, 
-                                      useThresh = TRUE, thresh = 0.5, 
-                                      na.rm = TRUE, dup.rm = TRUE, minImgSegm = 10, 
-                                      ignore = FALSE, verbose = FALSE)
+  trainSegs <- getTrainRasterSegments(trainData = rstTrain, 
+                                      rstSegm = rstSegm, 
+                                      filename = NULL, 
+                                      useThresh = TRUE, 
+                                      thresh = 0.5, 
+                                      na.rm = TRUE, 
+                                      dup.rm = TRUE, 
+                                      minImgSegm = 10, 
+                                      ignore = FALSE, 
+                                      verbose = FALSE)
   
-  expect_is(trainSegs,"RasterLayer")
-  expect_equal(cellStats(trainSegs,"min"), 0)
-  expect_equal(cellStats(trainSegs,"max"), 1)
+  expect_is(trainSegs,"SpatRaster")
+  expect_equal(global(trainSegs,fun = "min", na.rm=TRUE)[1,1], 0)
+  expect_equal(global(trainSegs,fun = "max", na.rm=TRUE)[1,1], 1)
 })
 
 
@@ -81,9 +87,9 @@ test_that("Test predictSegments for RF classifier (single-class)",{
                                 verbose       = FALSE,
                                 na.rm         = TRUE)
 
-  expect_is(predSegms,"RasterLayer")
-  #expect_equal(cellStats(predSegms,"min"), 0)
-  #expect_equal(cellStats(predSegms,"max"), 1)
+  expect_is(predSegms,"SpatRaster")
+  expect_equal(global(predSegms,"min", na.rm=TRUE)[1,1], 0)
+  expect_equal(global(predSegms,"max", na.rm=TRUE)[1,1], 1)
 
 })
 
@@ -141,9 +147,9 @@ test_that("Test predictSegments for GBM classifier (single-class)",{
                                verbose       = FALSE,
                                na.rm         = TRUE)
 
-  expect_is(predSegms,"RasterLayer")
-  # expect_equal(cellStats(predSegms,"min"), 0)
-  # expect_equal(cellStats(predSegms,"max"), 1)
+  expect_is(predSegms,"SpatRaster")
+  expect_equal(global(predSegms,"min", na.rm=TRUE)[1,1], 0)
+  expect_equal(global(predSegms,"max", na.rm=TRUE)[1,1], 1)
 
 })
 
@@ -200,9 +206,9 @@ test_that("Test predictSegments for SVM classifier (single-class)",{
                                verbose       = FALSE,
                                na.rm         = TRUE)
 
-  expect_is(predSegms,"RasterLayer")
-  #expect_equal(cellStats(predSegms,"min"), 0)
-  #expect_equal(cellStats(predSegms,"max"), 1)
+  expect_is(predSegms,"SpatRaster")
+  expect_equal(global(predSegms,"min", na.rm=TRUE)[1,1], 0)
+  expect_equal(global(predSegms,"max", na.rm=TRUE)[1,1], 1)
 
 })
 
@@ -242,9 +248,9 @@ test_that("Test predictSegments for SVM classifier (single-class)",{
 #                                verbose       = FALSE,
 #                                na.rm         = TRUE)
 # 
-#   expect_is(predSegms,"RasterLayer")
-#   expect_equal(cellStats(predSegms,"min"), 0)
-#   expect_equal(cellStats(predSegms,"max"), 1)
+#   expect_is(predSegms,"SpatRaster")
+#   expect_equal(global(predSegms,"min", na.rm=TRUE)[1,1], 0)
+#   expect_equal(global(predSegms,"max", na.rm=TRUE)[1,1], 1)
 # 
 # })
 
@@ -290,9 +296,9 @@ test_that("Test predictSegments for FDA classifier (single-class)",{
                                verbose       = FALSE,
                                na.rm         = TRUE)
 
-  expect_is(predSegms,"RasterLayer")
-  #expect_equal(cellStats(predSegms,"min"), 0)
-  #expect_equal(cellStats(predSegms,"max"), 1)
+  expect_is(predSegms,"SpatRaster")
+  expect_equal(global(predSegms,"min", na.rm=TRUE)[1,1], 0)
+  expect_equal(global(predSegms,"max", na.rm=TRUE)[1,1], 1)
 
 })
 
@@ -360,9 +366,9 @@ test_that("Test predictSegments for RF classifier (multi-class)",{
                                verbose       = FALSE,
                                na.rm         = TRUE)
 
-  expect_is(predSegms,"RasterLayer")
-  expect_equal(cellStats(predSegms,"min"), 1)
-  expect_equal(cellStats(predSegms,"max"), 3)
+  expect_is(predSegms,"SpatRaster")
+  expect_equal(global(predSegms,fun = "min", na.rm=TRUE)[1,1], 1)
+  expect_equal(global(predSegms,fun = "max", na.rm=TRUE)[1,1], 3)
 
 })
 
@@ -425,9 +431,9 @@ test_that("Test predictSegments for GBM classifier (multi-class)",{
                                verbose       = FALSE,
                                na.rm         = TRUE)
 
-  expect_is(predSegms,"RasterLayer")
-  expect_equal(cellStats(predSegms,"min"), 1)
-  expect_equal(cellStats(predSegms,"max"), 3)
+  expect_is(predSegms,"SpatRaster")
+  expect_equal(global(predSegms, fun = "min", na.rm=TRUE)[1,1], 1)
+  expect_equal(global(predSegms, fun = "max", na.rm=TRUE)[1,1], 3)
 
 })
 
@@ -489,9 +495,9 @@ test_that("Test predictSegments for SVM classifier (multi-class)",{
                                verbose       = FALSE,
                                na.rm         = TRUE)
 
-  expect_is(predSegms,"RasterLayer")
-  expect_equal(cellStats(predSegms,"min"), 1)
-  expect_equal(cellStats(predSegms,"max"), 3)
+  expect_is(predSegms,"SpatRaster")
+  expect_equal(global(predSegms, fun = "min", na.rm=TRUE)[1,1], 1)
+  expect_equal(global(predSegms, fun = "max", na.rm=TRUE)[1,1], 3)
 
 })
 
@@ -532,9 +538,9 @@ test_that("Test predictSegments for SVM classifier (multi-class)",{
 #                                verbose       = FALSE,
 #                                na.rm         = TRUE)
 # 
-#   expect_is(predSegms,"RasterLayer")
-#   expect_equal(cellStats(predSegms,"min"), 1)
-#   expect_equal(cellStats(predSegms,"max"), 3)
+#   expect_is(predSegms,"SpatRaster")
+#   expect_equal(global(predSegms,"min", na.rm=TRUE)[1,1], 1)
+#   expect_equal(global(predSegms,"max", na.rm=TRUE)[1,1], 3)
 # 
 # })
 
@@ -586,9 +592,9 @@ test_that("Test predictSegments for FDA classifier (multi-class)",{
                                verbose       = FALSE,
                                na.rm         = TRUE)
 
-  expect_is(predSegms,"RasterLayer")
-  expect_equal(cellStats(predSegms,"min"), 1)
-  expect_equal(cellStats(predSegms,"max"), 3)
+  expect_is(predSegms,"SpatRaster")
+  expect_equal(global(predSegms, fun = "min", na.rm=TRUE)[1,1], 1)
+  expect_equal(global(predSegms, fun = "max", na.rm=TRUE)[1,1], 3)
 
 })
 
@@ -676,16 +682,18 @@ test_that("Test predictSegments for RF classifier (single-class) with memory-saf
                                na.rm         = TRUE,
                                forceWriteByLine = FALSE)
 
-  expect_is(predSegms1,"RasterLayer")
-  expect_equal(cellStats(predSegms1,"min"), 0)
-  expect_equal(cellStats(predSegms1,"max"), 1)
+  expect_is(predSegms1,"SpatRaster")
+  expect_equal(global(predSegms1, fun = "min", na.rm=TRUE)[1,1], 0)
+  expect_equal(global(predSegms1, fun = "max", na.rm=TRUE)[1,1], 1)
 
-  expect_is(predSegms2,"RasterLayer")
-  expect_equal(cellStats(predSegms2,"min"), 0)
-  expect_equal(cellStats(predSegms2,"max"), 1)
+  expect_is(predSegms2,"SpatRaster")
+  expect_equal(global(predSegms2, fun = "min", na.rm=TRUE)[1,1], 0)
+  expect_equal(global(predSegms2, fun = "max", na.rm=TRUE)[1,1], 1)
 
-  expect_true(compareRaster(predSegms1, predSegms2, values = TRUE))
-
+  #expect_true(compareGeom(predSegms1, predSegms2, values = TRUE))
+  #expect_true(all.equal(predSegms1, predSegms2))
+  expect_true(all(na.omit(values(predSegms1)[,1] ==  values(predSegms2)[,1])))
+  
 })
 
 

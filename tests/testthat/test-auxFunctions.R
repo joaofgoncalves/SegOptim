@@ -2,7 +2,7 @@
 context("Test ancillary functions")
 
 library(SegOptim)
-library(raster)
+library(terra)
 library(dplyr)
 
 test_that("Check conversion from factor to integer (f2int)",{

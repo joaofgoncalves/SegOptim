@@ -12,9 +12,9 @@ simRasterTrain(
 )
 }
 \arguments{
-\item{nr}{Number of rows for the simulated \code{RasterLayer} (default: 100).}
+\item{nr}{Number of rows for the simulated \code{SpatRaster} (default: 100).}
 
-\item{nc}{Number of columns for the simulated \code{RasterLayer} (default: 100).}
+\item{nc}{Number of columns for the simulated \code{SpatRaster} (default: 100).}
 
 \item{classes}{A vector defining integer train classes (default for 
 single-class: \code{c(0,1,NA)} but can be used for multi-class; 
@@ -25,9 +25,9 @@ single-class: \code{c(0,1,NA)} but can be used for multi-class;
 not are adjusted by sample function internally.}
 }
 \value{
-A \code{RasterLayer} object with random train data.
+A \code{SpatRaster} object with random train data.
 }
 \description{
-Uses random data to create a simulated \code{RasterLayer} useful 
+Uses random data to create a simulated \code{SpatRaster} useful 
 for testing and debugging code.
 }

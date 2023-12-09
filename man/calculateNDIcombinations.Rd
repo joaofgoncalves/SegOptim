@@ -8,7 +8,7 @@ calculateNDIcombinations(
   rst,
   bandNames = NULL,
   subsetBands = NULL,
-  getRstStack = TRUE,
+  getSpatRaster = TRUE,
   scale10k = FALSE,
   filename = NULL,
   writeSingleBandRaster = FALSE,
@@ -17,13 +17,13 @@ calculateNDIcombinations(
 )
 }
 \arguments{
-\item{rst}{An input \code{RasterStack} object with n > 1 layers.}
+\item{rst}{An input \code{SpatRaster} object with n > 1 layers.}
 
 \item{bandNames}{A character vector defining band names (e.g., c("Bl","Gr","Rd","NIR")).}
 
 \item{subsetBands}{An integer vector defining which bands to be used.}
 
-\item{getRstStack}{Should the function return a final \code{RasterStack} object 
+\item{getSpatRaster}{Should the function return a final \code{SpatRaster} object 
 with all NDI combinations? (default: TRUE) If many layers exist in rst then it is advisable 
 that this option is set to FALSE otherwise lack of memory problems may happen.}
 
@@ -45,10 +45,10 @@ as suffix.}
 \item{...}{Additional arguments passed to}
 }
 \value{
-A \code{RasterStack} object is returned if \code{getRstStack=TRUE}.
+A \code{SpatRaster} object is returned if \code{getSpatRaster=TRUE}.
 }
 \description{
-Calculates (all or some) NDI combinations based on an input raster stack with n>1 layers. Combinations are 
+Calculates (all or some) NDI combinations based on an input SpatRaster stack with n>1 layers. Combinations are 
 obtained using the \code{\link[utils]{combn}} function (for combinations of n layers, taken 2 
 at a time).
 }

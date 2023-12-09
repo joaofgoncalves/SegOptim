@@ -37,9 +37,9 @@ remotes::install_github("joaofgoncalves/SegOptim")
 
 ## Compatibility issues
 
-?????? As of December 2023 (version 0.3.0), `SegOptim` moved to the `terra` package as a support for raster data due to the retirement of `sp`, `rgeos`, `rgdal`, `maptools` and, `raster` packages.
+As of December 2023 (version 0.3.0), `SegOptim` moved to the `terra` package as a support for raster data due to the retirement of `sp`, `rgeos`, `rgdal`, `maptools` and, `raster` packages.
 
-For this reason, older scripts (prior to v-0.3.0) will not be compatible with `SegOptim`'s current version and need to be updated. Sorry for any inconvenience this may cause ????
+For this reason, older scripts (prior to v-0.3.0) will not be compatible with `SegOptim`'s current version and need to be updated. Sorry for any inconvenience this may cause.
 
 ## Functionalities
 

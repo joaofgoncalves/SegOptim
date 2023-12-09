@@ -24,10 +24,9 @@
 
 ``` r
 
-# [!] Due to the removal from CRAN of packages clusterCrit and unbalanced,
-# these also have to be compiled from source and installed
+# [!] Due to the removal from CRAN of package unbalanced
+# this has to be compiled from source and installed
 
-remotes::install_github("cran/clusterCrit")
 remotes::install_github("dalpozz/unbalanced")
 
 

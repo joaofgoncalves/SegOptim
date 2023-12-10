@@ -41,6 +41,112 @@ As of December 2023 (version 0.3.0), `SegOptim` moved to the `terra` package as 
 
 For this reason, older scripts (prior to v-0.3.0) will not be compatible with `SegOptim`'s current version and need to be updated. Sorry for any inconvenience this may cause.
 
+## Running SegOptim
+
+``` r
+
+# Path to train data
+train_data_path <- "TrainAreas.tif"
+
+# Path to the raster used in segmentation and as features for training
+features_path <- "WV2_SpectralBands.tif"
+
+# Path to Orfeo Toolbox binaries (used to perform image segmentation)
+otb_path <- "OTB/OTB_720/bin"
+
+
+## STEP 1 ------------------------------------------------ ##
+## Run the image segmentation in OTB
+## ------------------------------------------------------- ##
+
+out_segm_obj <- segmentation_OTB_LSMS(
+  inputRstPath  = features_path, 
+  SpectralRange = 3.1, 
+  SpatialRange  = 4.5, 
+  MinSize       = 21,
+  lsms_maxiter  = 50,
+  outputSegmRst = "segmRaster.tif",
+  verbose       = TRUE,
+  otbBinPath    = otbPath)
+
+
+# Load the segmented raster and plot it
+segm_rst <- rast(out_segm_obj$segm)
+plot(segm_rst)
+
+# Load train data
+train_data_rst <- rast(train_data_path)
+
+# Classification features
+class_feat <- rast(features_path) 
+
+
+## STEP 2 ------------------------------------------------ ##
+## Prepare the calibration data
+#
+# The dataset includes the segment ID's, training samples/ 
+# labels, and features obtained through segmentation statistics 
+# (only the mean is calculated in this example)
+## ------------------------------------------------------- ##
+
+cal_data <- prepareCalData(rstSegm = segm_rst, 
+                          trainData = train_data_rst, 
+                          rstFeatures = class_feat, 
+                          thresh = 0.5, 
+                          funs = "mean", 
+                          minImgSegm = 30, 
+                          verbose = TRUE)
+
+
+## STEP 3 ------------------------------------------------ ##
+## Train/calibrate the Random Forest (RF) classifier
+#
+# 10-fold CV will be used for evaluation
+# Over-sampling of the minority class applied to balance the 
+# training dataset
+# The runFullCalibration = TRUE adds a final training round 
+# with all the data
+## ------------------------------------------------------- ##
+
+rf_trained <- calibrateClassifier( 
+  calData = cal_data,
+  classificationMethod       = "RF",
+  balanceTrainData           = FALSE,
+  balanceMethod              = "ubOver",
+  evalMethod                 = "10FCV",
+  evalMetric                 = "Kappa",
+  minTrainCases              = 30,
+  minCasesByClassTrain       = 10,
+  minCasesByClassTest        = 5,
+  runFullCalibration         = TRUE)
+
+# Get more evaluation measures:
+# AUC, Peirce Skill score (PSS), Gerrity Skill (PSS) score 
+# and Cohen Kappa
+evalMatrix <- evalPerformanceClassifier(rf_trained)
+
+# Print the evaluation matrix (one line each CV round plus a 
+# "FULL" round with all the data)
+print(round(evalMatrix,2))
+
+
+## STEP 4 ------------------------------------------------ ##
+## Predict for the entire image
+## ------------------------------------------------------- ##
+
+pred_segm_rst <- predictSegments(classifierObj = rf_trained, 
+                                 calData = cal_data, 
+                                 rstSegm = segm_rst, 
+                                 predictFor = "all", 
+                                 filename = "rst_classified.tif")
+
+# Check the classified output
+plot(pred_segm_rst)
+
+# Check feature importance ranking/scores from Random Forest
+varImpPlot(rf_trained$ClassObj$FULL)
+```
+
 ## Functionalities
 
 Currently the package offers several functionalities, namely:
